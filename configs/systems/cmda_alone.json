@@ -1,0 +1,5 @@
+{"name": "cmda_alone",
+ "notes": "Command A+ alone through the Flotilla loop (solver v1, verifier v2, tools), hosted API for the small-test screen. Same max_tokens as the local configs.",
+ "servers": {"cmda": {"url": "https://api.cohere.ai/compatibility/v1", "model": "command-a-plus-05-2026", "quant": "api",
+                      "api_key_env": "COHERE_API_KEY", "request": {"reasoning_effort": "high"}}},
+ "solvers": ["cmda"], "n_samples": 1, "max_tokens": 32768, "protocol_version": "protocol-v5"}

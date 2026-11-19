@@ -32,8 +32,16 @@ def sympy_check(answer: str, reference: str | None = None, timeout_s: float = 5.
 
 def _limits(mem_mb: int):
     def apply():
-        resource.setrlimit(resource.RLIMIT_AS, (mem_mb * 2**20, mem_mb * 2**20))
-        resource.setrlimit(resource.RLIMIT_NPROC, (64, 64))
+        # Linux (clusters): memory and process caps. macOS counts RLIMIT_NPROC per user (all processes) and
+        # may refuse RLIMIT_AS, so there each limit is best-effort and NPROC is skipped.
+        for lim, val in ((resource.RLIMIT_AS, mem_mb * 2**20), (resource.RLIMIT_NPROC, 64)):
+            if sys.platform == "darwin" and lim == resource.RLIMIT_NPROC:
+                continue
+            try:
+                resource.setrlimit(lim, (val, val))
+            except (ValueError, OSError):
+                if sys.platform != "darwin":
+                    raise
         os.setsid()
     return apply
 

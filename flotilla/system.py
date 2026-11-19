@@ -1,12 +1,17 @@
 """Flotilla orchestration (docs/PROMPTS.md flow): router -> solvers (N samples, tool loop) -> vote ->
 cross-check (optional) -> verifier -> final answer, with a full trace per question.
 
-Solvers are vLLM OpenAI-compatible servers listed in a config:
-    servers: {qwen: {url: http://node:8000/v1, model: <served name>, quant: w4a16}, phi: {...}}
+Solvers are OpenAI-compatible servers (vLLM, or a hosted API) listed in a config:
+    servers: {qwen: {url: http://node:8000/v1, model: <served name>, quant: w4a16}, phi: {...},
+              cmda: {url: https://api.cohere.ai/compatibility/v1, model: command-a-plus-05-2026, quant: api,
+                     api_key_env: COHERE_API_KEY, request: {reasoning_effort: high}, max_tokens: 32768}}
+api_key_env names an environment variable (the key itself is never in a config, trace or log); request holds
+extra per-server request fields; max_tokens overrides the config value for that server.
 Every switch the ablations need is a field of SystemConfig.
 """
 import asyncio
 import json
+import os
 import re
 import time
 from collections import Counter
@@ -20,7 +25,6 @@ from flotilla.trace import Sample, Trace
 
 PROMPTS = Path(__file__).resolve().parent.parent / "prompts"
 TOOL_LINE = re.compile(r"^TOOL\s+(sympy|python_exec|constraint_check|ocr)\s*:\s*(.+)$", re.M)
-JSON_BLOCK = re.compile(r"\{[^{}]*\"final_answer\"[^{}]*\}", re.S)
 
 
 @dataclass
@@ -37,6 +41,7 @@ class SystemConfig:
     verifier_version: str = "v2"
     protocol_version: str = "protocol-v2"
     extra: dict = field(default_factory=dict)
+    before_call: object = None             # optional async callable(server_name) run before every model call (rate/call caps)
 
 
 # ------------------------------------------------------------------ prompts
@@ -46,7 +51,8 @@ def _section(md: str, title: str) -> str:
     return m.group(1).strip() if m else ""
 
 
-def solver_messages(task: str, task_type: str, version: str, retrieved: list[str] | None = None) -> list[dict]:
+def solver_messages(task: str, task_type: str, version: str, retrieved: list[str] | None = None,
+                    images: list[str] | None = None) -> list[dict]:
     md = (PROMPTS / f"solver.{version}.md").read_text()
     system = _section(md, "System")
     additions = _section(md, "Task-type additions (appended to the system message)")
@@ -54,7 +60,15 @@ def solver_messages(task: str, task_type: str, version: str, retrieved: list[str
         if line.startswith(f"- {task_type}:") or (task_type.startswith("vision") and line.startswith("- vision")):
             system += "\n" + line.split(":", 1)[1].strip()
     user = task if not retrieved else task + "\n\nRetrieved facts:\n" + "\n".join(retrieved)
+    if images:  # base64 PNGs, sent as OpenAI image_url parts before the text
+        user = [{"type": "image_url", "image_url": {"url": f"data:image/png;base64,{b}"}} for b in images] + \
+               [{"type": "text", "text": user}]
     return [{"role": "system", "content": system}, {"role": "user", "content": user}]
+
+
+def client_for(srv: dict) -> AsyncOpenAI:
+    key = os.environ.get(srv["api_key_env"], "") if srv.get("api_key_env") else "EMPTY"
+    return AsyncOpenAI(base_url=srv["url"], api_key=key or "EMPTY", timeout=3600, max_retries=0)
 
 
 def retry_message(version: str, previous_answer: str | None, verdict: dict) -> str:
@@ -70,26 +84,55 @@ def retry_message(version: str, previous_answer: str | None, verdict: dict) -> s
 # ------------------------------------------------------------------ parsing
 
 def parse_final(text: str) -> tuple[str | None, float | None]:
-    """Last JSON block with final_answer; None if missing (scored as format_parse_failure)."""
-    for block in reversed(JSON_BLOCK.findall(text)):
-        try:
-            d = json.loads(block)
-            conf = d.get("confidence")
-            return (str(d["final_answer"]).strip(), float(conf) if isinstance(conf, (int, float)) else None)
-        except (ValueError, KeyError):
-            continue
-    return None, None
+    """Last JSON object with final_answer; None if missing (scored as format_parse_failure).
+    Uses a real JSON decoder from each '{', so answers containing braces (code, sets, LaTeX) parse."""
+    dec = json.JSONDecoder()
+    pos = len(text)
+    while True:
+        k = text.rfind('"final_answer"', 0, pos)
+        if k < 0:
+            return None, None
+        j = text.rfind("{", 0, k)
+        while j >= 0:
+            try:
+                d, _ = dec.raw_decode(text, j)
+                if isinstance(d, dict) and "final_answer" in d:
+                    conf = d.get("confidence")
+                    fa = d["final_answer"]
+                    fa = fa if isinstance(fa, str) else json.dumps(fa)
+                    return fa.strip(), (float(conf) if isinstance(conf, (int, float)) else None)
+            except ValueError:
+                pass
+            j = text.rfind("{", 0, j)
+        pos = k
 
 
 # ------------------------------------------------------------------ one solver call with tool loop
 
-async def _solve_once(client: AsyncOpenAI, model: str, messages: list[dict], cfg: SystemConfig,
+async def _create(name: str, srv: dict, client: AsyncOpenAI, msgs: list[dict], cfg: SystemConfig, temperature: float):
+    """One model call. Rate-limit and connection errors are retried with backoff (each try passes before_call,
+    so call caps count it); other errors propagate and are logged as the sample's error."""
+    from openai import APIConnectionError, APITimeoutError, RateLimitError, InternalServerError
+    for attempt in range(5):
+        if cfg.before_call is not None:
+            await cfg.before_call(name)
+        try:
+            return await client.chat.completions.create(model=srv["model"], messages=msgs, temperature=temperature,
+                                                        max_tokens=srv.get("max_tokens", cfg.max_tokens),
+                                                        **srv.get("request", {}))
+        except (RateLimitError, APIConnectionError, APITimeoutError, InternalServerError):
+            if attempt == 4:
+                raise
+            await asyncio.sleep(15 * 2 ** attempt)
+
+
+async def _solve_once(name: str, srv: dict, messages: list[dict], cfg: SystemConfig,
                       temperature: float, trace: Trace) -> Sample:
+    client = client_for(srv)
     t0, tok_in, tok_out, text_all = time.time(), 0, 0, ""
     msgs = list(messages)
     for _ in range(cfg.tool_rounds + 1):
-        r = await client.chat.completions.create(model=model, messages=msgs, temperature=temperature,
-                                                 max_tokens=cfg.max_tokens, stop=None)
+        r = await _create(name, srv, client, msgs, cfg, temperature)
         out = r.choices[0].message.content or ""
         tok_in += r.usage.prompt_tokens
         tok_out += r.usage.completion_tokens
@@ -99,7 +142,7 @@ async def _solve_once(client: AsyncOpenAI, model: str, messages: list[dict], cfg
             break
         name, arg = m.group(1), m.group(2).strip()
         result = {"sympy": lambda a: tools.sympy_check(a), "python_exec": lambda a: tools.python_exec(a),
-                  "constraint_check": lambda a: tools.constraint_check(messages[-1]["content"], a),
+                  "constraint_check": lambda a: tools.constraint_check(_text(messages[-1]["content"]), a),
                   "ocr": lambda a: {"ok": False, "output": None, "detail": "ocr tool not enabled"}}[name](arg)
         trace.tools.append({"name": name, "input": arg[:500], "output": str(result.get("output"))[:500], "ok": result["ok"]})
         upto = out[: m.end()]
@@ -108,6 +151,10 @@ async def _solve_once(client: AsyncOpenAI, model: str, messages: list[dict], cfg
     fa, conf = parse_final(text_all)
     return Sample(text=text_all, final_answer=fa, confidence=conf, tokens_in=tok_in, tokens_out=tok_out,
                   latency_s=round(time.time() - t0, 3))
+
+
+def _text(content) -> str:
+    return content if isinstance(content, str) else " ".join(p.get("text", "") for p in content if p.get("type") == "text")
 
 
 # ------------------------------------------------------------------ vote
@@ -166,14 +213,12 @@ async def answer(item: dict, route: dict, cfg: SystemConfig, trace: Trace) -> Tr
     """item: {item_id, task, task_type?, options?, public_tests?, retrieved?}; route: router output."""
     trace.router = route
     task_type = route.get("task_type", item.get("task_type", "general"))
-    msgs = solver_messages(item["task"], task_type, cfg.prompt_version, item.get("retrieved"))
+    msgs = solver_messages(item["task"], task_type, cfg.prompt_version, item.get("retrieved"), item.get("images"))
     solvers = [s for s in route.get("models", cfg.solvers) if s in cfg.servers] or cfg.solvers
     temp = 0.0 if cfg.n_samples == 1 else cfg.temperature
     jobs = []
     for s in solvers:
-        srv = cfg.servers[s]
-        client = AsyncOpenAI(base_url=srv["url"], api_key="EMPTY", timeout=3600)
-        jobs += [(s, _solve_once(client, srv["model"], msgs, cfg, temp, trace)) for _ in range(cfg.n_samples)]
+        jobs += [(s, _solve_once(s, cfg.servers[s], msgs, cfg, temp, trace)) for _ in range(cfg.n_samples)]
     results = await asyncio.gather(*[j for _, j in jobs], return_exceptions=True)
     by_model: dict[str, list[Sample]] = {}
     for (s, _), r in zip(jobs, results):
@@ -192,10 +237,9 @@ async def answer(item: dict, route: dict, cfg: SystemConfig, trace: Trace) -> Tr
         if v["verdict"] == "reject":  # verifier.v2: one retry, told it was wrong and why; keep the retry's answer
             s = solvers[0]
             srv = cfg.servers[s]
-            client = AsyncOpenAI(base_url=srv["url"], api_key="EMPTY", timeout=3600)
             msg = retry_message(cfg.verifier_version, final, v)
             retry_msgs = msgs + [{"role": "user", "content": msg}]
-            retry = await _solve_once(client, srv["model"], retry_msgs, cfg, temp, trace)
+            retry = await _solve_once(s, srv, retry_msgs, cfg, temp, trace)
             trace.add_samples(f"{s}:retry", srv.get("quant", "?"), [retry])
             v2 = verify(item["task"], task_type, retry.final_answer, item.get("options"), item.get("public_tests"))
             trace.verifier["attempts"].append({"attempt": 2, "final_answer": retry.final_answer, "retry_message": msg, **v2})

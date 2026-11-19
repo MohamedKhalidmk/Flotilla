@@ -1,0 +1,5 @@
+{"name": "qwen_phi",
+ "notes": "Qwen + Phi: both solve math and science_mc (decision table), Qwen alone elsewhere; Phi's 32K context caps its max_tokens.",
+ "servers": {"qwen": {"url": "http://localhost:8000/v1", "model": "qwen", "quant": "TBD-rule-4.1"},
+             "phi": {"url": "http://localhost:8001/v1", "model": "phi", "quant": "TBD-rule-4.1", "max_tokens": 24576}},
+ "solvers": ["qwen", "phi"], "n_samples": 1, "max_tokens": 32768, "protocol_version": "protocol-v5"}

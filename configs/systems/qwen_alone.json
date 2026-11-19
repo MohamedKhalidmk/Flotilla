@@ -1,0 +1,4 @@
+{"name": "qwen_alone",
+ "notes": "Qwen alone through the Flotilla loop. URL is replaced by the job with the vLLM server's address.",
+ "servers": {"qwen": {"url": "http://localhost:8000/v1", "model": "qwen", "quant": "TBD-rule-4.1"}},
+ "solvers": ["qwen"], "n_samples": 1, "max_tokens": 32768, "protocol_version": "protocol-v5"}
