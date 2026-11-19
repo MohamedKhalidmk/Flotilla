@@ -24,6 +24,8 @@ def main() -> None:
     ap.add_argument("--max-model-len", type=int, default=0, help="0 = prompt room + max-tokens")
     ap.add_argument("--tp", type=int, default=1)
     ap.add_argument("--tokenizer", default=None, help="defaults to the base model of our own quantized checkpoints")
+    ap.add_argument("--max-num-seqs", type=int, default=256,
+                    help="Qwen3.8 is hybrid (Mamba layers): one cache block per running sequence; 336 fit at BF16 on one H100")
     ap.add_argument("--limit", type=int, default=0, help="first N items only (smoke tests)")
     ap.add_argument("--out", default=os.environ.get("FLOTILLA_RUNS", "runs"))
     a = ap.parse_args()
@@ -36,7 +38,8 @@ def main() -> None:
     meta = Path(a.model) / "flotilla_quant.json"
     if tok is None and meta.exists():  # our llm-compressor outputs: tokenizer from the original model
         tok = json.loads(meta.read_text())["model"]
-    llm = LLM(model=a.model, tokenizer=tok, tensor_parallel_size=a.tp, max_model_len=max_len, seed=20261119)
+    llm = LLM(model=a.model, tokenizer=tok, tensor_parallel_size=a.tp, max_model_len=max_len, seed=20261119,
+              max_num_seqs=a.max_num_seqs)
     sp = SamplingParams(temperature=0.0, max_tokens=min(a.max_tokens, max_len - 2048))
     msgs = [[{"role": "user", "content": PROMPT.format(problem=ex["problem"])}] for ex in ds]
 

@@ -40,12 +40,13 @@ def main() -> None:
     ap.add_argument("--max-tokens", type=int, default=16384)
     ap.add_argument("--max-model-len", type=int, default=20480)
     ap.add_argument("--limit", type=int, default=0)
+    ap.add_argument("--max-num-seqs", type=int, default=256)
     a = ap.parse_args()
 
     items = [json.loads(l) for l in open(a.pool)]
     if a.limit:
         items = items[: a.limit]
-    llm = LLM(model=a.model, max_model_len=a.max_model_len, seed=20261119)
+    llm = LLM(model=a.model, max_model_len=a.max_model_len, seed=20261119, max_num_seqs=a.max_num_seqs)
     sp = SamplingParams(temperature=0.0, max_tokens=a.max_tokens)
     msgs = [solver_messages(it["task"], it["task_type"], "v1") for it in items]
     t0 = time.time()
