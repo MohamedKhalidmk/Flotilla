@@ -93,6 +93,10 @@ async def run(a) -> None:
                 stop.set()
                 print(f"STOP: {e}", flush=True)
                 return
+            except Exception as e:  # noqa: BLE001 - record the item with its error instead of stopping the run
+                tr.error_stage = "timeout_or_oom" if "Timeout" in type(e).__name__ else "format_parse_failure"
+                tr.models.append({"name": "error", "quant": "-", "samples": [{"text": f"ERROR {type(e).__name__}: {e}"[:500],
+                                  "final_answer": None, "confidence": None, "tokens_in": 0, "tokens_out": 0, "latency_s": 0}]})
             d = tr.finish()
             errors = [s["text"][:200] for m in d["models"] for s in m["samples"] if s["text"].startswith("ERROR")]
             if any("CallBudget" in e for e in errors):

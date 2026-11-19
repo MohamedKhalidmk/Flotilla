@@ -24,6 +24,7 @@ from flotilla import tools
 from flotilla.trace import Sample, Trace
 
 PROMPTS = Path(__file__).resolve().parent.parent / "prompts"
+RETRY_PREV_CHARS = 8000   # the previous turn shown on a verifier retry is cut to its last 8,000 characters
 TOOL_LINE = re.compile(r"^TOOL\s+(sympy|python_exec|constraint_check|ocr)\s*:\s*(.+)$", re.M)
 
 
@@ -238,8 +239,17 @@ async def answer(item: dict, route: dict, cfg: SystemConfig, trace: Trace) -> Tr
             s = solvers[0]
             srv = cfg.servers[s]
             msg = retry_message(cfg.verifier_version, final, v)
-            retry_msgs = msgs + [{"role": "user", "content": msg}]
-            retry = await _solve_once(s, srv, retry_msgs, cfg, temp, trace)
+            # the model sees its own previous turn (the sample that gave `final`, else the first solver's), then the note
+            prev = next((x for x in by_model.get(s, []) if x.final_answer == final), (by_model.get(s) or [None])[0])
+            prev_text = (prev.text if prev and not prev.text.startswith("ERROR") else "")[-RETRY_PREV_CHARS:] or "(no output)"
+            retry_msgs = msgs + [{"role": "assistant", "content": prev_text}, {"role": "user", "content": msg}]
+            try:
+                retry = await _solve_once(s, srv, retry_msgs, cfg, temp, trace)
+            except Exception as e:  # noqa: BLE001 - a failed retry is logged; the first answer stands
+                if type(e).__name__ == "CallBudget":
+                    raise
+                retry = Sample(text=f"ERROR {type(e).__name__}: {e}"[:500], final_answer=final, confidence=None,
+                               tokens_in=0, tokens_out=0, latency_s=0)
             trace.add_samples(f"{s}:retry", srv.get("quant", "?"), [retry])
             v2 = verify(item["task"], task_type, retry.final_answer, item.get("options"), item.get("public_tests"))
             trace.verifier["attempts"].append({"attempt": 2, "final_answer": retry.final_answer, "retry_message": msg, **v2})
