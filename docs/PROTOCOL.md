@@ -1,6 +1,6 @@
 # Flotilla evaluation protocol
 
-Status: **FROZEN as protocol-v3 (2026-11-19).** Each version is a git tag (`protocol-v1`, `protocol-v2`, `protocol-v3`); any change is a new version with a dated changelog entry, and results say which version they ran under. No scored run used protocol-v1.
+Status: **FROZEN as protocol-v4 (2026-11-19).** Each version is a git tag (`protocol-v1` to `protocol-v4`); any change is a new version with a dated changelog entry, and results say which version they ran under. No scored run used protocol-v1.
 
 Flotilla is a compound system of quantized open models served with vLLM. This protocol fixes, before any scored run, what we measure, how, and how we decide between components, so that no choice is made after seeing test results.
 
@@ -97,7 +97,7 @@ Rule: **choose the smallest N whose summed dev accuracy is within 0.5 points of 
 
 ### 4.5 Router
 Both routers are built: A = vLLM Semantic Router, B = our trained classifier. Router B is trained only on non-test data (section 5).
-Router A details (from `notes/benchmarks_components.md`): `vllm-project/semantic-router` v0.4.0, Apache-2.0, shipped as Docker; on the clusters it runs as an Apptainer image converted from that Docker image, CPU-only (about 12 GiB RAM), OpenAI-compatible endpoint. Decision model: `vela3-fast`, the router's current default (chosen 2026-11-19 over the superseded Decision 1.0 models). Python tools are exposed to it as model-style endpoints, the only routing target it supports.
+Router A details (protocol-v4): the vLLM Semantic Router's decision model `vllm-sr/vela3-fast` (Apache-2.0, 380M decision backbone; chosen 2026-11-19 over the superseded Decision 1.0 models) classifies each task's type with a "choice" question over our task types, and a fixed decision table maps task type to solver models and Python tools (`flotilla/router_a.py`). Images and very long inputs are routed by rule. The full `vllm-sr` product (router, Envoy, dashboard, v0.4.0) was converted to Apptainer but needs Docker-style services and asset downloads at start, which the offline compute nodes do not allow; its decision model is the component that makes the routing decision, so router A uses it directly. Router A's routing accuracy is measured on 500 clean router-pool items with known task types (`reports/router_a_pool500.json`).
 Rule: **use the router with higher routing accuracy on the dev subsets**; ties go to the one with lower latency.
 
 ## 5. Leakage controls
@@ -140,3 +140,4 @@ When the verifier rejects the voted answer, the system retries once (`prompts/ve
 - 2026-11-19: frozen as protocol-v1. Decisions recorded: CanLegal Bench and SWE-bench excluded, MemoryAgentBench only for the graph test; small test 5% with at least 20 per benchmark; Phi kept only if Qwen + Phi beats Qwen alone on the small test; router A uses vela3-fast; EiG-Search cleared by Prof. Lu.
 - 2026-11-19: protocol-v2. Verifier retry changed (section 10, `prompts/verifier.v2.md` replaces v1): the retry prompt now tells the model its previous answer was wrong and includes the verifier's reason and failed checks; both attempts are logged. Requested by the user before any scored system run.
 - 2026-11-19: protocol-v3 (clarification of section 5). The 13-gram leakage check ignores template wording and, for code, compares problem statements only; the strict check had flagged 648 of 4,856 router-pool items, almost all shared templates. Result: 96 flagged and dropped (including real overlaps such as an old AIME problem that is also in MATH-500), 4,760 kept. All test sets checked, including GPQA-Diamond (0 overlaps with the MMLU-Pro science questions).
+- 2026-11-19: protocol-v4 (implementation of router A, section 4.5). Router A runs the vLLM Semantic Router's decision model vela3-fast directly plus a fixed decision table, instead of the full vllm-sr service stack, which cannot run on the offline compute nodes.
