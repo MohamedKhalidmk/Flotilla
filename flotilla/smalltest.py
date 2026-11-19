@@ -70,7 +70,7 @@ async def run(a) -> None:
     cfg = SystemConfig(**{k: v for k, v in conf.items() if k not in ("name", "notes")}, before_call=limiter)
     trace_path = out / "trace.jsonl"
     done = {json.loads(l)["item_id"] for l in open(trace_path)} if trace_path.exists() else set()
-    items = [it for it in load_items(a.items_dir, a.benches) if it["item_id"] not in done]
+    items = [it for it in load_items(a.items_dir, a.benches) if it["item_id"] not in done and (not a.ids or it["item_id"] in a.ids)]
     print(f"{len(items)} items to run ({len(done)} already done); calls used so far {limiter.total}", flush=True)
     (out / "config.json").write_text(json.dumps({**conf, "rpm": a.rpm, "max_calls": a.max_calls}, indent=1))
     sem = asyncio.Semaphore(a.concurrency)
@@ -120,6 +120,7 @@ def main() -> None:
     ap.add_argument("--items-dir", required=True)
     ap.add_argument("--out", required=True)
     ap.add_argument("--benches", nargs="*")
+    ap.add_argument("--ids", nargs="*", help="only these item_ids (checks)")
     ap.add_argument("--rpm", type=int, default=0, help="max call starts per minute per server (0 = no limit)")
     ap.add_argument("--max-calls", type=int, default=10**9)
     ap.add_argument("--concurrency", type=int, default=16)

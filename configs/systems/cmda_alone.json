@@ -1,6 +1,6 @@
 {
  "name": "cmda_alone",
- "notes": "Command A+ alone through the Flotilla loop (solver v1, verifier v2, tools), hosted API for the small-test screen. Same max_tokens as the local configs. System instructions are sent with role 'developer' (Cohere's compatibility API; role 'system' with thinking on returned 422). Same prompt text.",
+ "notes": "Command A+ alone through the Flotilla loop (solver v1, verifier v2, tools), hosted API for the small-test screen. Same max_tokens as the local configs. System instructions are sent with role 'developer' (Cohere's compatibility API; role 'system' with thinking on returned 422). Same prompt text. Tools reach Command A+ through Cohere's native function calling (same three tools); its API returns 422 when the model emits tool calls without a tools list.",
  "servers": {
   "cmda": {
    "url": "https://api.cohere.ai/compatibility/v1",
@@ -10,7 +10,8 @@
    "request": {
     "reasoning_effort": "high"
    },
-   "system_role": "developer"
+   "system_role": "developer",
+   "native_tools": true
   }
  },
  "solvers": [

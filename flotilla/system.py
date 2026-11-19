@@ -110,7 +110,8 @@ def parse_final(text: str) -> tuple[str | None, float | None]:
 
 # ------------------------------------------------------------------ one solver call with tool loop
 
-async def _create(name: str, srv: dict, client: AsyncOpenAI, msgs: list[dict], cfg: SystemConfig, temperature: float):
+async def _create(name: str, srv: dict, client: AsyncOpenAI, msgs: list[dict], cfg: SystemConfig, temperature: float,
+                  **extra):
     """One model call. Rate-limit and connection errors are retried with backoff (each try passes before_call,
     so call caps count it); other errors propagate and are logged as the sample's error."""
     from openai import APIConnectionError, APITimeoutError, RateLimitError, InternalServerError
@@ -122,11 +123,28 @@ async def _create(name: str, srv: dict, client: AsyncOpenAI, msgs: list[dict], c
         try:
             return await client.chat.completions.create(model=srv["model"], messages=msgs, temperature=temperature,
                                                         max_tokens=srv.get("max_tokens", cfg.max_tokens),
-                                                        **srv.get("request", {}))
+                                                        **srv.get("request", {}), **extra)
         except (RateLimitError, APIConnectionError, APITimeoutError, InternalServerError):
             if attempt == 4:
                 raise
             await asyncio.sleep(15 * 2 ** attempt)
+
+
+TOOL_FUNCS = {
+    "sympy": "Check or simplify a math expression or equation with sympy. input: the expression.",
+    "python_exec": "Run a Python program and return its standard output. input: the full program.",
+    "constraint_check": "Check a draft answer against the task's formatting instructions. input: the draft answer.",
+}
+# native function-calling form of the same tools, for servers whose API rejects text tool lines (native_tools: true)
+TOOL_SCHEMAS = [{"type": "function", "function": {"name": n, "description": d, "parameters": {
+    "type": "object", "properties": {"input": {"type": "string"}}, "required": ["input"]}}} for n, d in TOOL_FUNCS.items()]
+
+
+def _run_tool(tool: str, arg: str, messages: list[dict]) -> dict:
+    return {"sympy": lambda a: tools.sympy_check(a), "python_exec": lambda a: tools.python_exec(a),
+            "constraint_check": lambda a: tools.constraint_check(_text(messages[-1]["content"]), a),
+            "ocr": lambda a: {"ok": False, "output": None, "detail": "ocr tool not enabled"}}.get(
+        tool, lambda a: {"ok": False, "output": None, "detail": f"unknown tool {tool}"})(arg)
 
 
 async def _solve_once(name: str, srv: dict, messages: list[dict], cfg: SystemConfig,
@@ -134,23 +152,43 @@ async def _solve_once(name: str, srv: dict, messages: list[dict], cfg: SystemCon
     client = client_for(srv)
     t0, tok_in, tok_out, text_all = time.time(), 0, 0, ""
     msgs = list(messages)
+    native = bool(srv.get("native_tools"))
+    extra = {"tools": TOOL_SCHEMAS} if native else {}
     for _ in range(cfg.tool_rounds + 1):
-        r = await _create(name, srv, client, msgs, cfg, temperature)
-        out = r.choices[0].message.content or ""
+        r = await _create(name, srv, client, msgs, cfg, temperature, **extra)
+        msg = r.choices[0].message
+        out = msg.content or ""
         tok_in += r.usage.prompt_tokens
         tok_out += r.usage.completion_tokens
+        if native:
+            calls = msg.tool_calls or []
+            if not calls:
+                text_all += out
+                break
+            text_all += out + "\n"
+            msgs.append({"role": "assistant", "content": out, "tool_calls": [
+                {"id": c.id, "type": "function", "function": {"name": c.function.name, "arguments": c.function.arguments}} for c in calls]})
+            for c in calls:
+                try:
+                    arg = str(json.loads(c.function.arguments or "{}").get("input", ""))
+                except ValueError:
+                    arg = c.function.arguments or ""
+                result = _run_tool(c.function.name, arg, messages)
+                trace.tools.append({"name": c.function.name, "input": arg[:500], "output": str(result.get("output"))[:500],
+                                    "ok": result["ok"], "via": "native"})
+                text_all += f"TOOL {c.function.name}: {arg[:300]}\n"
+                msgs.append({"role": "tool", "tool_call_id": c.id, "content": json.dumps(result)[:2000]})
+            continue
         m = TOOL_LINE.search(out)
         if not m or parse_final(out)[0] is not None:
             text_all += out
             break
-        name, arg = m.group(1), m.group(2).strip()
-        result = {"sympy": lambda a: tools.sympy_check(a), "python_exec": lambda a: tools.python_exec(a),
-                  "constraint_check": lambda a: tools.constraint_check(_text(messages[-1]["content"]), a),
-                  "ocr": lambda a: {"ok": False, "output": None, "detail": "ocr tool not enabled"}}[name](arg)
-        trace.tools.append({"name": name, "input": arg[:500], "output": str(result.get("output"))[:500], "ok": result["ok"]})
+        tool, arg = m.group(1), m.group(2).strip()
+        result = _run_tool(tool, arg, messages)
+        trace.tools.append({"name": tool, "input": arg[:500], "output": str(result.get("output"))[:500], "ok": result["ok"]})
         upto = out[: m.end()]
         text_all += upto + "\n"
-        msgs += [{"role": "assistant", "content": upto}, {"role": "user", "content": f"TOOL RESULT ({name}): {json.dumps(result)[:2000]}"}]
+        msgs += [{"role": "assistant", "content": upto}, {"role": "user", "content": f"TOOL RESULT ({tool}): {json.dumps(result)[:2000]}"}]
     fa, conf = parse_final(text_all)
     return Sample(text=text_all, final_answer=fa, confidence=conf, tokens_in=tok_in, tokens_out=tok_out,
                   latency_s=round(time.time() - t0, 3))
