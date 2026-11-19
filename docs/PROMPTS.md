@@ -9,7 +9,8 @@ Every prompt lives in `prompts/<role>.v<N>.md` with a header giving its role, ve
 | `router.v1.md` | route a task to task type, tools, models, difficulty | router A / B (classifiers emit the same fields); LLM-router ablation | JSON `{task_type, tools, models, difficulty}` |
 | `solver.v1.md` | solve the task (plus per-task-type additions) | Qwen, Phi, Command A+ | free reasoning, then JSON `{final_answer, confidence, sources, tool_calls}` |
 | `cross_checker.v1.md` | review another model's answer | a second solver model (loop ablation) | JSON `{agree, issue, corrected_answer, confidence}` |
-| `verifier.v1.md` | accept or reject before returning | deterministic checks first, LLM only when no exact check exists | JSON `{verdict, checks, reason}` |
+| `verifier.v1.md` | (superseded by v2, protocol-v2) | | |
+| `verifier.v2.md` | accept or reject before returning; on reject, one retry that tells the model it was wrong and why | deterministic checks first, LLM only when no exact check exists | JSON `{verdict, checks, reason}`; trace logs both attempts |
 | `auditor_claude.v1.md` | explain correctness and error stage | Claude, outside the system, never feeds answers | JSON `{correct, error_stage, explanation}` |
 | benchmark standard prompts | single-model baseline rows | lm-eval-harness / lmms-eval task configs, unchanged | as each benchmark defines |
 
@@ -32,7 +33,7 @@ flowchart LR
     V --> C[Cross-checker<br/>optional]
     C --> F[Verifier<br/>deterministic checks, then LLM if needed]
     F -->|accept| A[Final answer + trace]
-    F -->|reject: retry once with reason| S1
+    F -->|reject: retry once, told it was wrong + reason| S1
     A -.->|trace only, after grading| AU[Claude auditor<br/>outside the system]
 ```
 

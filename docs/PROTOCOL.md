@@ -1,6 +1,6 @@
 # Flotilla evaluation protocol
 
-Status: **FROZEN as protocol-v1 (2026-11-19).** This file is tagged `protocol-v1` in git; any change is a new version with a dated changelog entry, and results say which version they ran under.
+Status: **FROZEN as protocol-v2 (2026-11-19).** Each version is a git tag (`protocol-v1`, `protocol-v2`); any change is a new version with a dated changelog entry, and results say which version they ran under. No scored run used protocol-v1.
 
 Flotilla is a compound system of quantized open models served with vLLM. This protocol fixes, before any scored run, what we measure, how, and how we decide between components, so that no choice is made after seeing test results.
 
@@ -130,6 +130,11 @@ Every vLLM server logs token counts per request; every Slurm job records GPU cou
 
 Every role (router, each solver, cross-checker, verifier, judge) has a versioned prompt in `prompts/` with its purpose, input, and output schema. Models reason in free text and end with one JSON block (`final_answer`, `confidence`, `sources`). Baseline single-model rows use each benchmark's standard prompt so they stay comparable with CQL. See `docs/PROMPTS.md`.
 
+## 10. Verifier retry (protocol-v2)
+
+When the verifier rejects the voted answer, the system retries once (`prompts/verifier.v2.md`). The retry message tells the model its previous answer was wrong and includes the previous answer, the failed checks with their details (e.g. the failing test or the parse error) and the verifier's reason. The retry's answer is returned whatever its verdict. Both attempts are logged in the trace under `verifier.attempts` (attempt number, final answer, verdict, every check with detail, and the retry message sent).
+
 ## Changelog
 - 2026-11-19: draft started.
 - 2026-11-19: frozen as protocol-v1. Decisions recorded: CanLegal Bench and SWE-bench excluded, MemoryAgentBench only for the graph test; small test 5% with at least 20 per benchmark; Phi kept only if Qwen + Phi beats Qwen alone on the small test; router A uses vela3-fast; EiG-Search cleared by Prof. Lu.
+- 2026-11-19: protocol-v2. Verifier retry changed (section 10, `prompts/verifier.v2.md` replaces v1): the retry prompt now tells the model its previous answer was wrong and includes the verifier's reason and failed checks; both attempts are logged. Requested by the user before any scored system run.
