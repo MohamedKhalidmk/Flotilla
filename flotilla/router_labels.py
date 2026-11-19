@@ -41,11 +41,14 @@ def main() -> None:
     ap.add_argument("--max-model-len", type=int, default=20480)
     ap.add_argument("--limit", type=int, default=0)
     ap.add_argument("--max-num-seqs", type=int, default=256)
+    ap.add_argument("--shard", type=int, default=0, help="this shard's index (0-based)")
+    ap.add_argument("--num-shards", type=int, default=1, help="split the pool across this many jobs")
     a = ap.parse_args()
 
     items = [json.loads(l) for l in open(a.pool)]
     if a.limit:
         items = items[: a.limit]
+    items = items[a.shard::a.num_shards]
     llm = LLM(model=a.model, max_model_len=a.max_model_len, seed=20261119, max_num_seqs=a.max_num_seqs)
     sp = SamplingParams(temperature=0.0, max_tokens=a.max_tokens)
     msgs = [solver_messages(it["task"], it["task_type"], "v1") for it in items]
@@ -55,7 +58,8 @@ def main() -> None:
     out_dir = Path(os.environ.get("FLOTILLA_RUNS", "runs")) / f"router-labels-{a.name}"
     out_dir.mkdir(parents=True, exist_ok=True)
     n_ok, n_tok = 0, 0
-    with open(out_dir / "labels.jsonl", "w") as f:
+    suffix = f".shard{a.shard}of{a.num_shards}" if a.num_shards > 1 else ""
+    with open(out_dir / f"labels{suffix}.jsonl", "w") as f:
         for it, o in zip(items, outs):
             text = o.outputs[0].text
             ans, conf = parse_final(text)
@@ -65,8 +69,8 @@ def main() -> None:
             f.write(json.dumps({"id": it["id"], "source": it["source"], "task_type": it["task_type"], "model": a.name,
                                 "answer": (ans or "")[:2000], "confidence": conf, "correct": ok,
                                 "tokens_out": len(o.outputs[0].token_ids), "truncated": o.outputs[0].finish_reason == "length"}) + "\n")
-    summary = {"name": a.name, "model": a.model, "n": len(items), "correct": n_ok, "tokens_out": n_tok, "wall_seconds": round(wall, 1)}
-    (out_dir / "summary.json").write_text(json.dumps(summary, indent=2))
+    summary = {"shard": a.shard, "num_shards": a.num_shards, "name": a.name, "model": a.model, "n": len(items), "correct": n_ok, "tokens_out": n_tok, "wall_seconds": round(wall, 1)}
+    (out_dir / f"summary{suffix}.json").write_text(json.dumps(summary, indent=2))
     print(json.dumps(summary), flush=True)
 
 
