@@ -114,6 +114,8 @@ async def _create(name: str, srv: dict, client: AsyncOpenAI, msgs: list[dict], c
     """One model call. Rate-limit and connection errors are retried with backoff (each try passes before_call,
     so call caps count it); other errors propagate and are logged as the sample's error."""
     from openai import APIConnectionError, APITimeoutError, RateLimitError, InternalServerError
+    if srv.get("system_role"):   # e.g. Cohere's compatibility API takes system instructions as role "developer"
+        msgs = [{**m, "role": srv["system_role"]} if m["role"] == "system" else m for m in msgs]
     for attempt in range(5):
         if cfg.before_call is not None:
             await cfg.before_call(name)
