@@ -1,5 +1,5 @@
 {
-  "method": "13-gram overlap (ignoring template n-grams found in >= 2 test questions or >= 3 pool items: 1488) or BAAI/bge-small-en-v1.5 cosine >= 0.95",
+  "method": "13-gram overlap (ignoring template n-grams found in >= 2 test questions or >= 3 pool items: 1550) or BAAI/bge-small-en-v1.5 cosine >= 0.95",
   "strict_13gram_flagged_without_template_filter": 406,
   "test_sets": {
     "gsm8k_test": 1319,
@@ -7,11 +7,10 @@
     "aime2025": 30,
     "aime2026": 30,
     "ifeval": 541,
-    "lcb_test_window": 454
+    "lcb_test_window": 454,
+    "gpqa_diamond": 198
   },
-  "test_sets_missing": [
-    "Idavidrein/gpqa: IncompleteSnapshotError (gated; needs an HF token)"
-  ],
+  "test_sets_missing": [],
   "pool_items": 4856,
   "flagged": 96,
   "kept": 4760,
@@ -407,9 +406,9 @@
       "source": "aime",
       "test_set": "aime2025",
       "reason": "13-gram",
-      "similarity": 0.7351,
+      "similarity": 0.7339,
       "pool_text": "Square $ABCD$ has sides of length 1. Points $E$ and $F$ are on $\\overline{BC}$ and $\\overline{CD},$ respectively, so that $\\triangle AEF$ is equilateral. A square with vertex $B$ has sides that are parallel to those of $ABCD$ and a vertex on $\\overline{AE}.$ The length of a side of this smaller squa",
-      "test_text": "The parabola with equation $y = x^2 - 4$ is rotated $60^\\circ$ counterclockwise around the origin. The unique point in the fourth quadrant where the original parabola and its image intersect has $y$-coordinate $\\frac{a - \\sqrt{b}}{c}$, where $a$, $b$, and $c$ are positive integers, and $a$ and $c$ a"
+      "test_text": "The set of points in $3$-dimensional coordinate space that lie in the plane $x+y+z=75$ whose coordinates satisfy the inequalities\n$$x-yz<y-zx<z-xy$$\nforms three disjoint convex regions. Exactly one of those regions has finite area. The area of this finite region can be expressed in the form $a\\sqrt{"
     },
     {
       "pool_id": "aime-1983-None-2",
@@ -713,9 +712,9 @@
       "source": "lcb",
       "test_set": "lcb_test_window",
       "reason": "13-gram",
-      "similarity": 0.7721,
+      "similarity": 0.8285,
       "pool_text": "There are N - 1 white balls and one black ball. These N balls are arranged in a row, with the black ball initially at the leftmost position.\nTakahashi will perform the following operation exactly K times.\n\n- Choose an integer uniformly at random between 1 and N, inclusive, twice. Let a and b the cho",
-      "test_text": "There is a rooted tree with N + 1 vertices numbered from 0 to N. Vertex 0 is the root, and the parent of vertex i is vertex p_i.\r\nOne of the vertices among vertex 1, vertex 2, ..., vertex N hides a treasure. The probability that the treasure is at vertex i is \\frac{a_i}{\\sum_{j=1}^N a_j}.\r\nAlso, eac"
+      "test_text": "There is a tree with N \\times M + 1 vertices numbered 0, 1, \\dots, N \\times M. The i-th edge (1 \\leq i \\leq N \\times M) connects vertices i and \\max(i - N, 0).\r\nVertex 0 is painted. The other vertices are unpainted.\r\nTakahashi is at vertex 0. As long as there exists an unpainted vertex, he performs "
     },
     {
       "pool_id": "lcb-abc361_d",
