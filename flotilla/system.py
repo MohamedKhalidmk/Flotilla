@@ -130,8 +130,10 @@ async def _create(name: str, srv: dict, client: AsyncOpenAI, msgs: list[dict], c
             await asyncio.sleep(15 * 2 ** attempt)
 
 
+FINAL_ROUND_NOTE = ("No more tool calls are available. Do not call a tool. Give your final answer now, "
+                    "ending with the JSON block.")
 TOOL_FUNCS = {
-    "sympy": "Check or simplify a math expression or equation with sympy. input: the expression.",
+    "sympy": "Check or simplify ONE math expression or equation with sympy (not a program; use python_exec for code). input: the expression.",
     "python_exec": "Run a Python program and return its standard output. input: the full program.",
     "constraint_check": "Check a draft answer against the task's formatting instructions. input: the draft answer.",
 }
@@ -154,7 +156,9 @@ async def _solve_once(name: str, srv: dict, messages: list[dict], cfg: SystemCon
     msgs = list(messages)
     native = bool(srv.get("native_tools"))
     extra = {"tools": TOOL_SCHEMAS} if native else {}
-    for _ in range(cfg.tool_rounds + 1):
+    for rnd in range(cfg.tool_rounds + 1):
+        if rnd == cfg.tool_rounds and rnd > 0:   # tool budget used up: the last call must answer
+            msgs.append({"role": "user", "content": FINAL_ROUND_NOTE})
         r = await _create(name, srv, client, msgs, cfg, temperature, **extra)
         msg = r.choices[0].message
         out = msg.content or ""
