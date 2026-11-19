@@ -1,6 +1,6 @@
 # Flotilla evaluation protocol
 
-Status: **FROZEN as protocol-v2 (2026-11-19).** Each version is a git tag (`protocol-v1`, `protocol-v2`); any change is a new version with a dated changelog entry, and results say which version they ran under. No scored run used protocol-v1.
+Status: **FROZEN as protocol-v3 (2026-11-19).** Each version is a git tag (`protocol-v1`, `protocol-v2`, `protocol-v3`); any change is a new version with a dated changelog entry, and results say which version they ran under. No scored run used protocol-v1.
 
 Flotilla is a compound system of quantized open models served with vLLM. This protocol fixes, before any scored run, what we measure, how, and how we decide between components, so that no choice is made after seeing test results.
 
@@ -104,6 +104,7 @@ Rule: **use the router with higher routing accuracy on the dev subsets**; ties g
 
 - No benchmark test item, or near copy, in any graph, RAG corpus, prompt example, or router training set.
 - Near-copy check: 13-gram overlap between every corpus document and every test item, plus embedding similarity above 0.95 flagged for manual review. Results saved in `reports/leakage/`.
+- Template wording is not a copy (protocol-v3 clarification): a 13-gram found in 2 or more different test questions, or in 3 or more pool items, is shared template wording (e.g. AIME's "m and n are relatively prime positive integers", IFEval's constraint templates) and is ignored. For code problems the 13-gram check compares only the problem statement (constraint lines and sample I/O repeat across unrelated problems); the embedding check still uses the full text. Every flagged item is dropped, including false positives. The strict count without these filters is reported next to the result.
 - Router B training data: benchmark train splits only (GSM8K train, MATH train excluding MATH-500 items, AIME 1983 to 2024, other public sets listed in `configs/router_train.yaml`), deduplicated against every test set with the same check.
 - Model contamination is recorded, not fixed: each model's release date and stated data cutoff against each benchmark's release date.
 
@@ -138,3 +139,4 @@ When the verifier rejects the voted answer, the system retries once (`prompts/ve
 - 2026-11-19: draft started.
 - 2026-11-19: frozen as protocol-v1. Decisions recorded: CanLegal Bench and SWE-bench excluded, MemoryAgentBench only for the graph test; small test 5% with at least 20 per benchmark; Phi kept only if Qwen + Phi beats Qwen alone on the small test; router A uses vela3-fast; EiG-Search cleared by Prof. Lu.
 - 2026-11-19: protocol-v2. Verifier retry changed (section 10, `prompts/verifier.v2.md` replaces v1): the retry prompt now tells the model its previous answer was wrong and includes the verifier's reason and failed checks; both attempts are logged. Requested by the user before any scored system run.
+- 2026-11-19: protocol-v3 (clarification of section 5). The 13-gram leakage check ignores template wording and, for code, compares problem statements only; the strict check had flagged 648 of 4,856 router-pool items, almost all shared templates. Result: 96 flagged and dropped (including real overlaps such as an old AIME problem that is also in MATH-500), 4,760 kept. GPQA not yet checked (gated download).
