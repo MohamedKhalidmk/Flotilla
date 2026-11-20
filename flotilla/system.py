@@ -175,7 +175,7 @@ async def _solve_once(name: str, srv: dict, messages: list[dict], cfg: SystemCon
         msg = r.choices[0].message
         out = msg.content or ""
         reasoning = getattr(msg, "reasoning_content", None) or getattr(msg, "reasoning", None) or ""
-        trace.calls.append({"model": name, "round": rnd, "last": last, "finish_reason": r.choices[0].finish_reason,
+        trace.call_log.append({"model": name, "round": rnd, "last": last, "finish_reason": r.choices[0].finish_reason,
                             "tokens_out": r.usage.completion_tokens, "content_chars": len(out),
                             "reasoning_chars": len(reasoning), "tool_calls": len(msg.tool_calls or []),
                             "content_tail": out[-300:], "reasoning_tail": reasoning[-300:]})

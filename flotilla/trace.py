@@ -30,7 +30,7 @@ class Trace:
     split: str                                   # "dev" (small test) or "test"
     router: dict[str, Any] = field(default_factory=dict)
     tools: list[dict[str, Any]] = field(default_factory=list)
-    calls: list[dict[str, Any]] = field(default_factory=list)    # per model call: round, finish reason, sizes
+    call_log: list[dict[str, Any]] = field(default_factory=list)  # per model call: round, finish reason, sizes
     models: list[dict[str, Any]] = field(default_factory=list)   # {name, quant, samples: [Sample]}
     retrieval: dict[str, Any] = field(default_factory=dict)
     vote: dict[str, Any] = field(default_factory=dict)
