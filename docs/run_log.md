@@ -93,6 +93,9 @@ One line per decision, with its reason. Times are America/Vancouver unless marke
 
 - **2026-11-20, all six routes kept for router training (user).** Reason: the pool is mostly easier math, so Vote and the combos may matter more on hard benchmarks (AIME, GPQA, LiveCodeBench), and their labels are already paid for. To report later: how often each route is picked per benchmark.
 
+- **2026-11-20, router training waits for the Memory routes (user):** one training run on all ten routes. GPU jobs queued early because the queues are slow.
+- **2026-11-20, GRAFT full T-REx queue (Fir):** cleaned-graph job 4742045 (CPU, free). Haiku answer passes on GPU (embedding 1.58M nodes is much faster there), each after the cleaned graph and the 5-question test: EiG 4742452, GOAt 4742453, question layer + EiG 4742454 (3 repeats each, cap $1 per job, est. $0.10-0.30 total). Qwen on the same cleaned graph, same prompts, thinking off (SGAR llm.mode local, scripts/fir/run_qwen_graft.sbatch serves Qwen W4A16 with vLLM in the job; $0 API): EiG 4742462, GOAt 4742464, question layer 4742465, each after the Haiku EiG job; cancelled if the Haiku result shows GRAFT not working.
+
 ### API spend (Anthropic)
 | When | What | Runs | Cost |
 |---|---|---|---|
