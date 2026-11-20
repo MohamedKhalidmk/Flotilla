@@ -35,6 +35,7 @@ One line per decision, with its reason. Times are America/Vancouver unless marke
 - Command A+ dropped. Reason: rule 4.2 (v9), Command A+ alone minus Qwen alone = -0.104 mean over 11 benchmarks, 95% bootstrap CI [-0.143, -0.066]; it is right on only 3 of 362 items that neither other model gets, at 4 GPUs vs 1. No Command A+ labels.
 - Vision stays with Qwen3.8 (no fallback model needed). Reason: Qwen reads images itself (MMMU 0.756, OCRBench 0.88); the vision fallback in 4.2 was for the case Qwen could not.
 - Router B goes ahead on Qwen + gpt-oss labels. Reason: perfect Qwen/gpt-oss router 0.910 vs Qwen alone 0.877 (+3.3 points), mostly RULER 32K (+0.20, gpt-oss 0.867 vs Qwen 0.697). Report: reports/smalltest_three_models.md.
+- gpt-oss-20b kept for now (user). Rule set in advance: after router B is trained, measure the real router's gain over Qwen alone on the held-out data; if it is under about 1 point, drop gpt-oss and run Qwen alone. Reason: on the small test gpt-oss was right where Qwen was wrong on only 4 of 267 items (3 of them RULER 32K).
 
 ### API spend (Anthropic)
 | When | What | Runs | Cost |
