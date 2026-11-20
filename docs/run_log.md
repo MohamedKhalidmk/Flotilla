@@ -81,6 +81,8 @@ One line per decision, with its reason. Times are America/Vancouver unless marke
 - Older-model failure audit (user): every wrong answer of gpt-oss, Command A+ and Phi in the small test and router-B labels, with cause (reports/failure_audit/older_models.md/.pdf). gpt-oss labels 827 wrong: verifier bug 124, grader bug 103, wrong gold 16, model wrong 584. Small test: gpt-oss 56 (4 / 1 / 0 / 51), Command A+ 82 (3 / 2 / 0 / 77), Qwen 45 (0 / 1 / 0 / 44); Phi 25-question MATH-500 set 4 wrong, all model. Phi's v1 labels are a harness failure (no tool loop, 16,384 cap), not listed per question. Hand checks: every answer Qwen gave identically against the gold (51), plus samples of each cause.
 - GRAFT full T-REx (Fir 4663774): the Haiku-linking build finished (537 chunks, $1.75, 6,735 names matched to base entities vs 3,987 new = 62.8%, vs 55.8% exact overlap; 1,230,691 facts, 5,293 supersedes). But the answer pass is broken: 95 of 100 questions reached Haiku with an empty knowledge pool (subgraph of 400 nodes, 0 facts selected) and each took about 430 s instead of 12 s. EiG repeats 0 and 1 are invalid. Cancelling the rest of the chain (repeat 2, then GOAt x3 and the question layer x3, which would hit the same bug) was blocked by the permission check; asked the user. Debugging needs a compute job that loads the 1.7 GB graph (step 2).
 
+- **2026-11-20, GRAFT full T-REx jobs finished on their own** before the cancel was approved. EiG 4663774, GOAt 4663775 and question layer 4663776: all 9 repeats scored 0.0, gold in retrieved text 0, about 5 s per question. This confirms the empty-retrieval bug affects every mode, not only EiG. None of these 9 numbers are results; they will be rerun after the fix. The cancel question is moot. Extra API spend $0.10.
+
 ### API spend (Anthropic)
 | When | What | Runs | Cost |
 |---|---|---|---|
@@ -93,5 +95,7 @@ One line per decision, with its reason. Times are America/Vancouver unless marke
 | 2026-11-20 | GRAFT exact-name build onto RoG base, cancelled at chunk 51 | 181 calls | $0.168 |
 | 2026-11-20 | GRAFT RoG base: Haiku-linking write phase (1,611 calls) + 1 answer pass | 1 job | $1.647 |
 | 2026-11-20 | GRAFT full T-REx build, first attempt cancelled at ~chunk 55 (no checkpoints) | 390 calls | $0.519 |
-| 2026-11-20 | GRAFT full T-REx Haiku-linking build (537 chunks) + 2 answer passes so far | 1 job | $1.754 |
-| | **Total today so far** | | **$4.48** |
+| 2026-11-20 | GRAFT full T-REx Haiku-linking build (537 chunks) + 3 EiG answer passes (Fir 4663774) | 1 job | $1.760 |
+| 2026-11-20 | GRAFT full T-REx GOAt, 3 answer passes (Fir 4663775) | 1 job | $0.019 |
+| 2026-11-20 | GRAFT full T-REx question layer + EiG, 3 answer passes (Fir 4663776) | 1 job | $0.072 |
+| | **Total today so far** | | **$4.58** |
