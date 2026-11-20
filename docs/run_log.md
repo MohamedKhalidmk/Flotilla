@@ -32,6 +32,9 @@ One line per decision, with its reason. Times are America/Vancouver unless marke
 - Open: the 38 baseline is one GOAt run while the variants are EiG; 3 EiG baseline repeats (about $0.08) would make the comparison exact. Waits for the key.
 - Label grader fixed: code answers have their markdown fences stripped before tests run, as the small-test scorer does. Reason: gpt-oss fences its code, so every fenced answer failed (0/4 -> 3/4 on the label test); the v1 labels had the same bug.
 - Label test passed (16 questions per model, real loop): Qwen 14/16, gpt-oss 12/16 (one gpt-oss item: no JSON answer block on the retry, a model format failure, scored wrong). 32 label shards (16 per model, about 300 questions each) submitted as three-cluster twins without a per-shard smoke check. Reason: the test already proved the path; limits Qwen 3:30:00, gpt-oss 2:30:00 from measured throughput (+50%).
+- Command A+ dropped. Reason: rule 4.2 (v9), Command A+ alone minus Qwen alone = -0.104 mean over 11 benchmarks, 95% bootstrap CI [-0.143, -0.066]; it is right on only 3 of 362 items that neither other model gets, at 4 GPUs vs 1. No Command A+ labels.
+- Vision stays with Qwen3.8 (no fallback model needed). Reason: Qwen reads images itself (MMMU 0.756, OCRBench 0.88); the vision fallback in 4.2 was for the case Qwen could not.
+- Router B goes ahead on Qwen + gpt-oss labels. Reason: perfect Qwen/gpt-oss router 0.910 vs Qwen alone 0.877 (+3.3 points), mostly RULER 32K (+0.20, gpt-oss 0.867 vs Qwen 0.697). Report: reports/smalltest_three_models.md.
 
 ### API spend (Anthropic)
 | When | What | Runs | Cost |
