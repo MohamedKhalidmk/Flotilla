@@ -25,6 +25,8 @@ mkdir -p "$FLOTILLA_RUNS" "$C"/{vllm,triton,inductor,nv,mpl,humming}
 if [[ -n "${SLURM_TMPDIR:-}" && -d "$SLURM_TMPDIR" ]]; then
   export TORCHINDUCTOR_CACHE_DIR="$SLURM_TMPDIR/inductor" TRITON_CACHE_DIR="$SLURM_TMPDIR/triton"
 fi
+# humming also writes a tmp folder under $HOME (read-only on Trillium compute nodes)
+export HUMMING_TMP_DIR="${SLURM_TMPDIR:-$C}/humming-tmp"
 nvidia-smi --query-gpu=index,memory.used --format=csv,noheader -l 30 > "gpu-mem-$SLURM_JOB_ID.csv" &
 MON=$!
 echo "[job] $(date -Is) start on $(hostname): $*"

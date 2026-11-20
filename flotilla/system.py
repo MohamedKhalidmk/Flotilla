@@ -170,15 +170,15 @@ async def _solve_once(name: str, srv: dict, messages: list[dict], cfg: SystemCon
         last = rnd == cfg.tool_rounds and rnd > 0
         if last:   # tool budget used up: the last call must answer
             msgs.append({"role": "user", "content": FINAL_ROUND_NOTE})
-        r = await _create(name, srv, client, msgs, cfg, temperature,
-                          **({**extra, "tool_choice": "none"} if native and last else extra))
+        # last round: no tools offered at all (gpt-oss still returned tool calls under tool_choice "none")
+        r = await _create(name, srv, client, msgs, cfg, temperature, **({} if last else extra))
         msg = r.choices[0].message
         out = msg.content or ""
         tok_in += r.usage.prompt_tokens
         tok_out += r.usage.completion_tokens
         if native:
             calls = msg.tool_calls or []
-            if not calls:
+            if not calls or last:  # on the last round a stray tool call is not run; its text is the answer
                 text_all += out
                 break
             text_all += out + "\n"
