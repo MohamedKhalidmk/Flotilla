@@ -98,6 +98,8 @@ One line per decision, with its reason. Times are America/Vancouver unless marke
 
 - **2026-11-20, T-REx base cleaning, first rule too wide (not used).** Job 4742045 dropped 118 base entities and 130,033 base facts, but 129,452 of those facts hung on "generic" concept entities that are real Wikidata answers (footballer 22,242, football 19,661, politician 11,475, actor 7,517, village, river, jazz...), and its stopword test caught real names (Ain, a French department; Don, a river; CAN, a band; all-caps abbreviations OR, IN). Caught before any run used it: the 6 queued GRAFT jobs were held, the files renamed *_clean_v1_too_wide*, and the rule narrowed: drop only one-word names that are a stopword (not all-caps, not a contraction fragment), a number, or punctuation, never one a document uses; generic concepts reported, not dropped. Rerun: job 4742821; the GRAFT jobs now wait on it.
 
+- **2026-11-20, single-stopword links, before/after (Fir CPU 4740873, free):** questions with a stopword link 89 of 100 before, 0 after; 89 questions' links changed, all by losing "e:the" (e.g. q0 [christian abbiati, the] -> [christian abbiati]); 5 questions are left with no link and fall back to embedding search (e.g. Valmiki, Giulio Alberoni, Stewart Udall have no entity in the graph). Question-layer links touching a stopword: 0 of 103. Document links: 0 of 10,722 (18 decisions had a stopword entity among the 10 candidates, never chosen); no document link changes, so the built graph stands. Corrected cleaning (4742821): 60 base entities, 107 facts dropped (59 number names, Themselves), 1 document link (90210, kept in the built graph); generic concepts and all-caps names kept.
+
 ### API spend (Anthropic)
 | When | What | Runs | Cost |
 |---|---|---|---|
