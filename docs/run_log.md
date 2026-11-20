@@ -20,6 +20,7 @@ One line per decision, with its reason. Times are America/Vancouver unless marke
 - Command A+ kept in the test. Reason: third attempt passed the smoke check on Fir (9 items, no pipeline problem); the first two failures were the old final-round bug and a long load on Nibi scratch.
 - Router-B labels: cause found (the label script makes one call with a tools-offering prompt and no tool loop, so 22 of 34 checked Qwen labels end at a TOOL line with no answer); relabelling deferred. Reason: correct labels need the full loop over 4,856 questions per model (~30 GPU-h per 1-GPU model, far more for Command A+); first see whether the three-model oracle on the small test shows a routing gain worth it.
 - GRAFT question-graph option: built now, run when the API key is available. Reason: it needs a real Haiku call per question to parse the question (a fake gateway fakes every call), so no free check is possible.
+- Smoke check: "stopped with no answer text" now covers any sample that ends with a normal stop and no answer text, not only the forced last round. Reason: Qwen spent 29K and 19K tokens thinking on the LiveCodeBench smoke item, stopped mid-thought where it said it would run code (likely a tool call attempted inside its thinking, which the template does not support), and gave no answer; that is model behaviour, scored wrong. Limitation noted: this may cost Qwen some LiveCodeBench items.
 
 ### API spend (Anthropic)
 | When | What | Runs | Cost |
