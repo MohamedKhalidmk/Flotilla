@@ -3,7 +3,7 @@
     python -m flotilla.strategy_labels --pool pool.clean.jsonl --runs fast=DIR [DIR ...] tools=DIR deep=DIR vote=DIR \
         --out OUT_DIR [--split]
 Per question and strategy: correct (router-label graders, code fences stripped), output tokens, calls, wall seconds.
-Label = the cheapest strategy that is correct, in the order Fast < Tools < Deep < Vote; "none" if none is.
+Label = the cheapest strategy that is correct, in ORDER (cheapest first, combos included); "none" if none is.
 --split writes split.json: 70% train, 15% dev, 15% held-out, stratified by (benchmark source, task type), seeded.
 Outputs: per_question.jsonl, summary.json (accuracy, mean tokens and seconds per strategy, label counts, GPU-seconds).
 """
@@ -15,7 +15,8 @@ from pathlib import Path
 
 from flotilla.label_loop import grade
 
-ORDER = ["fast", "tools", "deep", "vote"]
+# cheapest first; combos sit after their parts (pilot GPU-seconds decide the final order before training)
+ORDER = ["fast", "tools", "deep", "deep_tools", "vote", "vote_tools"]
 SEED = 20261120
 
 
