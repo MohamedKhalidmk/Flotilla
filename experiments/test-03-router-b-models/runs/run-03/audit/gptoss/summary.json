@@ -1,0 +1,39 @@
+{
+ "model": "gptoss",
+ "source": "labels",
+ "wrong": 827,
+ "causes": {
+  "grader bug": 94,
+  "model wrong": 602,
+  "wrong gold": 7,
+  "verifier bug": 124
+ },
+ "wrong_gold_candidates": 49,
+ "by_bench": {
+  "aime": {
+   "model wrong": 236
+  },
+  "gsm8k": {
+   "model wrong": 39,
+   "wrong gold": 5
+  },
+  "ifeval_like": {
+   "grader bug": 80,
+   "model wrong": 89,
+   "verifier bug": 10
+  },
+  "lcb": {
+   "wrong gold": 2,
+   "model wrong": 52,
+   "grader bug": 5
+  },
+  "math": {
+   "grader bug": 9,
+   "model wrong": 64
+  },
+  "mmlu_pro": {
+   "model wrong": 122,
+   "verifier bug": 114
+  }
+ }
+}
