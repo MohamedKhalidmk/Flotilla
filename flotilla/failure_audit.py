@@ -66,6 +66,7 @@ def main() -> None:
     ap.add_argument("--pool", required=True)
     ap.add_argument("--runs", nargs="+", required=True)
     ap.add_argument("--out", required=True)
+    ap.add_argument("--graded", default=None, help="per_question.jsonl from strategy_labels: reuse its verdicts")
     a = ap.parse_args()
     runs = defaultdict(list)
     for kv in a.runs:
@@ -75,7 +76,11 @@ def main() -> None:
     routes = [s for s in ORDER if s in runs]
     traces = {s: load_traces(runs[s]) for s in routes}
     ids = sorted(set.intersection(*(set(t) for t in traces.values())))
-    ok = {i: {s: grade(pool[i], traces[s][i]["final_answer"]) for s in routes} for i in ids}
+    if a.graded:
+        g = {r["id"]: r for r in map(json.loads, open(a.graded))}
+        ok = {i: {s: g[i][s]["correct"] for s in routes} for i in ids}
+    else:
+        ok = {i: {s: grade(pool[i], traces[s][i]["final_answer"]) for s in routes} for i in ids}
     out = Path(a.out)
     out.mkdir(parents=True, exist_ok=True)
     overlap = {}

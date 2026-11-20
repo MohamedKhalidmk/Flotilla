@@ -9,7 +9,9 @@ Outputs: per_question.jsonl, summary.json (accuracy, mean tokens and seconds per
 """
 import argparse
 import json
+import os
 import random
+from concurrent.futures import ProcessPoolExecutor
 from collections import Counter, defaultdict
 from pathlib import Path
 
@@ -31,6 +33,10 @@ def load_traces(dirs: list[str]) -> dict[str, dict]:
     return out
 
 
+def _grade(args: tuple) -> bool:
+    return grade(*args)
+
+
 def gpu_seconds(dirs: list[str]) -> float:
     tot = 0.0
     for d in dirs:
@@ -46,6 +52,7 @@ def main() -> None:
     ap.add_argument("--runs", nargs="+", required=True, help="strategy=DIR [DIR ...] groups, e.g. fast=a fast=b deep=c")
     ap.add_argument("--out", required=True)
     ap.add_argument("--split", action="store_true")
+    ap.add_argument("--workers", type=int, default=min(32, os.cpu_count() or 1), help="parallel graders (code tests run in subprocesses)")
     a = ap.parse_args()
     runs = defaultdict(list)
     for kv in a.runs:
@@ -59,6 +66,9 @@ def main() -> None:
     ids = sorted(set.intersection(*(set(t) for t in traces.values())))
     out = Path(a.out)
     out.mkdir(parents=True, exist_ok=True)
+    jobs = [(i, s) for i in ids for s in traces]
+    with ProcessPoolExecutor(a.workers) as ex:
+        verdicts = dict(zip(jobs, ex.map(_grade, [(pool[i], traces[s][i]["final_answer"]) for i, s in jobs], chunksize=8)))
     rows, labels = [], Counter()
     with open(out / "per_question.jsonl", "w") as f:
         for i in ids:
@@ -67,7 +77,7 @@ def main() -> None:
             for s, tr in traces.items():
                 t = tr[i]
                 samples = [x for m in t["models"] for x in m["samples"]]
-                row[s] = {"correct": grade(it, t["final_answer"]), "tokens_out": sum(x.get("tokens_out", 0) for x in samples),
+                row[s] = {"correct": verdicts[(i, s)], "tokens_out": sum(x.get("tokens_out", 0) for x in samples),
                           "calls": t.get("calls"), "wall_seconds": t.get("wall_seconds"), "answer": (t["final_answer"] or "")[:500]}
             row["label"] = next((s for s in ORDER if s in traces and row[s]["correct"]), "none")
             labels[row["label"]] += 1
