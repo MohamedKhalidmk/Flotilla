@@ -28,8 +28,9 @@ def grade(item: dict, answer: str | None) -> bool:
         return tools.sympy_check(answer, item["gold"])["ok"]
     if t == "science_mc":
         return answer.strip().upper()[:1] == str(item["gold"]).strip().upper()[:1]
-    if t == "code":
-        return tools.run_public_tests(answer, item["tests"], timeout_s=6)["ok"]
+    if t == "code":  # strip markdown fences as the small-test scorer does (v1 labels did not: fenced code always failed)
+        from flotilla.scoring import strip_fence
+        return tools.run_public_tests(strip_fence(answer), item["tests"], timeout_s=6)["ok"]
     if t == "instruction":
         return tools.constraint_check(item["task"], answer)["ok"]
     return False
