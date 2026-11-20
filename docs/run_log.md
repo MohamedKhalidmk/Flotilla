@@ -96,6 +96,8 @@ One line per decision, with its reason. Times are America/Vancouver unless marke
 - **2026-11-20, router training waits for the Memory routes (user):** one training run on all ten routes. GPU jobs queued early because the queues are slow.
 - **2026-11-20, GRAFT full T-REx queue (Fir):** cleaned-graph job 4742045 (CPU, free). Haiku answer passes on GPU (embedding 1.58M nodes is much faster there), each after the cleaned graph and the 5-question test: EiG 4742452, GOAt 4742453, question layer + EiG 4742454 (3 repeats each, cap $1 per job, est. $0.10-0.30 total). Qwen on the same cleaned graph, same prompts, thinking off (SGAR llm.mode local, scripts/fir/run_qwen_graft.sbatch serves Qwen W4A16 with vLLM in the job; $0 API): EiG 4742462, GOAt 4742464, question layer 4742465, each after the Haiku EiG job; cancelled if the Haiku result shows GRAFT not working.
 
+- **2026-11-20, T-REx base cleaning, first rule too wide (not used).** Job 4742045 dropped 118 base entities and 130,033 base facts, but 129,452 of those facts hung on "generic" concept entities that are real Wikidata answers (footballer 22,242, football 19,661, politician 11,475, actor 7,517, village, river, jazz...), and its stopword test caught real names (Ain, a French department; Don, a river; CAN, a band; all-caps abbreviations OR, IN). Caught before any run used it: the 6 queued GRAFT jobs were held, the files renamed *_clean_v1_too_wide*, and the rule narrowed: drop only one-word names that are a stopword (not all-caps, not a contraction fragment), a number, or punctuation, never one a document uses; generic concepts reported, not dropped. Rerun: job 4742821; the GRAFT jobs now wait on it.
+
 ### API spend (Anthropic)
 | When | What | Runs | Cost |
 |---|---|---|---|
