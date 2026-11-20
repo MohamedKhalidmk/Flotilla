@@ -2,7 +2,7 @@
 
 | Test | Date | Protocol | Status | Current run |
 |---|---|---|---|---|
-| 04 | 2026-11-20 | protocol-v10 | running (fixing labels) | [run-02](runs/run-02/run.json) |
+| 04 | 2026-11-20 | protocol-v10 | running (labels done, routers next) | [run-03](runs/run-03/run.json) |
 
 ## Question
 
@@ -50,22 +50,24 @@ away, which is where the compute saving comes from.
 
 ## Result
 
-Pilot, 50 pool questions, six routes ([table.csv](table.csv)):
+Full labels, 1,450 pool questions, six routes, fixed graders ([run-03](runs/run-03/run.json), [table.csv](table.csv)):
 
 | Route | Accuracy | Output tokens | GPU-s per question | Cheapest correct |
 |---|---|---|---|---|
-| Fast | [0.74](table.csv) | [2,110](table.csv) | [3.9](table.csv) | [37](table.csv) |
-| Tools | [0.82](table.csv) | [2,615](table.csv) | [13.3](table.csv) | [6](table.csv) |
-| Deep | [0.84](table.csv) | [6,058](table.csv) | [14.1](table.csv) | [2](table.csv) |
-| Deep+Tools | [0.82](table.csv) | [6,291](table.csv) | [17.0](table.csv) | [0](table.csv) |
-| Vote | [0.82](table.csv) | [21,821](table.csv) | [17.7](table.csv) | [0](table.csv) |
-| Vote+Tools | [0.82](table.csv) | [19,995](table.csv) | [17.1](table.csv) | [0](table.csv) |
+| Fast | [0.903](table.csv) | [2,047](table.csv) | [2.6](table.csv) | [1,310](table.csv) |
+| Tools | [0.925](table.csv) | [1,969](table.csv) | [4.0](table.csv) | [75](table.csv) |
+| Deep | [0.952](table.csv) | [4,791](table.csv) | [7.5](table.csv) | [42](table.csv) |
+| Deep+Tools | [0.943](table.csv) | [5,278](table.csv) | [12.1](table.csv) | [5](table.csv) |
+| Vote | [0.967](table.csv) | [20,373](table.csv) | [16.4](table.csv) | [0](table.csv) |
+| Vote+Tools | [0.963](table.csv) | [21,541](table.csv) | [20.0](table.csv) | [1](table.csv) |
+| Some route right (oracle) | [0.988](table.csv) | | | |
 
-Some route is right on [90%](table.csv) of the pilot questions, against [0.84](table.csv) for the best single route.
-All six routes have answered the other 1,450 questions ([run-02](runs/run-02/run.json)). The hand check of the failures
-found bugs in the verifier's option check and the instruction checker
-([failure report](runs/run-02/audit/failure_report.md), pilot: [always wrong](runs/run-01/audit/always_wrong.md)), so
-the full labels are fixed and regraded before they are shown here or used for training.
+Vote is the best single route; Fast alone is right on 90% of the questions at an eighth of Vote's GPU time, so a router
+has room to save compute. 17 questions no route gets right; checked by hand, 10 have a wrong or unanswerable gold, 6 are
+Qwen's mistakes and 1 is a grader bug (a unit vector whose sign the question leaves open)
+([always wrong](runs/run-03/audit/always_wrong.md)). GPU-seconds include the rerun of 263 questions, so they are about
+18% high for every route. Before the fixes (run-02) the same routes scored 0.825 to 0.899
+([failure report](runs/run-02/audit/failure_report.md)).
 [table.csv](table.csv) · [figure.png](figure.png)
 
 ## Decision
@@ -80,3 +82,5 @@ benchmarks run once with the final system and once with the best single route on
 - 2026-11-20: plan widened to ten routes (combos and Memory); run-01 holds the six-route pilot and its failure audit.
 - 2026-11-20: run-02, six routes on 1,450 questions graded; verifier A-to-D option bug fixed (system.py), instruction
   checker bugs found. Labels to be regraded and affected questions rerun.
+- 2026-11-20: run-03, the 263 affected questions rerun on every route and all labels regraded with the fixed
+  verifier and graders; these are the labels the routers train on.

@@ -10,5 +10,5 @@ Revisions line. New tests start from [`_template/`](_template/).
 | [01 · Quantization](test-01-quantization/README.md) | Does 4-bit lose accuracy? | done | run-01 | Qwen runs 4-bit (W4A16) |
 | [02 · Model small test](test-02-model-small-test/README.md) | Which solver models earn a place? | done | run-01 | Command A+ dropped |
 | [03 · Router B](test-03-router-b-models/README.md) | Does routing between Qwen and gpt-oss help? | done | run-02 | gpt-oss dropped, Qwen alone |
-| [04 · Strategy router](test-04-strategy-router/README.md) | Does picking a route per question beat the best fixed route? | running (fixing labels) | run-02 | pending |
+| [04 · Strategy router](test-04-strategy-router/README.md) | Does picking a route per question beat the best fixed route? | running (labels done) | run-03 | pending |
 | [05 · GRAFT base graph](test-05-graft-base-graph/README.md) | Does a base knowledge graph help the Memory route? | running | run-02 | RoG not adopted; full T-REx pending |
