@@ -6,7 +6,7 @@
 set -euo pipefail
 R=$1; TIME=$2; shift 2
 CODE=/project/def-sylu/khaledmk/flotilla; [[ -d $CODE ]] || CODE=$(readlink -f "$HOME/projects/def-sylu")/khaledmk/flotilla
-for K in "$@"; do S=$(printf "strat_%02d" "$K")
+for K in "$@"; do S=$(printf "${STRAT_PREFIX:-strat}_%02d" "$K")
   sbatch --parsable ${FLOTILLA_SBATCH-$(bash "$CODE/scripts/nibi/sbatch_opts.sh" 1)} --gpus-per-node=h100:1 --time=$TIME \
     --job-name="st4-$R-$S" --chdir="$SCRATCH/flotilla/logs" "$CODE/scripts/trillium/job.sbatch" python -m flotilla.serve \
     --system "$CODE/configs/systems/qwen_strategy_$R.json" --servers "$CODE/configs/servers.json" \
