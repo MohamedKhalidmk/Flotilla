@@ -1,0 +1,36 @@
+{
+ "model": "qwen",
+ "source": "smalltest",
+ "wrong": 45,
+ "causes": {
+  "grader bug": 1,
+  "model wrong": 44
+ },
+ "wrong_gold_candidates": 0,
+ "by_bench": {
+  "gpqa": {
+   "model wrong": 3
+  },
+  "ifeval": {
+   "model wrong": 1
+  },
+  "lcb": {
+   "model wrong": 6
+  },
+  "math500": {
+   "grader bug": 1
+  },
+  "mmmu": {
+   "model wrong": 11
+  },
+  "ocrbench": {
+   "model wrong": 6
+  },
+  "ruler_32k": {
+   "model wrong": 10
+  },
+  "ruler_64k": {
+   "model wrong": 7
+  }
+ }
+}

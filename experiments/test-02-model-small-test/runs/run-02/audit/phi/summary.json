@@ -1,0 +1,8 @@
+{
+ "model": "phi",
+ "source": "MATH-500 small set, 25 questions (Nibi st-math500-phi4-reasoning)",
+ "wrong": 4,
+ "causes": {
+  "model wrong": 4
+ }
+}
