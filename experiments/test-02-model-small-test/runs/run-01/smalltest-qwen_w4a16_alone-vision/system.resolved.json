@@ -1,0 +1,17 @@
+{
+ "name": "qwen_w4a16_alone",
+ "notes": "Qwen alone, our W4A16 build (rule 4.1 candidate).",
+ "servers": {
+  "qwen_w4a16": {
+   "url": "http://127.0.0.1:8000/v1",
+   "model": "qwen_w4a16",
+   "quant": "w4a16-ours"
+  }
+ },
+ "solvers": [
+  "qwen_w4a16"
+ ],
+ "n_samples": 1,
+ "max_tokens": 32768,
+ "protocol_version": "protocol-v9"
+}

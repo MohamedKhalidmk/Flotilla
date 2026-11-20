@@ -1,0 +1,87 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<style>body{margin:0;background:transparent}</style></head><body>
+<svg id="art" width="400" height="400" viewBox="0 0 400 400"></svg>
+<script>
+const O='#2A2723', Y='#F6CF4A', Y2='#E9B92E', BILL='#F08A3C', BILL2='#D9702A', NAVY='#22344A', RED='#C8362E', GOLD='#B08D57', WHITE='#FFFDF7';
+let h=`<defs>
+<radialGradient id="gHead" cx="35%" cy="30%" r="80%"><stop offset="0" stop-color="#FFE98A"/><stop offset=".55" stop-color="#F8D24A"/><stop offset="1" stop-color="#E9AE22"/></radialGradient>
+<radialGradient id="gWing" cx="40%" cy="30%" r="90%"><stop offset="0" stop-color="#FFE27A"/><stop offset="1" stop-color="#E5A520"/></radialGradient>
+<linearGradient id="gBill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFAD5C"/><stop offset="1" stop-color="#EE7E32"/></linearGradient>
+<linearGradient id="gBill2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#E36E2C"/><stop offset="1" stop-color="#C4561F"/></linearGradient>
+<radialGradient id="gShirt" cx="40%" cy="25%" r="85%"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#E4E1D8"/></radialGradient>
+<linearGradient id="gCap" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#E2DED4"/></linearGradient>
+<linearGradient id="gVisor" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#454a52"/><stop offset="1" stop-color="#151618"/></linearGradient>
+<linearGradient id="gLens" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#4a4f58"/><stop offset=".5" stop-color="#1d1d1f"/><stop offset="1" stop-color="#0b0b0c"/></linearGradient>
+<radialGradient id="gGold" cx="35%" cy="30%" r="80%"><stop offset="0" stop-color="#F2D38C"/><stop offset="1" stop-color="#A9823F"/></radialGradient>
+<linearGradient id="gWater" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#DCEBEE"/><stop offset="1" stop-color="#B7D2D8"/></linearGradient>
+</defs>`, n=0;
+function duck(x,y,s,{hat='captain',shades=false}={}){
+  const w=3.2/s, id='b'+(n++);
+  const body="M-78 70 C-80 26 -46 4 0 4 C46 4 80 26 78 70 C76 112 40 128 0 128 C-40 128 -76 112 -78 70 Z";
+  let g=`<g transform="translate(${x} ${y}) scale(${s})">`;
+  g+=`<defs><clipPath id="${id}"><path d="${body}"/></clipPath></defs>`;
+  // wings
+  g+=`<path d="M-70 40 C-96 46 -100 80 -76 92 C-66 96 -58 86 -58 76 Z" fill="url(#gWing)" stroke="${O}" stroke-width="${w}" stroke-linejoin="round"/>`;
+  g+=`<path d="M70 40 C96 46 100 80 76 92 C66 96 58 86 58 76 Z" fill="url(#gWing)" stroke="${O}" stroke-width="${w}" stroke-linejoin="round"/>`;
+  // striped sailor shirt
+  g+=`<path d="${body}" fill="url(#gShirt)"/>`;
+  g+=`<g clip-path="url(#${id})">`;
+  for(let yy=18; yy<130; yy+=20) g+=`<rect x="-90" y="${yy}" width="180" height="9" fill="${NAVY}"/>`;
+  // sailor collar (navy V with white trim)
+  g+=`<path d="M-60 4 L60 4 L44 30 L0 70 L-44 30 Z" fill="${NAVY}"/>`;
+  g+=`<path d="M-48 10 L-34 30 L0 60 L34 30 L48 10" stroke="${WHITE}" stroke-width="${2.6/s}" fill="none" stroke-linejoin="round"/>`;
+  g+=`<path d="M30 10 C60 30 70 70 56 110 L90 110 L90 0 Z" fill="#000" opacity=".13"/>`;
+  g+=`</g>`;
+  g+=`<path d="${body}" fill="none" stroke="${O}" stroke-width="${w}" stroke-linejoin="round"/>`;
+  // neckerchief
+  g+=`<path d="M-14 26 L14 26 L8 38 L-8 38 Z" fill="${RED}" stroke="${O}" stroke-width="${2/s}" stroke-linejoin="round"/>`;
+  g+=`<path d="M-7 38 L-16 64 L-4 58 Z M7 38 L16 64 L4 58 Z" fill="${RED}" stroke="${O}" stroke-width="${2/s}" stroke-linejoin="round"/>`;
+  // head
+  const HD="M-54 -28 C-56 -66 -28 -86 0 -86 C28 -86 56 -66 54 -28 C52 4 28 22 0 22 C-28 22 -52 4 -54 -28 Z";
+  g+=`<defs><clipPath id="${id}h"><path d="${HD}"/></clipPath></defs>`;
+  g+=`<path d="${HD}" fill="url(#gHead)"/>`;
+  g+=`<g clip-path="url(#${id}h)"><path d="M20 -90 C70 -60 60 10 -10 30 L80 30 L80 -90 Z" fill="#D98E0E" opacity=".25"/></g>`;
+  g+=`<path d="${HD}" fill="none" stroke="${O}" stroke-width="${w}" stroke-linejoin="round"/>`;
+  g+=`<ellipse cx="-30" cy="-58" rx="12" ry="6.5" transform="rotate(-30 -30 -58)" fill="#fff" opacity=".7"/>`;
+  if(shades){
+    g+=`<path d="M-50 -44 L50 -44" stroke="${O}" stroke-width="${3/s}" stroke-linecap="round"/>`;
+    g+=`<path d="M-42 -46 L-8 -46 C-8 -34 -14 -26 -26 -26 C-38 -26 -42 -34 -42 -46 Z" fill="url(#gLens)" stroke="${O}" stroke-width="${2.4/s}" stroke-linejoin="round"/>`;
+    g+=`<path d="M8 -46 L42 -46 C42 -34 38 -26 26 -26 C14 -26 8 -34 8 -46 Z" fill="url(#gLens)" stroke="${O}" stroke-width="${2.4/s}" stroke-linejoin="round"/>`;
+    g+=`<path d="M-34 -41 L-26 -41 M16 -41 L24 -41" stroke="#fff" stroke-width="${2.4/s}" stroke-linecap="round" opacity=".55"/>`;
+  } else {
+    g+=`<circle cx="-20" cy="-38" r="6" fill="${O}"/><circle cx="-18" cy="-40" r="2" fill="#fff"/>`;
+    g+=`<circle cx="20" cy="-38" r="6" fill="${O}"/><circle cx="22" cy="-40" r="2" fill="#fff"/>`;
+    // (no cheeks)
+  }
+  // bill (grin)
+  g+=`<path d="M-30 -14 C-30 -24 30 -26 34 -16 C36 -8 20 -4 0 -4 C-18 -4 -30 -6 -30 -14 Z" fill="url(#gBill)" stroke="${O}" stroke-width="${2.8/s}" stroke-linejoin="round"/>`;
+  g+=`<path d="M-22 -6 C-12 6 16 6 26 -6" fill="url(#gBill2)" stroke="${O}" stroke-width="${2.6/s}" stroke-linejoin="round"/>`;
+  g+=`<ellipse cx="-12" cy="-18" rx="8" ry="2.4" fill="#fff" opacity=".55"/>`;
+  g+=`<path d="M-8 -18 L-6 -16 M8 -18 L6 -16" stroke="${O}" stroke-width="${2/s}" stroke-linecap="round" opacity=".5"/>`;
+  if(hat==='captain'){
+    g+=`<path d="M-46 -70 C-62 -96 -40 -118 0 -118 C40 -118 62 -96 46 -70 Z" fill="url(#gCap)" stroke="${O}" stroke-width="${w}" stroke-linejoin="round"/>`;
+    g+=`<ellipse cx="-22" cy="-104" rx="12" ry="4.5" transform="rotate(-10 -22 -104)" fill="#fff"/>`;
+    g+=`<path d="M-46 -80 C-16 -86 16 -86 46 -80 L46 -68 C16 -74 -16 -74 -46 -68 Z" fill="${NAVY}" stroke="${O}" stroke-width="${2.4/s}" stroke-linejoin="round"/>`;
+    g+=`<path d="M-44 -68 C-20 -72 20 -72 44 -68 C48 -58 30 -52 0 -52 C-30 -52 -48 -58 -44 -68 Z" fill="url(#gVisor)" stroke="${O}" stroke-width="${2.6/s}" stroke-linejoin="round"/>`;
+    g+=`<path d="M0 -104 C8 -104 12 -98 12 -92 C12 -86 6 -82 0 -82 C-6 -82 -12 -86 -12 -92 C-12 -98 -8 -104 0 -104 Z" fill="url(#gGold)" stroke="${O}" stroke-width="${2/s}"/>`;
+    g+=`<path d="M0 -99 L0 -86 M-5 -90 C-4 -86 4 -86 5 -90" stroke="${O}" stroke-width="${1.6/s}" fill="none" stroke-linecap="round"/>`;
+  } else {
+    // dixie cup sailor cap
+    g+=`<path d="M-34 -78 C-34 -100 34 -100 34 -78 Z" fill="url(#gCap)" stroke="${O}" stroke-width="${w}" stroke-linejoin="round"/>`;
+    g+=`<path d="M-48 -82 C-50 -70 -36 -66 0 -66 C36 -66 50 -70 48 -82 C30 -76 -30 -76 -48 -82 Z" fill="url(#gCap)" stroke="${O}" stroke-width="${w}" stroke-linejoin="round"/>`;
+  }
+  return g+`</g>`;
+}
+// card
+h+=`<rect x="0" y="0" width="400" height="400" rx="88" fill="#F3EFE6"/>`;
+h+=duck(96,252,0.5,{hat:'dixie'});
+h+=duck(304,252,0.5,{hat:'dixie'});
+h+=duck(200,206,0.98,{hat:'captain',shades:true});
+// water front
+h+=`<path d="M0 304 C40 292 80 312 130 300 C180 288 220 312 270 300 C320 288 360 308 400 296 L400 312 L400 312 L400 330 C400 360 380 400 312 400 L88 400 C20 400 0 360 0 330 Z" fill="url(#gWater)"/>`;
+h+=`<path d="M0 304 C40 292 80 312 130 300 C180 288 220 312 270 300 C320 288 360 308 400 296" stroke="${O}" stroke-width="3" fill="none"/>`;
+h+=`<g stroke="#fff" stroke-width="3.4" stroke-linecap="round" fill="none" opacity=".85"><path d="M60 346 C74 340 86 346 98 342"/><path d="M180 358 C194 352 206 358 218 354"/><path d="M300 344 C314 338 326 344 338 340"/></g>`;
+document.getElementById('art').innerHTML=h;
+</script>
+</body></html>

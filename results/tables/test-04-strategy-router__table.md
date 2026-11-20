@@ -1,0 +1,15 @@
+Pilot: 50 pool questions, every route on every question, graded against gold (flotilla/strategy_labels.py). Cheapest correct = the label a router learns. No route right: 5; some route right: 0.9. GPU-seconds = whole job / questions (server load included).
+
+| route | what_it_does | questions | accuracy | output_tokens_per_question | gpu_seconds_per_question | cheapest_correct | run | status |
+|---|---|---|---|---|---|---|---|---|
+| Fast | thinking off, no tools, 1 sample | 50 | 0.74 | 2110 | 3.9 | 37 | run-01/graded6 | pilot |
+| Tools | thinking off, native sympy / Python / constraint tools | 50 | 0.82 | 2615 | 13.3 | 6 | run-01/graded6 | pilot |
+| Deep | full thinking, no tools | 50 | 0.84 | 6058 | 14.1 | 2 | run-01/graded6 | pilot |
+| Deep+Tools | full thinking with the tools | 50 | 0.82 | 6291 | 17 | 0 | run-01/graded6 | pilot |
+| Vote | full thinking, 5 samples, majority (tests on code) | 50 | 0.82 | 21821 | 17.7 | 0 | run-01/graded6 | pilot |
+| Vote+Tools | Vote with the tools in every sample | 50 | 0.82 | 19995 | 17.1 | 0 | run-01/graded6 | pilot |
+| Memory | GRAFT retrieval on the full T-REx base, all on Qwen |  |  |  |  |  |  | planned |
+| Memory+Deep | GRAFT facts, then Deep |  |  |  |  |  |  | planned |
+| Vote+Memory | GRAFT facts, then Vote |  |  |  |  |  |  | planned |
+| Deep+Tools+Memory | GRAFT facts, then Deep+Tools |  |  |  |  |  |  | planned |
+| Some route right (oracle) | best route per question, known only after trying all | 50 | 0.9 |  |  |  | run-01/graded6 | pilot |

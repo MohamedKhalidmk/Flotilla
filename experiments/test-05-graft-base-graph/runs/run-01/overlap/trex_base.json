@@ -1,0 +1,103 @@
+{
+ "base": "results/checkpoints/base_graphs/trex_base.json",
+ "docs": "results/checkpoints/shared_graphs/real_mh_262k_empty_start.json",
+ "base_facts": 100000,
+ "base_entities": 11819,
+ "base_relations": 43,
+ "doc_entities": 10839,
+ "shared_entities_exact": 1257,
+ "doc_entities_shared_share": 0.116,
+ "base_facts_touching_shared": 47029,
+ "top_shared_by_base_degree": [
+  [
+   "e:football",
+   2732
+  ],
+  [
+   "e:defender",
+   1774
+  ],
+  [
+   "e:goalkeeper",
+   1751
+  ],
+  [
+   "e:midfielder",
+   1060
+  ],
+  [
+   "e:actor",
+   903
+  ],
+  [
+   "e:association football",
+   859
+  ],
+  [
+   "e:italy",
+   855
+  ],
+  [
+   "e:italian",
+   811
+  ],
+  [
+   "e:russia",
+   807
+  ],
+  [
+   "e:russian",
+   731
+  ],
+  [
+   "e:english",
+   646
+  ],
+  [
+   "e:india",
+   627
+  ]
+ ],
+ "top_base_relations": [
+  [
+   "country",
+   16540
+  ],
+  [
+   "sport",
+   15650
+  ],
+  [
+   "shares border with",
+   12846
+  ],
+  [
+   "located in the administrative territorial entity",
+   7881
+  ],
+  [
+   "contains the administrative territorial entity",
+   5650
+  ],
+  [
+   "instance of",
+   5321
+  ],
+  [
+   "occupation",
+   4648
+  ],
+  [
+   "country of citizenship",
+   4597
+  ],
+  [
+   "member of sports team",
+   3136
+  ],
+  [
+   "league or competition",
+   2714
+  ]
+ ]
+}

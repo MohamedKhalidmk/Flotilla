@@ -1,0 +1,18 @@
+{
+ "name": "cmda_local",
+ "notes": "Command A+ alone, official FP8 on 4 H100s via vLLM (cohere_command4 tool and reasoning parsers; thinking on, the template default). Same loop as qwen_alone and qwen_phi; tools through native function calling.",
+ "servers": {
+  "cmda": {
+   "url": "http://127.0.0.1:32923/v1",
+   "model": "cmda",
+   "quant": "fp8-official",
+   "native_tools": true
+  }
+ },
+ "solvers": [
+  "cmda"
+ ],
+ "n_samples": 1,
+ "max_tokens": 32768,
+ "protocol_version": "protocol-v7"
+}

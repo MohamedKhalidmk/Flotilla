@@ -1,0 +1,14 @@
+{
+  "name": "math500-phi-fp8-nvidia",
+  "model": "nvidia/Phi-4-reasoning-plus-FP8",
+  "n": 500,
+  "accuracy": 0.818,
+  "correct": 409,
+  "truncated": 368,
+  "tokens_in": 155302,
+  "tokens_out": 11803306,
+  "wall_seconds": 9820.3,
+  "tp": 1,
+  "max_tokens": 30000,
+  "gen_tokens_per_s": 1201.9
+}

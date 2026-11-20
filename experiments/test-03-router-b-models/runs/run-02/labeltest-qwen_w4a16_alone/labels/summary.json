@@ -1,0 +1,8 @@
+{
+ "model": "qwen_w4a16_alone",
+ "n": 16,
+ "correct": 14,
+ "runs": [
+  "/scratch/khaledmk/flotilla/runs/labeltest-qwen_w4a16_alone/smoke"
+ ]
+}

@@ -1,0 +1,14 @@
+{
+  "name": "math500-qwen-int4-redhat",
+  "model": "RedHatAI/Qwen3.8-27B-INT4",
+  "n": 500,
+  "accuracy": 0.988,
+  "correct": 494,
+  "truncated": 1,
+  "tokens_in": 70152,
+  "tokens_out": 1149490,
+  "wall_seconds": 1992.5,
+  "tp": 1,
+  "max_tokens": 131072,
+  "gen_tokens_per_s": 576.9
+}

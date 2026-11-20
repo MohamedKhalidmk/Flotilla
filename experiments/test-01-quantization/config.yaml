@@ -1,0 +1,10 @@
+test: 01
+benchmark: MATH-500 (all 500)
+script: flotilla/eval_math500.py
+decoding: {temperature: 0, shots: 0}
+scorer: math-verify
+max_tokens: {qwen: 131072, phi: 30000}
+builds:
+  qwen: [bf16, fp8-ours, w4a16-ours, int4-redhat]
+  phi: [bf16, fp8-ours, fp8-nvidia, w4a16-ours, w4a16-amd]
+rule: "4.1: 4-bit if within 1.0 point of 8-bit"

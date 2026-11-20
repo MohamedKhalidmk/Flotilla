@@ -1,0 +1,103 @@
+{
+ "base": "results/checkpoints/base_graphs/rog_base.json",
+ "docs": "results/checkpoints/shared_graphs/real_mh_262k_empty_start.json",
+ "base_facts": 20000,
+ "base_entities": 25490,
+ "base_relations": 750,
+ "doc_entities": 10839,
+ "shared_entities_exact": 1440,
+ "doc_entities_shared_share": 0.1329,
+ "base_facts_touching_shared": 6292,
+ "top_shared_by_base_degree": [
+  [
+   "e:united states of america",
+   797
+  ],
+  [
+   "e:united kingdom",
+   118
+  ],
+  [
+   "e:actor",
+   92
+  ],
+  [
+   "e:comedy",
+   63
+  ],
+  [
+   "e:england",
+   60
+  ],
+  [
+   "e:canada",
+   52
+  ],
+  [
+   "e:new york city",
+   52
+  ],
+  [
+   "e:france",
+   50
+  ],
+  [
+   "e:germany",
+   46
+  ],
+  [
+   "e:film producer",
+   43
+  ],
+  [
+   "e:writer",
+   40
+  ],
+  [
+   "e:politician",
+   38
+  ]
+ ],
+ "top_base_relations": [
+  [
+   "containedby",
+   1274
+  ],
+  [
+   "gender",
+   855
+  ],
+  [
+   "genre",
+   820
+  ],
+  [
+   "profession",
+   720
+  ],
+  [
+   "nationality",
+   663
+  ],
+  [
+   "contains",
+   531
+  ],
+  [
+   "subjects",
+   515
+  ],
+  [
+   "people born here",
+   414
+  ],
+  [
+   "netflix genres",
+   411
+  ],
+  [
+   "artist",
+   390
+  ]
+ ]
+}
