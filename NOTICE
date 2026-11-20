@@ -1,0 +1,7 @@
+Flotilla
+Copyright 2026 Mohamed Khaled
+
+Licensed under the Apache License, Version 2.0 (see LICENSE).
+
+Flotilla runs third-party open models and tools (Qwen3.8-27B, gpt-oss-20b, Command A+, vLLM, lm-evaluation-harness,
+lmms-eval and others) that it downloads at run time. They are not part of this repository and keep their own licenses.

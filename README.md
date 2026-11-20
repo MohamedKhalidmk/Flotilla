@@ -9,3 +9,7 @@ A compound AI system of small, quantized open models served with vLLM, measured 
 - `scripts/trillium/`: cluster setup and job scripts (Trillium GPU, def-sylu)
 
 Status: protocol draft, not frozen.
+
+## License
+
+Apache License 2.0, copyright 2026 Mohamed Khaled. See `LICENSE` and `NOTICE`. Models and tools that Flotilla downloads at run time keep their own licenses.
