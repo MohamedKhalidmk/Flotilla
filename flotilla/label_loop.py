@@ -14,25 +14,54 @@ so traces stay small. Every answer is kept with its score, tokens, calls and tim
 """
 import argparse
 import json
+import re
 from pathlib import Path
 
 from flotilla import tools
 
 
+def _plain(s: str) -> str:
+    s = re.sub(r"\\text\{([^}]*)\}", r"\1", s)
+    s = s.replace("\\$", "").replace("$", "").replace("\\%", "%")
+    return re.sub(r"\s+", "", s).lower().rstrip(".")
+
+
+def _options(task: str) -> dict:
+    """Lettered options in a math question: 'A. 0.10' lines or '\\textbf{(A)}\\ expr \\qquad' runs."""
+    out = {m.group(1): m.group(2).strip() for m in re.finditer(r"^\s*\(?([A-E])[.)]\s+(.+)$", task, re.M)}
+    for m in re.finditer(r"\\textbf\{\(([A-E])\)\}\\?\s*(.+?)(?=\\qquad|\\textbf\{\(|\$|$)", task, re.S):
+        out.setdefault(m.group(1), m.group(2).strip())
+    return out
+
+
+def math_format_match(task: str, answer: str, gold: str) -> bool:
+    """Format misses of the math checker (2026-11-20 hand check): escaped dollars and \\text{} answers, and an option
+    letter when the question asks for the letter but the gold is that option's value."""
+    if _plain(answer) and _plain(answer) == _plain(gold):
+        return True
+    a = answer.strip().strip("()").upper()
+    opts = _options(task)
+    if len(a) == 1 and a in opts:
+        v = opts[a]
+        return _plain(v) == _plain(gold) or tools.sympy_check(v, gold)["ok"]
+    return False
+
+
 def grade(item: dict, answer: str | None) -> bool:
-    """The router-label graders (same as flotilla/router_labels.py, kept identical for continuity)."""
+    """The router-label graders. 2026-11-20: math format matches, float tolerance on code tests and the corrected
+    instruction checker added after the hand check of test-04's failures (experiments/test-04-strategy-router)."""
     if answer is None:
         return False
     t = item["task_type"]
     if t == "math":
-        return tools.sympy_check(answer, item["gold"])["ok"]
+        return tools.sympy_check(answer, item["gold"])["ok"] or math_format_match(item["task"], answer, str(item["gold"]))
     if t == "science_mc":
         return answer.strip().upper()[:1] == str(item["gold"]).strip().upper()[:1]
     if t == "code":  # strip markdown fences as the small-test scorer does (v1 labels did not: fenced code always failed)
         from flotilla.scoring import strip_fence
         return tools.run_public_tests(strip_fence(answer), item["tests"], timeout_s=6)["ok"]
     if t == "instruction":
-        return tools.constraint_check(item["task"], answer)["ok"]
+        return tools.constraint_check(item["task"], answer, loop_wrapped=True)["ok"]
     return False
 
 

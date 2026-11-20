@@ -282,7 +282,7 @@ def verify(task: str, task_type: str, answer: str | None, options: list[str] | N
         r = tools.run_public_tests(answer, public_tests)
         checks.append({"name": "public_tests", "passed": r["ok"], "detail": r["output"]})
     elif task_type == "instruction":
-        r = tools.constraint_check(task, answer)
+        r = tools.constraint_check(task, answer, loop_wrapped=True)
         checks.append({"name": "constraints", "passed": r["ok"], "detail": r["detail"]})
     passed = all(c["passed"] for c in checks)
     return {"verdict": "accept" if passed else "reject", "checks": checks,
