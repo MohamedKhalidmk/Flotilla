@@ -27,6 +27,9 @@ One line per decision, with its reason. Times are America/Vancouver unless marke
 - Router-B labels un-deferred (user): rerun through the real Flotilla loop (flotilla/label_loop.py: same prompts, native tools, verifier, retry) on the 4,760 clean pool questions, 16 shards of about 300, for Qwen (W4A16) and gpt-oss-20b (user OK); Command A+ only if it passes rule 4.2. Old labels kept as router-labels-v1-broken-{qwen,phi}. Reason: routing happens either way, so the data must exist; v1 ran no tool loop.
 - Label path tested first on 16 pool questions per model (4 per task type) before the 32 shard jobs. Reason: test small before big.
 - Router B: ModernBERT-base (pretrained, fully fine-tuned, two heads) stays the main router; a cheap baseline is added (bge-small question embeddings + logistic regression per head). Both train on the clean pool only and are compared on the same held-out 10%; the simple one is used if about as good (user).
+- GRAFT question graph not adopted. Reason: 3 paid repeats 39/37/35 (mean 37.0) vs mode C 38 (single GOAt run); gold-in-final 50% vs 51%; parse worked (edges for 100/100 questions, 99 matched a graph entity) but adds a Haiku call per question for no gain.
+- GRAFT top-10 hybrid not adopted. Reason: 3 paid repeats 33/31/29 (mean 31.0) vs 38; gold-in-final 53-54% but embedding near-misses distract the answer model (same as the 50/50 hybrid).
+- Open: the 38 baseline is one GOAt run while the variants are EiG; 3 EiG baseline repeats (about $0.08) would make the comparison exact. Waits for the key.
 
 ### API spend (Anthropic)
 | When | What | Runs | Cost |
@@ -35,4 +38,6 @@ One line per decision, with its reason. Times are America/Vancouver unless marke
 | 2026-11-20 | GRAFT mode C + 50/50 hybrid, GOAt and EiG (3 runs each; 2 of the 3 per variant came from re-run commands) | 6 | $0.163 |
 | 2026-11-20 | GRAFT top-10 hybrid, EiG (2 of 3 repeats; 33%, 31%) | 2 | $0.054 |
 | 2026-11-20 | GRAFT question graph, first try: 100 parse calls, crashed before answering | 1 | $0.010 |
-| | **Total today so far** | | **$0.25** |
+| 2026-11-20 | GRAFT question graph, 3 repeats (incl. 300 parse calls) | 1 job | $0.110 |
+| 2026-11-20 | GRAFT top-10 hybrid, 3rd repeat (29%) | 1 | $0.027 |
+| | **Total today so far** | | **$0.39** |
