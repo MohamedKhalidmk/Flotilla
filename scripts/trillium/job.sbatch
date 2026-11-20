@@ -23,7 +23,8 @@ mkdir -p "$FLOTILLA_RUNS" "$C"/{vllm,triton,inductor,nv,mpl,humming}
 # Compile caches on node-local disk when the cluster gives one: several jobs compiling into one shared-scratch cache
 # at the same moment failed with "Stale file handle" (Nibi, 2026-11-20).
 if [[ -n "${SLURM_TMPDIR:-}" && -d "$SLURM_TMPDIR" ]]; then
-  export TORCHINDUCTOR_CACHE_DIR="$SLURM_TMPDIR/inductor" TRITON_CACHE_DIR="$SLURM_TMPDIR/triton"
+  export TORCHINDUCTOR_CACHE_DIR="$SLURM_TMPDIR/inductor" TRITON_CACHE_DIR="$SLURM_TMPDIR/triton" \
+         HUMMING_CACHE_DIR="$SLURM_TMPDIR/humming"  # two jobs compiling into one shared humming cache crashed (Fir)
 fi
 # humming also writes a tmp folder under $HOME (read-only on Trillium compute nodes)
 export HUMMING_TMP_DIR="${SLURM_TMPDIR:-$C}/humming-tmp"
