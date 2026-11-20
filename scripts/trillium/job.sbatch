@@ -17,8 +17,8 @@ export FLOTILLA_RUNS="$SCRATCH/flotilla/runs" PYTHONPATH="$CODE" PYTHONUNBUFFERE
 # $HOME is read-only on Trillium compute nodes too: every cache goes to scratch (FlashInfer wrote to ~/.cache)
 C="$SCRATCH/flotilla/cache"
 export XDG_CACHE_HOME="$C" VLLM_CACHE_ROOT="$C/vllm" TRITON_CACHE_DIR="$C/triton" TORCHINDUCTOR_CACHE_DIR="$C/inductor" \
-       FLASHINFER_WORKSPACE_BASE="$C" CUDA_CACHE_PATH="$C/nv" MPLCONFIGDIR="$C/mpl"
-mkdir -p "$FLOTILLA_RUNS" "$C"/{vllm,triton,inductor,nv,mpl}
+       FLASHINFER_WORKSPACE_BASE="$C" CUDA_CACHE_PATH="$C/nv" MPLCONFIGDIR="$C/mpl" HUMMING_CACHE_DIR="$C/humming"
+mkdir -p "$FLOTILLA_RUNS" "$C"/{vllm,triton,inductor,nv,mpl,humming}
 nvidia-smi --query-gpu=index,memory.used --format=csv,noheader -l 30 > "gpu-mem-$SLURM_JOB_ID.csv" &
 MON=$!
 echo "[job] $(date -Is) start on $(hostname): $*"
