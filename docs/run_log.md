@@ -68,6 +68,8 @@ One line per decision, with its reason. Times are America/Vancouver unless marke
 - Non-GPU jobs to CPU nodes (user): GRAFT's retrieval, GNN and embeddings never move tensors to a GPU, so the GOAt x3 (4663775) and question-layer x3 (4663776) jobs belong on CPU. Fir refuses partition or GPU-request changes on a queued job, and resubmitting needs the API key again (dialog), so they stay as submitted for now. Both wait on the build (dependency), not on the GPU queue. The running build (4663774) stays where it is: moving it would lose its progress. All later GRAFT runs go to CPU nodes (def-sylu_cpu).
 - Combo pilots graded (50 questions, Nibi 28121801-2). The first re-grade used the login node's system Python (no sympy or math_verify, so every math check needing them failed: 12 false negatives per route); re-graded in the Flotilla env. Combos labelled in 12 shards (~121 questions) each, 24 groups as three-cluster twins; limit 1:05 (17 GPU-s per question measured, x1.5 + 10 min load). strategy_labels grades six routes now, combos ranked after their parts until measured cost fixes the order.
 
+- Six-route pilot (50 questions, Flotilla env): accuracy Fast 0.74, Tools 0.82, Deep 0.84, Deep+Tools 0.82, Vote 0.82, Vote+Tools 0.82; mean output tokens 2,110 / 2,615 / 6,058 / 6,291 / 21,821 / 19,995; GPU-seconds 195 / 665 / 704 / 848 / 887 / 856. Neither combo is the cheapest correct route on any pilot question (labels unchanged: Fast 37, Tools 6, Deep 2, none 5; some route right on 90%). Combo labelling continues as planned (50 questions are too few to drop a route).
+
 ### API spend (Anthropic)
 | When | What | Runs | Cost |
 |---|---|---|---|
