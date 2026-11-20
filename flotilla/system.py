@@ -251,6 +251,22 @@ def vote(task_type: str, answers: list[str], public_tests: list[dict] | None = N
 
 # ------------------------------------------------------------------ verifier (deterministic first)
 
+_OPTION_LINE = re.compile(r"^\s*\(?([A-Z])[.)]\s", re.M)
+
+
+def n_options(task: str, options: list[str] | None) -> int:
+    """How many answer letters are valid: the item's options list, else the lettered lines in the question text
+    (MMLU-Pro has ten, A to J), else four. Before 2026-11-20 this fell back to four whenever an item had no options
+    list, so pool questions with options E to J had every E-J answer rejected."""
+    if options:
+        return len(options)
+    letters = _OPTION_LINE.findall(task or "")
+    run = 0
+    while run < len(letters) and letters[run] == chr(65 + run):
+        run += 1
+    return run if run >= 2 else 4
+
+
 def verify(task: str, task_type: str, answer: str | None, options: list[str] | None = None,
            public_tests: list[dict] | None = None) -> dict:
     checks = []
@@ -260,7 +276,7 @@ def verify(task: str, task_type: str, answer: str | None, options: list[str] | N
         r = tools.sympy_check(answer)
         checks.append({"name": "math_parses", "passed": r["ok"], "detail": r["detail"]})
     elif task_type in ("science_mc",) or options:
-        ok = answer.strip().upper()[:1] in [chr(65 + i) for i in range(len(options or "ABCD"))]
+        ok = answer.strip().upper()[:1] in [chr(65 + i) for i in range(n_options(task, options))]
         checks.append({"name": "valid_option", "passed": ok, "detail": answer[:20]})
     elif task_type == "code" and public_tests:
         r = tools.run_public_tests(answer, public_tests)
