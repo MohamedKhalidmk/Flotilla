@@ -19,7 +19,7 @@ ROUTES = [("fast", "Fast", "thinking off, no tools, 1 sample"),
           ("vote_memory", "Vote+Memory", "GRAFT facts, then Vote"),
           ("deep_tools_memory", "Deep+Tools+Memory", "GRAFT facts, then Deep+Tools")]
 
-graded = sorted(HERE.glob("runs/run-01/graded6/summary.json"))  # pilot; full labels (run-02) wait for the grader fixes
+graded = sorted(HERE.glob("runs/run-03/graded/summary.json"))  # full labels, fixed graders
 summ = json.loads(graded[-1].read_text()) if graded else {"per_strategy": {}, "labels": {}}
 run = graded[-1].parent.parent.name if graded else ""
 per_q = jsonl(graded[-1].parent / "per_question.jsonl") if graded else []
@@ -32,15 +32,15 @@ for key, name, what in ROUTES:
                  "output_tokens_per_question": round(s["mean_output_tokens"]) if s else None,
                  "gpu_seconds_per_question": round(s["gpu_seconds_job"] / n, 1) if s else None,
                  "cheapest_correct": summ["labels"].get(key, 0) if s else None,
-                 "run": f"{run}/{graded[-1].parent.name}" if s else "", "status": "pilot" if s else "planned"})
+                 "run": f"{run}/{graded[-1].parent.name}" if s else "", "status": "labels" if s else "planned"})
 if graded:
     rows.append({"route": "Some route right (oracle)", "what_it_does": "best route per question, known only after trying all",
                  "questions": n, "accuracy": summ.get("best_any_strategy"), "output_tokens_per_question": None,
                  "gpu_seconds_per_question": None, "cheapest_correct": None, "run": f"{run}/{graded[-1].parent.name}",
-                 "status": "pilot"})
-note = (f"Pilot: {n} pool questions, every route on every question, graded against gold (flotilla/strategy_labels.py). "
+                 "status": "labels"})
+note = (f"Full labels: {n} pool questions, every route on every question, graded against gold (flotilla/strategy_labels.py). "
         f"Cheapest correct = the label a router learns. No route right: {summ['labels'].get('none', 0)}; "
         f"some route right: {summ.get('best_any_strategy')}. GPU-seconds = whole job / questions (server load included)."
         if graded else "Not run yet.")
 write_table(HERE, "table", rows, note)
-print(len(rows), "rows,", sum(r["status"] == "pilot" for r in rows), "from", run)
+print(len(rows), "rows,", sum(r["status"] == "labels" for r in rows), "from", run)

@@ -135,7 +135,7 @@ def test04():
     fig, (ax, bx) = plt.subplots(1, 2, figsize=(10, 5.8), dpi=200, sharey=True, gridspec_kw={"width_ratios": [1.25, 1]})
     done = [r for r in rows if num(r["accuracy"]) is not None]
     frame(fig, "Which route, per question?",
-          f"Pilot: {done[0]['questions'] if done else 0} pool questions, every route on every question · Qwen 4-bit for all")
+          f"Full labels: {done[0]['questions'] if done else 0} pool questions, every route on every question, fixed graders · Qwen 4-bit for all")
     best = max((num(r["accuracy"]) for r in done if not r["route"].startswith("Some route")), default=None)
     for i, r in enumerate(rows):
         v, g = num(r["accuracy"]), num(r["gpu_seconds_per_question"])

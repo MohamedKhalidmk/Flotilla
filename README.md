@@ -9,7 +9,7 @@ A compound system on a few H100s, measured on the same benchmarks and settings a
 
 <p align="center">
   <img src="https://img.shields.io/badge/protocol-v10-22344A?style=flat-square" alt="protocol v10">
-  <img src="https://img.shields.io/badge/status-strategy%20router%20labelling-F2C230?style=flat-square" alt="status">
+  <img src="https://img.shields.io/badge/status-GRAFT%20memory%20routes-F2C230?style=flat-square" alt="status">
   <img src="https://img.shields.io/badge/serving-vLLM-22344A?style=flat-square" alt="vLLM">
   <img src="https://img.shields.io/badge/license-Apache--2.0-C8362E?style=flat-square" alt="license">
 </p>
@@ -28,7 +28,7 @@ was written down **before** the scored run that decided it, so nothing is tuned 
 | **Model** | Qwen3.8-27B, 4-bit (W4A16, ours), text and images |
 | **Small-test mean** | [**0.877**](experiments/test-02-model-small-test/table.csv) over 11 benchmarks |
 | **Routes** | Fast, Tools, Deep, Vote, Memory (GRAFT), and combinations |
-| **Now** | Labelling every route on 1,500 pool questions to train the strategy router |
+| **Now** | Route labels done (1,450 questions, fixed graders); GRAFT Memory routes, then the routers |
 | **Dropped** | Command A+ (rule 4.2), gpt-oss-20b (router gain under 1 point) |
 
 ## 🧭 How it works
@@ -55,25 +55,27 @@ Every step is logged per question: tokens, GPU time, which route answered, and w
 
 ## 📊 Strategy router (test 04)
 
-The same model, six routes so far, on 50 pilot questions where every route answered every question.
+The same model, six routes so far, on 1,450 pool questions where every route answered every question, graded with the
+fixed verifier and graders.
 
 <p align="center"><img src="results/figures/test-04-strategy-router.png" width="92%" alt="Accuracy and GPU-seconds per question for six routes"></p>
 
 | Route | Accuracy | Output tokens | GPU-s per question | Cheapest correct |
 |---|---|---|---|---|
-| Fast | [0.74](experiments/test-04-strategy-router/table.csv) | [2,110](experiments/test-04-strategy-router/table.csv) | [3.9](experiments/test-04-strategy-router/table.csv) | [37](experiments/test-04-strategy-router/table.csv) |
-| Tools | [0.82](experiments/test-04-strategy-router/table.csv) | [2,615](experiments/test-04-strategy-router/table.csv) | [13.3](experiments/test-04-strategy-router/table.csv) | [6](experiments/test-04-strategy-router/table.csv) |
-| Deep | [0.84](experiments/test-04-strategy-router/table.csv) | [6,058](experiments/test-04-strategy-router/table.csv) | [14.1](experiments/test-04-strategy-router/table.csv) | [2](experiments/test-04-strategy-router/table.csv) |
-| Deep+Tools | [0.82](experiments/test-04-strategy-router/table.csv) | [6,291](experiments/test-04-strategy-router/table.csv) | [17.0](experiments/test-04-strategy-router/table.csv) | [0](experiments/test-04-strategy-router/table.csv) |
-| Vote | [0.82](experiments/test-04-strategy-router/table.csv) | [21,821](experiments/test-04-strategy-router/table.csv) | [17.7](experiments/test-04-strategy-router/table.csv) | [0](experiments/test-04-strategy-router/table.csv) |
-| Vote+Tools | [0.82](experiments/test-04-strategy-router/table.csv) | [19,995](experiments/test-04-strategy-router/table.csv) | [17.1](experiments/test-04-strategy-router/table.csv) | [0](experiments/test-04-strategy-router/table.csv) |
+| Fast | [0.903](experiments/test-04-strategy-router/table.csv) | [2,047](experiments/test-04-strategy-router/table.csv) | [2.6](experiments/test-04-strategy-router/table.csv) | [1,310](experiments/test-04-strategy-router/table.csv) |
+| Tools | [0.925](experiments/test-04-strategy-router/table.csv) | [1,969](experiments/test-04-strategy-router/table.csv) | [4.0](experiments/test-04-strategy-router/table.csv) | [75](experiments/test-04-strategy-router/table.csv) |
+| Deep | [0.952](experiments/test-04-strategy-router/table.csv) | [4,791](experiments/test-04-strategy-router/table.csv) | [7.5](experiments/test-04-strategy-router/table.csv) | [42](experiments/test-04-strategy-router/table.csv) |
+| Deep+Tools | [0.943](experiments/test-04-strategy-router/table.csv) | [5,278](experiments/test-04-strategy-router/table.csv) | [12.1](experiments/test-04-strategy-router/table.csv) | [5](experiments/test-04-strategy-router/table.csv) |
+| Vote | [0.967](experiments/test-04-strategy-router/table.csv) | [20,373](experiments/test-04-strategy-router/table.csv) | [16.4](experiments/test-04-strategy-router/table.csv) | [0](experiments/test-04-strategy-router/table.csv) |
+| Vote+Tools | [0.963](experiments/test-04-strategy-router/table.csv) | [21,541](experiments/test-04-strategy-router/table.csv) | [20.0](experiments/test-04-strategy-router/table.csv) | [1](experiments/test-04-strategy-router/table.csv) |
 
-**So far:** Fast is the cheapest correct route on most pilot questions, and some route is right on
-[90%](experiments/test-04-strategy-router/table.csv) of them against [0.84](experiments/test-04-strategy-router/table.csv)
-for the best single route. That gap is what a router can win. All six routes have now answered the other 1,450
-questions, but checking the failures by hand found bugs in the verifier's option check and in the instruction checker
-([failure report](experiments/test-04-strategy-router/runs/run-02/audit/failure_report.md)). Those labels are fixed and
-regraded before any router is trained. The four Memory routes follow the GRAFT run.
+**So far:** Vote is the best single route ([0.967](experiments/test-04-strategy-router/table.csv)), but Fast alone is right on [0.903](experiments/test-04-strategy-router/table.csv) at about an eighth of
+Vote's GPU time, and some route is right on [98.8%](experiments/test-04-strategy-router/table.csv) of the questions. That is the room a router has, on accuracy
+and on compute. Of the 17 questions no route gets right, 10 have a wrong or unanswerable gold
+([always wrong](experiments/test-04-strategy-router/runs/run-03/audit/always_wrong.md)). Before the verifier and grader
+fixes the same routes scored 0.825 to 0.899
+([failure report](experiments/test-04-strategy-router/runs/run-02/audit/failure_report.md)). The four Memory routes
+follow the GRAFT run.
 
 ## 📜 Decisions
 
@@ -106,7 +108,7 @@ Index and rules for adding a test: [`experiments/INDEX.md`](experiments/INDEX.md
 - [x] Leakage checks
 - [x] Model choice: Qwen alone (tests 01 to 03)
 - [x] Route answers, six routes on 1,500 pool questions
-- [ ] Fix the verifier and instruction checker, regrade and rerun affected questions
+- [x] Fix the verifier and instruction checker, regrade and rerun affected questions
 - [ ] Memory routes (GRAFT on Qwen) and their labels
 - [ ] Strategy router training, held-out and small test
 - [ ] Full benchmark runs: final system and best single route
