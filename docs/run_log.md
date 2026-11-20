@@ -18,6 +18,8 @@ One line per decision, with its reason. Times are America/Vancouver unless marke
 - GRAFT: LLM entity linking not tested. Reason: only 1 of 100 questions hits the no-link fallback (user's condition was "more than a few").
 - GRAFT top-k hybrid: k=5 not paid (gold-present 51% = baseline 51%, does not beat it); k=10 qualifies for 3 paid repeats (53% > 51%). Paid repeats wait for the API key (user away; the key is never stored).
 - Command A+ kept in the test. Reason: third attempt passed the smoke check on Fir (9 items, no pipeline problem); the first two failures were the old final-round bug and a long load on Nibi scratch.
+- Router-B labels: cause found (the label script makes one call with a tools-offering prompt and no tool loop, so 22 of 34 checked Qwen labels end at a TOOL line with no answer); relabelling deferred. Reason: correct labels need the full loop over 4,856 questions per model (~30 GPU-h per 1-GPU model, far more for Command A+); first see whether the three-model oracle on the small test shows a routing gain worth it.
+- GRAFT question-graph option: built now, run when the API key is available. Reason: it needs a real Haiku call per question to parse the question (a fake gateway fakes every call), so no free check is possible.
 
 ### API spend (Anthropic)
 | When | What | Runs | Cost |
