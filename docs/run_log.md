@@ -72,6 +72,8 @@ One line per decision, with its reason. Times are America/Vancouver unless marke
 
 - Full-run chunk export (login node, Trillium) cut off: trig-login01 closed the connection and then refused new ones (node down or rebooting). Not urgent: full runs wait for the router decision. It reruns later as a CPU job (cpu nodes, not the login node), per the rule that non-GPU work goes to CPU nodes. The three Trillium label jobs run on compute nodes and are not affected.
 
+- Combo labelling done: Deep+Tools and Vote+Tools, 24 shards (22 Fir, 2 Trillium), all COMPLETED within the 1:05 limit (Deep+Tools 17-30 min, Vote+Tools 29-42 min), 1,450 traces per combo, gathered on Trillium. Graded together with the four single routes once those finish.
+
 ### API spend (Anthropic)
 | When | What | Runs | Cost |
 |---|---|---|---|
