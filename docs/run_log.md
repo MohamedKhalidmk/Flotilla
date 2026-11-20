@@ -38,6 +38,9 @@ One line per decision, with its reason. Times are America/Vancouver unless marke
 - gpt-oss-20b kept for now (user). Rule set in advance: after router B is trained, measure the real router's gain over Qwen alone on the held-out data; if it is under about 1 point, drop gpt-oss and run Qwen alone. Reason: on the small test gpt-oss was right where Qwen was wrong on only 4 of 267 items (3 of them RULER 32K).
 - Small-test LiveCodeBench scorer checked for the fence bug: not affected (it already calls strip_fence). All 69 saved answers checked: fences removed from every normally fenced answer (gpt-oss 10, Qwen 3, Command A+ 1); the one exception, Qwen lcb/3686, is double-escaped (literal "\n" for newlines), not runnable even unfenced, a model format error. No re-scoring; reports/smalltest_three_models.md unchanged.
 - GRAFT base graph built (my_method/base_graph.py): 1,201,680 RoG-WebQSP/CWQ Freebase triples -> leakage drops 5,577 (114 question topic entities), 487 (identical to a document fact), 0 (13-gram), 0 (embedding >= 0.95) -> 20,000 sampled facts, 25,490 entities, 751 relations (50x experiment D's 400-fact world). 1,440 entities shared with the document graph; 6,292 base facts touch one (mostly hubs: USA, UK, professions, genres). Build job submitted (Haiku writer onto the base graph, cap $5).
+- GRAFT exact-name build onto the RoG base cancelled after 51 of 537 chunks ($0.168). Reason: 28 s per chunk (vs 9.7 s on Nov 13) would overrun its 3-hour limit; the exact-match overlap it was meant to show is already measured from the graphs (13% of document entities, 1,440 of 10,839).
+- GRAFT writer gains Haiku entity linking (user): each new document name gets the 10 nearest base entities by bge-small name embedding, each shown with one stored fact; one Haiku call per chunk picks a candidate or "new"; names cached across chunks; every decision logged to <graph>.linking.jsonl. Rebuild submitted (cap $5, 8 h limit). Cost estimate given first: $1.2-1.8 (Haiku 5.5 at $0.10/M input, $0.50/M output, derived from the Nov 13 build's usage).
+- Domain-closer base data (Wikidata triples over FactConsolidation's 37 properties, e.g. T-REx) parked: the candidate loaders need remote dataset code (blocked); the parquet export of relbert/t_rex is the next option if Haiku linking still leaves the overlap low.
 
 ### API spend (Anthropic)
 | When | What | Runs | Cost |
@@ -48,4 +51,5 @@ One line per decision, with its reason. Times are America/Vancouver unless marke
 | 2026-11-20 | GRAFT question graph, first try: 100 parse calls, crashed before answering | 1 | $0.010 |
 | 2026-11-20 | GRAFT question graph, 3 repeats (incl. 300 parse calls) | 1 job | $0.110 |
 | 2026-11-20 | GRAFT top-10 hybrid, 3rd repeat (29%) | 1 | $0.027 |
-| | **Total today so far** | | **$0.39** |
+| 2026-11-20 | GRAFT exact-name build onto RoG base, cancelled at chunk 51 | 181 calls | $0.168 |
+| | **Total today so far** | | **$0.56** |
