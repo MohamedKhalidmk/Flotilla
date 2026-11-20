@@ -20,6 +20,11 @@ export XDG_CACHE_HOME="$C" VLLM_CACHE_ROOT="$C/vllm" TRITON_CACHE_DIR="$C/triton
        FLASHINFER_WORKSPACE_BASE="$C" CUDA_CACHE_PATH="$C/nv" MPLCONFIGDIR="$C/mpl" HUMMING_CACHE_DIR="$C/humming" \
        TIKTOKEN_ENCODINGS_BASE="$C/tiktoken" TIKTOKEN_RS_CACHE_DIR="$C/tiktoken"
 mkdir -p "$FLOTILLA_RUNS" "$C"/{vllm,triton,inductor,nv,mpl,humming}
+# Compile caches on node-local disk when the cluster gives one: several jobs compiling into one shared-scratch cache
+# at the same moment failed with "Stale file handle" (Nibi, 2026-11-20).
+if [[ -n "${SLURM_TMPDIR:-}" && -d "$SLURM_TMPDIR" ]]; then
+  export TORCHINDUCTOR_CACHE_DIR="$SLURM_TMPDIR/inductor" TRITON_CACHE_DIR="$SLURM_TMPDIR/triton"
+fi
 nvidia-smi --query-gpu=index,memory.used --format=csv,noheader -l 30 > "gpu-mem-$SLURM_JOB_ID.csv" &
 MON=$!
 echo "[job] $(date -Is) start on $(hostname): $*"
