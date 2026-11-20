@@ -88,3 +88,16 @@ def test_math_format_matches():
     assert not grade({"task_type": "math", "task": mc, "gold": "0.20"}, "B")
     geo = "The area is:\n$\\textbf{(A)}\\ \\frac{bx}{h}(h-x)\\qquad \\textbf{(B)}\\ \\frac{hx}{b}(b-x)$"
     assert grade({"task_type": "math", "task": geo, "gold": "\\frac{bx}{h}(h-x)"}, "A")
+
+
+def test_math_unicode_units_and_thousands():
+    from flotilla.label_loop import grade
+    g = lambda gold, ans: grade({"task_type": "math", "task": "q", "gold": gold}, ans)
+    assert g("(-\\infty,-2)\\cup(-2, 2)\\cup(2,\\infty)", "(-∞, -2) ∪ (-2, 2) ∪ (2, ∞)")
+    assert g("(-\\sqrt{2}, 0, \\sqrt{2})", "(-√2, 0, √2)")
+    assert g("\\$23{,}000", "23000")
+    assert g("\\$3.50", "3.5")
+    assert g("852", "852 BC")
+    assert g("4", "Brad, by 4 books")
+    assert not g("4", "Brad, by 4 books out of 26")
+    assert not g("670", "650")

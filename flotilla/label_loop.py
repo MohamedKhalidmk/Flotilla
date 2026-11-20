@@ -20,9 +20,15 @@ from pathlib import Path
 from flotilla import tools
 
 
+_UNI = {"∞": "\\infty", "∪": "\\cup", "∩": "\\cap", "−": "-", "×": "\\times", "π": "\\pi", "≤": "\\le", "≥": "\\ge"}
+
+
 def _plain(s: str) -> str:
     s = re.sub(r"\\text\{([^}]*)\}", r"\1", s)
-    s = s.replace("\\$", "").replace("$", "").replace("\\%", "%")
+    for k, v in _UNI.items():
+        s = s.replace(k, v)
+    s = re.sub(r"√\s*\(([^)]*)\)|√\s*(\w+)", lambda m: "\\sqrt{" + (m.group(1) or m.group(2)) + "}", s)
+    s = s.replace("\\$", "").replace("$", "").replace("\\%", "%").replace("{,}", "").replace("\\!", "")
     return re.sub(r"\s+", "", s).lower().rstrip(".")
 
 
@@ -37,8 +43,13 @@ def _options(task: str) -> dict:
 def math_format_match(task: str, answer: str, gold: str) -> bool:
     """Format misses of the math checker (2026-11-20 hand check): escaped dollars and \\text{} answers, and an option
     letter when the question asks for the letter but the gold is that option's value."""
-    if _plain(answer) and _plain(answer) == _plain(gold):
+    pa, pg = _plain(answer), _plain(gold)
+    if pa and (pa == pg or tools.sympy_check(pa, pg)["ok"]):
         return True
+    if re.fullmatch(r"-?\d+(?:\.\d+)?", pg.replace(",", "")):  # numeric gold, answer with a unit or words around one number
+        nums = re.findall(r"-?\d[\d,]*(?:\.\d+)?", answer)
+        if len(nums) == 1 and tools.sympy_check(nums[0].replace(",", ""), pg.replace(",", ""))["ok"]:
+            return True
     a = answer.strip().strip("()").upper()
     opts = _options(task)
     if len(a) == 1 and a in opts:
