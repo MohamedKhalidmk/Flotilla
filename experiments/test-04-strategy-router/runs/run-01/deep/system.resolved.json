@@ -1,0 +1,20 @@
+{
+ "servers": {
+  "qwen_w4a16": {
+   "url": "http://127.0.0.1:34241/v1",
+   "model": "qwen_w4a16",
+   "quant": "w4a16-ours",
+   "native_tools": true
+  }
+ },
+ "solvers": [
+  "qwen_w4a16"
+ ],
+ "max_tokens": 32768,
+ "protocol_version": "protocol-v10",
+ "name": "qwen_strategy_deep",
+ "notes": "Deep: full thinking, no tools, one answer.",
+ "tools": false,
+ "n_samples": 1,
+ "temperature": 0.6
+}

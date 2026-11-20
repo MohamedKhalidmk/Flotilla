@@ -1,0 +1,349 @@
+<!doctype html><meta charset=utf-8><title>Test 04 pilot: always wrong</title><style>body{font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;color:#1f2328;background:#fff;margin:0}
+main{max-width:1100px;margin:32px auto;padding:0 24px} h1{font-size:28px} h2{font-size:20px;margin-top:40px;border-top:1px solid #d1d9e0;padding-top:24px}
+table{border-collapse:collapse;width:100%;margin:12px 0;font-size:13.5px} th,td{border:1px solid #d1d9e0;padding:6px 10px;vertical-align:top;text-align:left}
+th{background:#f6f8fa} pre{background:#f6f8fa;padding:12px;border-radius:6px;white-space:pre-wrap;font-size:13px} td:last-child{color:#59636e;font-size:12.5px}</style><main><h1>Test 04 pilot: questions every route got wrong</h1>
+<p>5 of 50 pilot questions; 30 route answers. Built by <code>always_wrong.py</code> from <code>failures.jsonl</code> (flotilla/failure_audit.py). Diagnosis by hand after reading every answer below.</p>
+<table>
+<thead>
+<tr>
+<th>Cause (automatic, checked by hand)</th>
+<th>Route answers</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Verifier rejected a correct answer (option check accepted only A to D)</td>
+<td>23</td>
+</tr>
+<tr>
+<td>Qwen wrong</td>
+<td>6</td>
+</tr>
+<tr>
+<td>Qwen wrong in the majority (one sample was right)</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+<p>No failure here hit the token cap, and the grader matched every final answer correctly (single letters).</p>
+<h2>mmlupro-2907 · gold E</h2>
+<p><strong>Question</strong></p>
+<pre><code class="language-text">In what ways are human beings not favorable for studies of inheritance?
+
+A. Inability to conduct controlled breeding experiments
+B. Human beings can control their breeding patterns
+C. Humans have identical genetic makeup
+D. All human traits are polygenic and not influenced by environment
+E. Complex genes interaction, environmental control, long lifespan, small family sizes, ethical issues
+F. Short lifespan prevents long-term study
+G. Lack of genetic variation
+H. Too many genes to analyze accurately
+I. Humans are too complex to study
+J. Human genes are not inheritable
+</code></pre>
+<p><strong>Diagnosis:</strong> All six routes answered E, the gold answer. The verifier's valid_option check accepted only A to D (the item has no options list, and the check fell back to four letters), rejected E as invalid, and the retry had to choose from A to D, so every route ended on A.</p>
+<table>
+<thead>
+<tr>
+<th>Route</th>
+<th>Answers through the verifier</th>
+<th>Final</th>
+<th>Reasoning (end, trimmed)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fast</td>
+<td>E (reject) → A (accept); samples {'E': 1}</td>
+<td><strong>A</strong></td>
+<td>alse. Option E provides the standard, comprehensive list of difficulties associated with human genetics studies. <code>json {&quot;final_answer&quot;: &quot;E&quot;, &quot;confidence&quot;: 1.0, &quot;sources&quot;: [], &quot;tool_calls&quot;: []} </code></td>
+</tr>
+<tr>
+<td>Tools</td>
+<td>E (reject) → A (accept); samples {'E': 1}</td>
+<td><strong>A</strong></td>
+<td>most complete and accurate list of reasons why humans are unfavorable for inheritance studies. <code>json {&quot;final_answer&quot;: &quot;E&quot;, &quot;confidence&quot;: 0.95, &quot;sources&quot;: [], &quot;tool_calls&quot;: [&quot;constraint_check&quot;]} </code></td>
+</tr>
+<tr>
+<td>Deep</td>
+<td>E (reject) → A (accept); samples {'E': 1}</td>
+<td><strong>A</strong></td>
+<td>…. J false. So answer E. Need final JSON only? User says when done end with exactly one JSON block and nothing after it. final_answer one letter. So output JSON with final_answer &quot;E&quot;, confidence maybe 0.95, sources empty, tool_calls empty. Ensure no extra text.</td>
+</tr>
+<tr>
+<td>Deep+Tools</td>
+<td>E (reject) → A (accept); samples {'E': 1}</td>
+<td><strong>A</strong></td>
+<td>…s is a multiple-choice question with one correct answer. E lists the standard reasons: complex gene interactions, environmental influence, long lifespan, small family size, ethical issues. Yes, E is the comprehensive answer. I'll answer E with high confidence.</td>
+</tr>
+<tr>
+<td>Vote</td>
+<td>E (reject) → A (accept); samples {'E': 5}</td>
+<td><strong>A</strong></td>
+<td>…nstraints, cannot do controlled breeding, environmental influences, complex traits. Option A is true but incomplete. E best comprehensive. Need final answer exactly one letter. JSON with final_answer &quot;E&quot;, confidence maybe 0.95, sources empty, tool_calls empty.</td>
+</tr>
+<tr>
+<td>Vote+Tools</td>
+<td>E (reject) → A (accept); samples {'E': 5}</td>
+<td><strong>A</strong></td>
+<td>…. Option A is also partially correct, but E is more complete. The answer is E. Let me check the format: &quot;final_answer is a single letter.&quot; So the answer is E. I don't think a tool is needed, but I could use constraint_check to verify the format. Let's do that.</td>
+</tr>
+</tbody>
+</table>
+<h2>mmlupro-3042 · gold H</h2>
+<p><strong>Question</strong></p>
+<pre><code class="language-text">In attempting to map out the climatic conditions of the biosphere, would a climatologist find it helpful to correspond withan ecologist who has mapped the vegetation formations orbiomes of the biosphere?
+
+A. No, climatologists would find it more helpful to correspond with a geologist.
+B. Yes, however, it would be more beneficial to collaborate with a meteorologist.
+C. No, because the timescales on which vegetation formations change are too different from climatic shifts.
+D. Yes, but the information would be redundant since climate data already includes vegetation patterns.
+E. Yes, but only for specific types of vegetation.
+F. No, as ecologists' mapping is too detailed for the broad scales used in climatology.
+G. Yes, but only in areas where human activity has not altered the natural vegetation.
+H. Yes, vegetation-formation mapping does provide a basis for climatic mapping.
+I. No, because climatologists use satellite data exclusively for climatic mapping.
+J. No, vegetation formations have no relation to climatic conditions.
+</code></pre>
+<p><strong>Diagnosis:</strong> All six routes answered H, the gold answer. The verifier rejected H, the retry gave G, which was rejected too, and G was kept as the final answer. Same bug.</p>
+<table>
+<thead>
+<tr>
+<th>Route</th>
+<th>Answers through the verifier</th>
+<th>Final</th>
+<th>Reasoning (end, trimmed)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fast</td>
+<td>H (reject) → G (reject); samples {'H': 1}</td>
+<td><strong>G</strong></td>
+<td>tions. Therefore, the most accurate statement is that vegetation mapping provides a basis for climatic mapping. <code>json {&quot;final_answer&quot;: &quot;H&quot;, &quot;confidence&quot;: 0.95, &quot;sources&quot;: [], &quot;tool_calls&quot;: []} </code></td>
+</tr>
+<tr>
+<td>Tools</td>
+<td>H (reject) → G (reject); samples {'H': 1}</td>
+<td><strong>G</strong></td>
+<td>es provide a basis for climatic mapping. The correct answer is <strong>H</strong>. <code>json {&quot;final_answer&quot;: &quot;H&quot;, &quot;confidence&quot;: 0.95, &quot;sources&quot;: [], &quot;tool_calls&quot;: [&quot;sympy&quot;, &quot;python_exec&quot;, &quot;constraint_check&quot;]} </code></td>
+</tr>
+<tr>
+<td>Deep</td>
+<td>H (reject) → G (reject); samples {'H': 1}</td>
+<td><strong>G</strong></td>
+<td>…s. H. Need final JSON only? User says when done, end with exactly one JSON block and nothing after it. final_answer one letter. So output JSON with final_answer &quot;H&quot;, confidence maybe 0.95, sources empty, tool_calls empty. Need no extra text. Ensure valid JSON.</td>
+</tr>
+<tr>
+<td>Deep+Tools</td>
+<td>H (reject) → G (reject); samples {'H': 1}</td>
+<td><strong>G</strong></td>
+<td>…The answer is H. I'll provide the final answer directly. I don't think I need tools for this, but let me be thorough. Actually, I'll just give the answer since it's a clear conceptual question. Let me write my reasoning in plain text and then provide the JSON.</td>
+</tr>
+<tr>
+<td>Vote</td>
+<td>H (reject) → G (reject); samples {'H': 5}</td>
+<td><strong>G</strong></td>
+<td>…cology, terrestrial biomes are broad global areas with characteristic vegetation. Climate is major factor. Vegetation maps can help climate mapping. Option H exactly. Need final JSON. Need maybe confidence high. sources empty. tool_calls empty. final_answer H.</td>
+</tr>
+<tr>
+<td>Vote+Tools</td>
+<td>H (reject) → G (reject); samples {'H': 5}</td>
+<td><strong>G</strong></td>
+<td>…cipitation). Historically, climate classification (e.g., Koeppen) used vegetation as a guide. Therefore, mapping vegetation formations provides a basis for mapping climatic conditions. Answer: H. I can call constraint_check on the draft answer. Let me do that.</td>
+</tr>
+</tbody>
+</table>
+<h2>mmlupro-4099 · gold G</h2>
+<p><strong>Question</strong></p>
+<pre><code class="language-text">Assume all gases are perfect unless stated otherwise. Unless otherwise stated, thermodynamic data are for 298.15 K. Calculate the work needed for a $65 \mathrm{~kg}$ person to climb through $4.0 \mathrm{~m}$ on the surface of the Earth.
+
+A. $1.5 \times 10^3 \mathrm{J}$
+B. $3.5 \times 10^3 \mathrm{J}$
+C. $1.8 \times 10^3$$\mathrm{J}$
+D. $2.4 \times 10^3 \mathrm{J}$
+E. $3.8 \times 10^3 \mathrm{J}$
+F. $2.8 \times 10^3 \mathrm{J}$
+G. $2.6 \times 10^3$$\mathrm{J}$
+H. $3.2 \times 10^3$$\mathrm{J}$
+I. $1.2 \times 10^3 \mathrm{J}$
+J. $2.0 \times 10^3$$\mathrm{J}$
+</code></pre>
+<p><strong>Diagnosis:</strong> All six routes answered G (65 kg x 9.8 m/s² x 4.0 m ≈ 2.5 × 10³ J, closest option G = 2.6 × 10³ J), the gold answer. The verifier rejected G and every retry moved to D. Same bug.</p>
+<table>
+<thead>
+<tr>
+<th>Route</th>
+<th>Answers through the verifier</th>
+<th>Final</th>
+<th>Reasoning (end, trimmed)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fast</td>
+<td>G (reject) → D (accept); samples {'G': 1}</td>
+<td><strong>D</strong></td>
+<td>$ rounded to 2 significant figures is $2.6 \times 10^3 \mathrm{~J}$. Therefore, Option G is the correct answer. <code>json {&quot;final_answer&quot;: &quot;G&quot;, &quot;confidence&quot;: 0.95, &quot;sources&quot;: [], &quot;tool_calls&quot;: []} </code></td>
+</tr>
+<tr>
+<td>Tools</td>
+<td>G (reject) → D (accept); samples {'G': 1}</td>
+<td><strong>D</strong></td>
+<td>\times 10^3$. Let's double check if $g=10$ was intended. $65 \times 10 \times 4 = 2600 = 2.6 \times 10^3$. This matches Option G exactly. Therefore, the work needed is $2.6 \times 10^3 \mathrm{~J}$.</td>
+</tr>
+<tr>
+<td>Deep</td>
+<td>G (reject) → D (accept); samples {'G': 1}</td>
+<td><strong>D</strong></td>
+<td>…one end with exactly one JSON block and nothing after it. final_answer one letter. Need include confidence sources tool_calls. We can think in analysis. Ensure no extra text after JSON. final_answer: &quot;G&quot;. confidence maybe 0.98. sources empty. tool_calls empty.</td>
+</tr>
+<tr>
+<td>Deep+Tools</td>
+<td>G (reject) → D (accept); samples {'G': 1}</td>
+<td><strong>D</strong></td>
+<td>…m set: the answer is 2.5 × 10^3 J. But since 2.5 isn't in the options, the intended answer is probably G (2.6×10^3) using g = 9.81. Let me calculate with sympy/python to confirm. 65 × 9.81 × 4 = 2550.6 → 2.6e3. So the answer is G. Let me run python to confirm.</td>
+</tr>
+<tr>
+<td>Vote</td>
+<td>G (reject) → D (accept); samples {'G': 5}</td>
+<td><strong>D</strong></td>
+<td>…osest. Maybe if g=10: 2600 J exactly G. So answer G. Need final with JSON only? User says when done, end with exactly one JSON block and nothing after it. final_answer one letter. Need include confidence etc. No sources. tool_calls empty. Ensure no extra text.</td>
+</tr>
+<tr>
+<td>Vote+Tools</td>
+<td>G (reject) → D (accept); samples {'G': 5}</td>
+<td><strong>D</strong></td>
+<td>…4.0 m = 65 × 39.2 = 2548 J ≈ 2.5 × 10³ J. Hmm, this isn't in the options. Let me calculate: 65 × 9.8 × 4 = 2548. Options: 2.6×10³ (G) is the closest. Maybe they used g = 9.8: 2548 ≈ 2.5e3. If g=10: 2600 → 2.6×10³. So the answer is G. Let me verify with python.</td>
+</tr>
+</tbody>
+</table>
+<h2>mmlupro-10772 · gold I</h2>
+<p><strong>Question</strong></p>
+<pre><code class="language-text">Give a list of the character set used inPL/I. Also define the term'variable', and explain what is meant by an 'assign-ment statement'.
+
+A. 70 different characters, variable is constant, assignment statement assigns a variable to a value
+B. 50 different characters, variable can't vary, assignment statement assigns a variable to a function
+C. 85 different characters, variable is a label for a value, assignment statement updates the value of a variable without changing the label
+D. 90 different characters, variable is a fixed point in memory, assignment statement creates a new variable
+E. 65 different characters, variable holds temporary data, assignment statement links two variables
+F. 55 different characters, variable can change type, assignment statement copies a function's output to a variable
+G. 75 different characters, variable represents a specific type, assignment statement changes the type of a variable
+H. 80 different characters, variable is a function, assignment statement assigns a function to a variable
+I. 60 different characters, variable can vary, assignment statement assigns a value to a variable
+J. 100 different characters, variable is a placeholder, assignment statement transfers data from one variable to another
+</code></pre>
+<p><strong>Diagnosis:</strong> Five routes answered C on the first try and kept it: Qwen is wrong (it reads the question as asking about the PL/I character set size and picks the 'label for a value' wording). Only Tools first answered I, the gold answer, which the verifier rejected (same bug); one Vote+Tools sample also said I but lost the vote.</p>
+<table>
+<thead>
+<tr>
+<th>Route</th>
+<th>Answers through the verifier</th>
+<th>Final</th>
+<th>Reasoning (end, trimmed)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fast</td>
+<td>C (accept)</td>
+<td><strong>C</strong></td>
+<td>Option C is the intended answer based on the specific character count and the precise definition of assignment. <code>json {&quot;final_answer&quot;: &quot;C&quot;, &quot;confidence&quot;: 0.95, &quot;sources&quot;: [], &quot;tool_calls&quot;: []} </code></td>
+</tr>
+<tr>
+<td>Tools</td>
+<td>I (reject) → C (accept); samples {'I': 1}</td>
+<td><strong>C</strong></td>
+<td><code>json {&quot;final_answer&quot;: &quot;I&quot;, &quot;confidence&quot;: 0.7, &quot;sources&quot;: [], &quot;tool_calls&quot;: [&quot;python_exec&quot;, &quot;sympy&quot;]} </code></td>
+</tr>
+<tr>
+<td>Deep</td>
+<td>C (accept)</td>
+<td><strong>C</strong></td>
+<td>…no sources. tool_calls empty. final JSON. Double-check if PL/I character set count could be 90? Option D has 90 but variable fixed point in memory wrong. H 80 variable function wrong. J 100 placeholder maybe. C best. Let's maybe include confidence 0.85. final.</td>
+</tr>
+<tr>
+<td>Deep+Tools</td>
+<td>C (accept)</td>
+<td><strong>C</strong></td>
+<td>…lly, I recall that some PL/I textbooks describe the character set as having a specific number of characters. Without knowing the exact textbook, I'll rely on the quality of the definitions. C has the best conceptual definition. I'll go with C. Final answer: C.</td>
+</tr>
+<tr>
+<td>Vote</td>
+<td>C (accept); samples {'C': 5}</td>
+<td><strong>C</strong></td>
+<td>…'variable', and explain what is meant by an 'assign-ment statement'.&quot; It's likely from a quiz where answer C summarizes. Need final letter C. Need ensure final JSON format exactly. final_answer one letter. confidence maybe 0.9. sources empty. tool_calls empty.</td>
+</tr>
+<tr>
+<td>Vote+Tools</td>
+<td>C (accept); samples {'C': 3, 'I': 2}</td>
+<td><strong>C</strong></td>
+<td>…6 + 26 + 10 + 23 = 85. This is plausible! So the answer is C. Let me confirm: C. 85 different characters, a variable is a label for a value, an assignment statement updates the value of a variable without changing the label. Yes, I'm confident the answer is C.</td>
+</tr>
+</tbody>
+</table>
+<h2>mmlupro-3393 · gold G</h2>
+<p><strong>Question</strong></p>
+<pre><code class="language-text">Which of the following characteristics is predicted for an early-successional plant community?
+
+A. High detrital biomass
+B. High number of predatory species
+C. High presence of fully matured plant species
+D. High frequency of R-selected species
+E. High rates of soil nutrient depletion
+F. High diversity of plant species
+G. High ratios of primary production to standing-crop biomass
+H. High frequency of K-selected species
+I. Low rates of photosynthesis
+J. High niche divergence among co-occurring species
+</code></pre>
+<p><strong>Diagnosis:</strong> Deep, Deep+Tools, Vote and Vote+Tools answered G, the gold answer, and the verifier rejected it (same bug); their retries moved to D. Fast and Tools (thinking off) answered D on the first try, which is Qwen being wrong: high R-selected frequency is a plausible distractor.</p>
+<table>
+<thead>
+<tr>
+<th>Route</th>
+<th>Answers through the verifier</th>
+<th>Final</th>
+<th>Reasoning (end, trimmed)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fast</td>
+<td>D (accept)</td>
+<td><strong>D</strong></td>
+<td>nd low competition, allowing them to colonize and reproduce quickly. Therefore, Option D is the correct answer. <code>json {&quot;final_answer&quot;: &quot;D&quot;, &quot;confidence&quot;: 0.95, &quot;sources&quot;: [], &quot;tool_calls&quot;: []} </code></td>
+</tr>
+<tr>
+<td>Tools</td>
+<td>D (accept)</td>
+<td><strong>D</strong></td>
+<td>ures of early succession: - Rapid growth - High reproductive rate - Short lifespan - High dispersal - Low competitive ability These are r-selected traits. Therefore, D is the most appropriate answer.</td>
+</tr>
+<tr>
+<td>Deep</td>
+<td>G (reject) → D (accept); samples {'G': 1}</td>
+<td><strong>D</strong></td>
+<td>…ncluded P/B ratio. r/K selection was later. The phrase &quot;predicted&quot; might be from &quot;successional model predicts that early successional communities will have high P/B ratios&quot;. So G. I will final G with confidence 0.65. Need JSON exactly. Ensure no trailing text.</td>
+</tr>
+<tr>
+<td>Deep+Tools</td>
+<td>G (reject) → D (accept); samples {'G': 1}</td>
+<td><strong>D</strong></td>
+<td>…as the answer, because it's the most specific and technical characteristic of early succession. The P/B ratio is a classic metric that distinguishes early from late succession. Final answer: G. Confidence: 0.7. Let me use constraint_check to verify the format.</td>
+</tr>
+<tr>
+<td>Vote</td>
+<td>G (reject) → D (accept); samples {'G': 4, 'D': 1}</td>
+<td><strong>D</strong></td>
+<td>…al JSON valid. final_answer: &quot;G&quot;. confidence: maybe 0.72 due to D ambiguity. But if answer is D, confidence low. Could set 0.7. The instruction: confidence probability final_answer is correct. I'd set 0.75. Need no extra text after JSON. final only JSON block.</td>
+</tr>
+<tr>
+<td>Vote+Tools</td>
+<td>G (reject) → D (accept); samples {'G': 5}</td>
+<td><strong>D</strong></td>
+<td>…might be a distractor if the test maker is thinking of r/K in a different context... no, that doesn't make sense. You know what, let me just commit to G. It's a classic, defensible answer for early-successional plant communities. Let me write the final answer.</td>
+</tr>
+</tbody>
+</table>
+</main>

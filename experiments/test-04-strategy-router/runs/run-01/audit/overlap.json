@@ -1,0 +1,258 @@
+{
+ "summary": {
+  "questions": 50,
+  "routes": [
+   "fast",
+   "tools",
+   "deep",
+   "deep_tools",
+   "vote",
+   "vote_tools"
+  ],
+  "all_wrong": 5,
+  "all_wrong_by_task": {
+   "science_mc": 5
+  },
+  "all_wrong_causes_per_route": {
+   "fast": {
+    "wrong": 2,
+    "verifier": 3
+   },
+   "tools": {
+    "verifier": 4,
+    "wrong": 1
+   },
+   "deep": {
+    "wrong": 1,
+    "verifier": 4
+   },
+   "deep_tools": {
+    "wrong": 1,
+    "verifier": 4
+   },
+   "vote": {
+    "wrong": 1,
+    "verifier": 4
+   },
+   "vote_tools": {
+    "vote": 1,
+    "verifier": 4
+   }
+  },
+  "overlap": {
+   "fast": {
+    "correct": 37,
+    "only_this_route_right": 1,
+    "wrong_but_another_route_right": 8,
+    "missed_by_task": {
+     "code": 3,
+     "science_mc": 3,
+     "instruction": 2
+    },
+    "missed_causes": {
+     "wrong": 3,
+     "no_answer": 2,
+     "verifier": 3
+    }
+   },
+   "tools": {
+    "correct": 41,
+    "only_this_route_right": 1,
+    "wrong_but_another_route_right": 4,
+    "missed_by_task": {
+     "math": 1,
+     "code": 1,
+     "science_mc": 2
+    },
+    "missed_causes": {
+     "no_answer": 1,
+     "wrong": 2,
+     "verifier": 1
+    }
+   },
+   "deep": {
+    "correct": 42,
+    "only_this_route_right": 1,
+    "wrong_but_another_route_right": 3,
+    "missed_by_task": {
+     "code": 1,
+     "science_mc": 2
+    },
+    "missed_causes": {
+     "wrong": 1,
+     "verifier": 2
+    }
+   },
+   "deep_tools": {
+    "correct": 41,
+    "only_this_route_right": 0,
+    "wrong_but_another_route_right": 4,
+    "missed_by_task": {
+     "science_mc": 3,
+     "instruction": 1
+    },
+    "missed_causes": {
+     "verifier": 3,
+     "cap": 1
+    }
+   },
+   "vote": {
+    "correct": 41,
+    "only_this_route_right": 0,
+    "wrong_but_another_route_right": 4,
+    "missed_by_task": {
+     "science_mc": 4
+    },
+    "missed_causes": {
+     "verifier": 4
+    }
+   },
+   "vote_tools": {
+    "correct": 41,
+    "only_this_route_right": 0,
+    "wrong_but_another_route_right": 4,
+    "missed_by_task": {
+     "science_mc": 3,
+     "instruction": 1
+    },
+    "missed_causes": {
+     "verifier": 3,
+     "vote": 1
+    }
+   }
+  }
+ },
+ "per_route": {
+  "fast": {
+   "correct": 37,
+   "only_this_route_right": 1,
+   "wrong_but_another_route_right": 8,
+   "only_ids": [
+    "mmlupro-3895"
+   ],
+   "missed_ids": [
+    "lcb-1883_B",
+    "lcb-abc309_e",
+    "lcb-abc355_d",
+    "mmlupro-10485",
+    "mmlupro-3351",
+    "mmlupro-9919",
+    "rlvrif-4883",
+    "rlvrif-890"
+   ],
+   "missed_by_task": {
+    "code": 3,
+    "science_mc": 3,
+    "instruction": 2
+   },
+   "missed_causes": {
+    "wrong": 3,
+    "no_answer": 2,
+    "verifier": 3
+   }
+  },
+  "tools": {
+   "correct": 41,
+   "only_this_route_right": 1,
+   "wrong_but_another_route_right": 4,
+   "only_ids": [
+    "mmlupro-10485"
+   ],
+   "missed_ids": [
+    "gsm8k-train-4097",
+    "lcb-abc309_e",
+    "mmlupro-3351",
+    "mmlupro-3895"
+   ],
+   "missed_by_task": {
+    "math": 1,
+    "code": 1,
+    "science_mc": 2
+   },
+   "missed_causes": {
+    "no_answer": 1,
+    "wrong": 2,
+    "verifier": 1
+   }
+  },
+  "deep": {
+   "correct": 42,
+   "only_this_route_right": 1,
+   "wrong_but_another_route_right": 3,
+   "only_ids": [
+    "mmlupro-3351"
+   ],
+   "missed_ids": [
+    "lcb-abc332_d",
+    "mmlupro-10485",
+    "mmlupro-3895"
+   ],
+   "missed_by_task": {
+    "code": 1,
+    "science_mc": 2
+   },
+   "missed_causes": {
+    "wrong": 1,
+    "verifier": 2
+   }
+  },
+  "deep_tools": {
+   "correct": 41,
+   "only_this_route_right": 0,
+   "wrong_but_another_route_right": 4,
+   "only_ids": [],
+   "missed_ids": [
+    "mmlupro-10485",
+    "mmlupro-3351",
+    "mmlupro-3895",
+    "rlvrif-4992"
+   ],
+   "missed_by_task": {
+    "science_mc": 3,
+    "instruction": 1
+   },
+   "missed_causes": {
+    "verifier": 3,
+    "cap": 1
+   }
+  },
+  "vote": {
+   "correct": 41,
+   "only_this_route_right": 0,
+   "wrong_but_another_route_right": 4,
+   "only_ids": [],
+   "missed_ids": [
+    "mmlupro-10485",
+    "mmlupro-3351",
+    "mmlupro-3895",
+    "mmlupro-9919"
+   ],
+   "missed_by_task": {
+    "science_mc": 4
+   },
+   "missed_causes": {
+    "verifier": 4
+   }
+  },
+  "vote_tools": {
+   "correct": 41,
+   "only_this_route_right": 0,
+   "wrong_but_another_route_right": 4,
+   "only_ids": [],
+   "missed_ids": [
+    "mmlupro-10485",
+    "mmlupro-3351",
+    "mmlupro-3895",
+    "rlvrif-4883"
+   ],
+   "missed_by_task": {
+    "science_mc": 3,
+    "instruction": 1
+   },
+   "missed_causes": {
+    "verifier": 3,
+    "vote": 1
+   }
+  }
+ }
+}

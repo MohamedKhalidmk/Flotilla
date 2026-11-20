@@ -1,0 +1,10 @@
+{
+ "run_seconds": 887.3,
+ "servers": {
+  "qwen_w4a16": {
+   "gpus": 1,
+   "gpu_seconds_run": 887.3,
+   "gpu_seconds_incl_startup": 887.4
+  }
+ }
+}
