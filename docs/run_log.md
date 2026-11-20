@@ -70,6 +70,8 @@ One line per decision, with its reason. Times are America/Vancouver unless marke
 
 - Six-route pilot (50 questions, Flotilla env): accuracy Fast 0.74, Tools 0.82, Deep 0.84, Deep+Tools 0.82, Vote 0.82, Vote+Tools 0.82; mean output tokens 2,110 / 2,615 / 6,058 / 6,291 / 21,821 / 19,995; GPU-seconds 195 / 665 / 704 / 848 / 887 / 856. Neither combo is the cheapest correct route on any pilot question (labels unchanged: Fast 37, Tools 6, Deep 2, none 5; some route right on 90%). Combo labelling continues as planned (50 questions are too few to drop a route).
 
+- Full-run chunk export (login node, Trillium) cut off: trig-login01 closed the connection and then refused new ones (node down or rebooting). Not urgent: full runs wait for the router decision. It reruns later as a CPU job (cpu nodes, not the login node), per the rule that non-GPU work goes to CPU nodes. The three Trillium label jobs run on compute nodes and are not affected.
+
 ### API spend (Anthropic)
 | When | What | Runs | Cost |
 |---|---|---|---|
