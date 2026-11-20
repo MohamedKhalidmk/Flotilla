@@ -89,9 +89,13 @@ def main() -> None:
                                                          benches=None, ids=a.smoke_ids, rpm=0, max_calls=10**9,
                                                          concurrency=a.concurrency)))
             rows = [json.loads(l) for l in open(smoke / "trace.jsonl")]
-            bad = [r["item_id"] for r in rows if r["final_answer"] is None or any(
-                s["text"].startswith("ERROR") for m in r["models"] for s in m["samples"])]
-            print(f"[serve] smoke: {len(rows)} items, problems: {bad}", flush=True)
+            def capped(r):  # every sample used the whole token budget: the model ran out, the pipeline did not fail
+                caps = [system["servers"].get(m["name"], {}).get("max_tokens", system["max_tokens"]) for m in r["models"]]
+                return all(s.get("tokens_out", 0) >= c for m, c in zip(r["models"], caps) for s in m["samples"])
+            errors = [r["item_id"] for r in rows if any(s["text"].startswith("ERROR") for m in r["models"] for s in m["samples"])]
+            at_cap = [r["item_id"] for r in rows if r["final_answer"] is None and r["item_id"] not in errors and capped(r)]
+            bad = errors + [r["item_id"] for r in rows if r["final_answer"] is None and r["item_id"] not in errors + at_cap]
+            print(f"[serve] smoke: {len(rows)} items, problems: {bad}, no answer at the token cap (allowed): {at_cap}", flush=True)
             if bad or len(rows) < len(a.smoke_ids):
                 raise SystemExit("[serve] smoke check failed; full run not started")
             if a.smoke_only:

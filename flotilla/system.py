@@ -67,6 +67,14 @@ def solver_messages(task: str, task_type: str, version: str, retrieved: list[str
     return [{"role": "system", "content": system}, {"role": "user", "content": user}]
 
 
+def native_tool_prompt(system: str, version: str) -> str:
+    """Swap the TOOL-line sentence of the solver prompt for its native-tool wording (same prompt file)."""
+    md = (PROMPTS / f"solver.{version}.md").read_text()
+    text_rule = re.search(r"You may request a Python tool by writing a line\n.*?before you continue\.", md, re.S)
+    native = _section(md, "Native-tool wording (replaces the TOOL-line sentence for servers with native function calling)")
+    return system.replace(text_rule.group(0), native) if text_rule and native else system
+
+
 def client_for(srv: dict) -> AsyncOpenAI:
     key = os.environ.get(srv["api_key_env"], "") if srv.get("api_key_env") else "EMPTY"
     return AsyncOpenAI(base_url=srv["url"], api_key=key or "EMPTY", timeout=3600, max_retries=0)
@@ -156,10 +164,14 @@ async def _solve_once(name: str, srv: dict, messages: list[dict], cfg: SystemCon
     msgs = list(messages)
     native = bool(srv.get("native_tools"))
     extra = {"tools": TOOL_SCHEMAS} if native else {}
+    if native and msgs and msgs[0]["role"] == "system":  # the prompt must not teach the text TOOL-line format
+        msgs[0] = {**msgs[0], "content": native_tool_prompt(msgs[0]["content"], cfg.prompt_version)}
     for rnd in range(cfg.tool_rounds + 1):
-        if rnd == cfg.tool_rounds and rnd > 0:   # tool budget used up: the last call must answer
+        last = rnd == cfg.tool_rounds and rnd > 0
+        if last:   # tool budget used up: the last call must answer
             msgs.append({"role": "user", "content": FINAL_ROUND_NOTE})
-        r = await _create(name, srv, client, msgs, cfg, temperature, **extra)
+        r = await _create(name, srv, client, msgs, cfg, temperature,
+                          **({**extra, "tool_choice": "none"} if native and last else extra))
         msg = r.choices[0].message
         out = msg.content or ""
         tok_in += r.usage.prompt_tokens
