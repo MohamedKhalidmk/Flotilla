@@ -36,6 +36,7 @@ class SystemConfig:
     temperature: float = 0.6               # sampling for N > 1; N = 1 uses 0.0
     max_tokens: int = 32768
     tool_rounds: int = 3
+    tools: bool = True                     # False: no tool schemas sent, prompt says no tools (strategies Fast, Deep, Vote)
     cross_check: bool = False
     verifier: bool = True
     prompt_version: str = "v1"
@@ -67,11 +68,13 @@ def solver_messages(task: str, task_type: str, version: str, retrieved: list[str
     return [{"role": "system", "content": system}, {"role": "user", "content": user}]
 
 
-def native_tool_prompt(system: str, version: str) -> str:
-    """Swap the TOOL-line sentence of the solver prompt for its native-tool wording (same prompt file)."""
+def native_tool_prompt(system: str, version: str, section: str = "Native-tool wording") -> str:
+    """Swap the TOOL-line sentence of the solver prompt for another wording kept in the same prompt file:
+    the native-tool wording (tools offered through function calls) or the no-tool wording (no tools offered)."""
     md = (PROMPTS / f"solver.{version}.md").read_text()
     text_rule = re.search(r"You may request a Python tool by writing a line\n.*?before you continue\.", md, re.S)
-    native = _section(md, "Native-tool wording (replaces the TOOL-line sentence for servers with native function calling)")
+    title = next((m for m in re.findall(r"^## (.+)$", md, re.M) if m.startswith(section)), section)
+    native = _section(md, title)
     return system.replace(text_rule.group(0), native) if text_rule and native else system
 
 
@@ -163,9 +166,10 @@ async def _solve_once(name: str, srv: dict, messages: list[dict], cfg: SystemCon
     t0, tok_in, tok_out, text_all = time.time(), 0, 0, ""
     msgs = list(messages)
     native = bool(srv.get("native_tools"))
-    extra = {"tools": TOOL_SCHEMAS} if native else {}
-    if native and msgs and msgs[0]["role"] == "system":  # the prompt must not teach the text TOOL-line format
-        msgs[0] = {**msgs[0], "content": native_tool_prompt(msgs[0]["content"], cfg.prompt_version)}
+    extra = {"tools": TOOL_SCHEMAS} if native and cfg.tools else {}
+    if msgs and msgs[0]["role"] == "system" and (native or not cfg.tools):  # never teach the text TOOL-line format
+        msgs[0] = {**msgs[0], "content": native_tool_prompt(msgs[0]["content"], cfg.prompt_version,
+                                                            "Native-tool wording" if cfg.tools else "No-tool wording")}
     for rnd in range(cfg.tool_rounds + 1):
         last = rnd == cfg.tool_rounds and rnd > 0
         if last:   # tool budget used up: the last call must answer

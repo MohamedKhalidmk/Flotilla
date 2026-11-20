@@ -24,6 +24,9 @@ When you are done, end with exactly one JSON block and nothing after it:
 ## Native-tool wording (replaces the TOOL-line sentence for servers with native function calling)
 You may call the tools you are given (sympy, python_exec, constraint_check) through function calls; each result is returned to you before you continue. Do not write tool calls as text.
 
+## No-tool wording (replaces the TOOL-line sentence when the strategy offers no tools)
+No tools are available for this task: work it out yourself.
+
 ## Task-type additions (appended to the system message)
 - math: Give the final answer as a single number or expression. Use sympy to check any arithmetic or algebra you are unsure of.
 - code: final_answer is the complete program in one code block's text. You may run it against the public tests with python_exec.
