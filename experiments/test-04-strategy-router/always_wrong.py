@@ -1,86 +1,94 @@
-"""The pilot questions every route got wrong, for a person to read: question, gold, each route's answers through the
-verifier, trimmed reasoning, and the diagnosis made by hand. Reads runs/run-01/audit/failures.jsonl
-(flotilla/failure_audit.py); writes runs/run-01/audit/always_wrong.md and .html."""
-import html
+"""Questions every route got wrong, for a person to read: the question, the gold answer, each route's answer through
+the verifier, and the hand diagnosis (grader bug, verifier bug, wrong gold, or model wrong).
+
+    python experiments/test-04-strategy-router/always_wrong.py run-01   # pilot, 50 questions
+    python experiments/test-04-strategy-router/always_wrong.py run-02   # full labels, 1,450 questions
+Reads runs/<run>/audit/failures.jsonl (flotilla/failure_audit.py) and runs/<run>/audit/diagnosis.json (hand diagnosis);
+a multiple-choice question with no written diagnosis whose gold letter was a route's first answer, rejected by the
+verifier, is described from the data. Writes runs/<run>/audit/always_wrong.md and .html."""
 import json
+import sys
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-AUD = HERE / "runs" / "run-01" / "audit"
 ROUTES = {"fast": "Fast", "tools": "Tools", "deep": "Deep", "deep_tools": "Deep+Tools", "vote": "Vote", "vote_tools": "Vote+Tools"}
-
-# Hand diagnosis per question, after reading every route's answers, verifier checks and reasoning below.
-DIAGNOSIS = {
-    "mmlupro-2907": ("verifier", "All six routes answered E, the gold answer. The verifier's valid_option check accepted only A to D "
-                     "(the item has no options list, and the check fell back to four letters), rejected E as invalid, and the "
-                     "retry had to choose from A to D, so every route ended on A."),
-    "mmlupro-3042": ("verifier", "All six routes answered H, the gold answer. The verifier rejected H, the retry gave G, which was "
-                     "rejected too, and G was kept as the final answer. Same bug."),
-    "mmlupro-4099": ("verifier", "All six routes answered G (65 kg x 9.8 m/s² x 4.0 m ≈ 2.5 × 10³ J, closest option G = 2.6 × 10³ J), "
-                     "the gold answer. The verifier rejected G and every retry moved to D. Same bug."),
-    "mmlupro-3393": ("mixed", "Deep, Deep+Tools, Vote and Vote+Tools answered G, the gold answer, and the verifier rejected it "
-                     "(same bug); their retries moved to D. Fast and Tools (thinking off) answered D on the first try, which "
-                     "is Qwen being wrong: high R-selected frequency is a plausible distractor."),
-    "mmlupro-10772": ("qwen", "Five routes answered C on the first try and kept it: Qwen is wrong (it reads the question as asking "
-                      "about the PL/I character set size and picks the 'label for a value' wording). Only Tools first answered I, "
-                      "the gold answer, which the verifier rejected (same bug); one Vote+Tools sample also said I but lost the vote."),
-}
+ORDER = ["verifier bug", "grader bug", "wrong gold", "model wrong", "mixed", "not diagnosed"]
 
 
-def trim(s: str, n: int = 260) -> str:
+def first_letter(s: str) -> str:
+    return (s or "").strip().upper()[:1]
+
+
+def auto_mc(q: dict) -> tuple[str, str] | None:
+    """Multiple choice: which routes answered the gold first and were rejected by the verifier."""
+    g = first_letter(q["gold"])
+    hit = [ROUTES[s] for s, r in q["routes"].items() if r["attempts"] and first_letter(r["attempts"][0]["answer"]) == g
+           and r["attempts"][0]["verdict"] == "reject"]
+    if not hit:
+        return None
+    finals = sorted({r["final_answer"][:12] or "no answer" for r in q["routes"].values()})
+    return ("verifier bug", f"{len(hit)} of 6 routes answered {g}, the gold, on the first try ({', '.join(hit)}). The verifier's "
+            f"option check accepted only A to D (the item has no options list) and rejected it; the retries ended on "
+            f"{', '.join(finals)}.")
+
+
+def trim(s: str, n: int = 220) -> str:
     s = " ".join((s or "").split())
-    return ("…" + s[-n:]) if len(s) > n else s
+    return (s[:n] + "…") if len(s) > n else s
 
 
-def main() -> None:
-    rows = [json.loads(l) for l in open(AUD / "failures.jsonl")]
+def main(run: str) -> None:
+    aud = HERE / "runs" / run / "audit"
+    rows = [json.loads(l) for l in open(aud / "failures.jsonl")]
+    diag = json.loads((aud / "diagnosis.json").read_text()) if (aud / "diagnosis.json").exists() else {}
     qs = {}
     for r in rows:
-        qs.setdefault(r["id"], {"task": r["task"], "gold": r["gold"], "source": r["source"], "routes": {}})["routes"][r["route"]] = r
-    order = sorted(qs, key=lambda i: (DIAGNOSIS.get(i, ("z",))[0] != "verifier", i))
-    counts = {}
-    for i in qs:
-        for s, r in qs[i]["routes"].items():
-            counts[r["auto_cause"]] = counts.get(r["auto_cause"], 0) + 1
-    md = ["# Test 04 pilot: questions every route got wrong", "",
-          f"{len(qs)} of 50 pilot questions; {sum(counts.values())} route answers. Built by `always_wrong.py` from "
-          "`failures.jsonl` (flotilla/failure_audit.py). Diagnosis by hand after reading every answer below.", "",
-          "| Cause (automatic, checked by hand) | Route answers |", "|---|---|"]
-    names = {"verifier": "Verifier rejected a correct answer (option check accepted only A to D)",
-             "wrong": "Qwen wrong", "vote": "Qwen wrong in the majority (one sample was right)",
-             "cap": "Hit the 32,768-token cap", "no_answer": "No answer", "grader_suspect": "Grader missed a right answer"}
-    for c, n in sorted(counts.items(), key=lambda x: -x[1]):
-        md.append(f"| {names.get(c, c)} | {n} |")
-    md += ["", "No failure here hit the token cap, and the grader matched every final answer correctly (single letters).", ""]
-    for i in order:
-        q = qs[i]
-        tag, text = DIAGNOSIS.get(i, ("?", "not diagnosed"))
-        md += [f"## {i} · gold {q['gold']}", "", "**Question**", "", "```text", q["task"].strip(), "```", "",
-               f"**Diagnosis:** {text}", "", "| Route | Answers through the verifier | Final | Reasoning (end, trimmed) |",
-               "|---|---|---|---|"]
-        for s in ROUTES:
-            r = q["routes"].get(s)
-            if not r:
-                continue
-            att = " → ".join(f"{a['answer'][:12] or '∅'} ({a['verdict']})" for a in r["attempts"]) or "–"
-            votes = r.get("vote") or {}
-            if len(r["samples"]) > 1:
-                att += f"; samples {votes.get('counts')}"
-            reason = next((c["reasoning_tail"] or c["content_tail"] for c in r["calls"] if c.get("reasoning_tail") or c.get("content_tail")), "")
-            md.append(f"| {ROUTES[s]} | {att} | **{r['final_answer'][:20]}** | {trim(reason).replace('|', '/')} |")
-        md.append("")
-    (AUD / "always_wrong.md").write_text("\n".join(md) + "\n")
-
+        qs.setdefault(r["id"], {"task": r["task"], "gold": r["gold"], "task_type": r["task_type"], "source": r["source"],
+                                "routes": {}})["routes"][r["route"]] = r
+    for i, q in qs.items():
+        d = diag.get(i)
+        q["label"], q["why"] = (d if d else (auto_mc(q) if q["task_type"] == "science_mc" else None) or ("not diagnosed", ""))
+    counts = {k: sum(q["label"] == k for q in qs.values()) for k in ORDER}
+    n_all = json.loads((aud / "overlap.json").read_text())["summary"]["questions"]
+    md = [f"# Test 04 {run}: questions every route got wrong", "",
+          f"{len(qs)} of {n_all} questions; six routes each. For each: the question, the gold answer, every route's answer "
+          "through the verifier (first answer, verdict, final), and the diagnosis made by hand. Built by `always_wrong.py` "
+          "from `failures.jsonl` and `diagnosis.json`.", "", "| Diagnosis | Questions |", "|---|---|"]
+    md += [f"| {k} | {v} |" for k, v in counts.items() if v]
+    md += [""]
+    for k in ORDER:
+        group = sorted(i for i, q in qs.items() if q["label"] == k)
+        if not group:
+            continue
+        md += [f"## {k.capitalize()} ({len(group)})", ""]
+        for i in group:
+            q = qs[i]
+            gold = q["gold"] if q["gold"] not in (None, "None") else {
+                "instruction": "no gold answer: graded by the instruction checker", "code": "the task's stdin/stdout tests"}.get(q["task_type"], "")
+            task = q["task"].strip()
+            md += [f"### {i} · {q['task_type']} · gold: {gold}", "", "<details open><summary>Question</summary>", "", "```text",
+                   task + ("\n[… cut at 1,500 characters]" if len(task) >= 1500 else ""), "```", "", "</details>", "",
+                   f"**Diagnosis ({q['label']}):** {q['why']}", "", "| Route | First answer → verdict | Final answer |", "|---|---|---|"]
+            for s, name in ROUTES.items():
+                r = q["routes"].get(s)
+                if not r:
+                    continue
+                path = " → ".join(f"{trim(a['answer'], 40) or 'no answer'} ({a['verdict']})" for a in r["attempts"]) or "–"
+                md.append(f"| {name} | {path.replace('|', '/')} | {trim(r['final_answer'], 160).replace('|', '/') or 'no answer'} |")
+            md.append("")
+    (aud / "always_wrong.md").write_text("\n".join(md) + "\n")
     from markdown_it import MarkdownIt
-    body = MarkdownIt("commonmark", {"html": False}).enable("table").render("\n".join(md))
+    body = MarkdownIt("commonmark", {"html": True}).enable("table").render("\n".join(md))
     css = """body{font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;color:#1f2328;background:#fff;margin:0}
-main{max-width:1100px;margin:32px auto;padding:0 24px} h1{font-size:28px} h2{font-size:20px;margin-top:40px;border-top:1px solid #d1d9e0;padding-top:24px}
-table{border-collapse:collapse;width:100%;margin:12px 0;font-size:13.5px} th,td{border:1px solid #d1d9e0;padding:6px 10px;vertical-align:top;text-align:left}
-th{background:#f6f8fa} pre{background:#f6f8fa;padding:12px;border-radius:6px;white-space:pre-wrap;font-size:13px} td:last-child{color:#59636e;font-size:12.5px}"""
-    (AUD / "always_wrong.html").write_text(f"<!doctype html><meta charset=utf-8><title>Test 04 pilot: always wrong</title>"
+main{max-width:1100px;margin:32px auto;padding:0 24px} h1{font-size:28px} h2{font-size:22px;margin-top:44px;border-bottom:2px solid #1f2328;padding-bottom:6px}
+h3{font-size:16px;margin-top:30px;border-top:1px solid #d1d9e0;padding-top:18px} table{border-collapse:collapse;width:100%;margin:10px 0;font-size:13px}
+th,td{border:1px solid #d1d9e0;padding:5px 9px;vertical-align:top;text-align:left} th{background:#f6f8fa}
+pre{background:#f6f8fa;padding:12px;border-radius:6px;white-space:pre-wrap;font-size:12.5px} summary{cursor:pointer;color:#0969da}
+@media print{details{display:block} details>*{display:block}}"""
+    (aud / "always_wrong.html").write_text(f"<!doctype html><meta charset=utf-8><title>Test 04 {run}: always wrong</title>"
                                           f"<style>{css}</style><main>{body}</main>")
-    print(counts, "->", AUD / "always_wrong.md")
+    print(counts, "->", aud / "always_wrong.md")
 
 
 if __name__ == "__main__":
-    main()
+    main(sys.argv[1] if len(sys.argv) > 1 else "run-02")

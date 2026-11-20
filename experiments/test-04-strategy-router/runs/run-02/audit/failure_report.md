@@ -21,17 +21,17 @@ But the numbers above are depressed by the bugs below, which hit every route, so
 
 ## The 69 questions every route got wrong
 
-| Cause (hand-checked) | Questions | Example |
-|---|---|---|
-| Verifier rejected a correct answer: the option check accepted only A to D (MMLU-Pro has A to J) | 21 | mmlupro-3588: every route answered E (gold E) first; rejected as invalid, retries moved to H |
-| Instruction checker bug (verifier and grader both use it): "Do not include keywords" read as "include" (7), postscript accepted only as "P.S." (5), "* * *" paragraph divider not counted (4), "capital words at most N times" read as "all capitals" (3) | 19 | rlvrif-11110: answer "negative", no forbidden word, failed "0/1 constraints met" |
-| Format clash: the task asks to wrap the whole output in JSON, the loop keeps only the final_answer field | 4 | rlvrif-12275: answer "park" (correct) failed the JSON check |
-| Math grader missed a right answer (format) | 5 | prealgebra-724: "3.50" vs gold "\\$3.50"; geometry-625: answered option A, gold is option A's expression; precalculus-663: the negated unit vector, also valid |
-| Gold answer wrong or ambiguous (GSM8K train) | 5 | gsm8k-2338: 10 bottles x 2 cups + 5 half bottles = 25 (gold 30); gsm8k-1464: "three times more" read as x3, gold uses x4 |
-| Qwen wrong | 11 | 6 code (Deep and Vote also hit the 32,768-token cap on 2 to 3 routes each), 3 MMLU-Pro, AIME 2002 II-4, gsm8k-5520 |
-| Instruction, not yet diagnosed | 4 | rlvrif-12433, 13923, 3747, 7128 |
+Every question is listed with its question, gold, each route's answers and the diagnosis in
+[always_wrong.md](always_wrong.md) ([html](always_wrong.html), [pdf](always_wrong.pdf)).
 
-So about 11 to 15 of the 69 are Qwen's own errors; the rest are the loop's checks or the data.
+| Diagnosis (hand-checked) | Questions | What it was |
+|---|---|---|
+| Grader bug | 34 | Instruction checker: "Do not include keywords" read as "include" (7), postscript accepted only as "P.S." (5), "* * *" divider not counted (4), "capital words at most N" read as "all capitals" (3), whole-output-JSON rule tested on the final_answer field (4), bullets plus a JSON demand no answer can meet (1). Code: float outputs compared as text although the task allows 1e-5 to 1e-9 error (5). Math: "\\$3.50", \\text{} answers, option letter vs option value, the other valid sign of a vector (5). |
+| Verifier bug | 22 | MMLU-Pro (options A to J): routes answered the gold letter first, the option check accepted only A to D, rejected it, and the retry moved off it. |
+| Wrong gold | 6 | Five GSM8K train golds wrong or ambiguous; one interactive code problem the stored tests cannot judge. |
+| Model wrong | 7 | 2 MMLU-Pro, AIME 2002 II-4, gsm8k-5520, 3 instruction questions where no route followed the format rule. |
+
+So 7 of the 69 are Qwen's own errors.
 
 ## Causes of all route failures (automatic, before the hand check)
 
