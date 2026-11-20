@@ -53,6 +53,7 @@ One line per decision, with its reason. Times are America/Vancouver unless marke
 - test-04 full plan (user): five routes on Qwen 4-bit (Fast, Tools, Deep, Vote, Memory = GRAFT as a full route). Data: the 1,500 pool questions (Memory not applicable: no long input) plus LongMemEval (longmemeval_s, 500 questions with long chat histories, MIT, plain files), leakage-checked; the 100 FactConsolidation GRAFT questions are never used. Every route on every applicable question, graded against gold; correctness, tokens, calls, time saved. Route statistics and flags (route best almost everywhere / almost never best) are shown to the user before any router training.
 - Memory route runs GRAFT entirely on Qwen: a vLLM backend for GRAFT's gateway (Anthropic <-> OpenAI translation already exists). Sized by a 10-question LongMemEval pilot first; rough estimate 15-30 GPU-hours for 500 questions.
 - LongMemEval grading: the benchmark's official LLM-judge prompt with Haiku 5.5 as judge (independent of Qwen; about $0.25 per route for 500 questions). Reason: answers are free-form; substring matching would mis-grade paraphrases.
+- GRAFT RoG base + Haiku entity linking: not adopted. Result: Haiku matched 2,356 of 10,772 names to a base entity (21.9%, vs 13.3% by exact name); 79.3% of document facts touch a base entity, almost all through hubs (USA 1,200, football 782, Catholicism 604); documents superseded 107 base facts (5,599 document facts); gold in subgraph 53% (vs 63% empty start), gold in final facts 42% free / 41% real, accuracy 21% (one real run) vs mode C 38%. Reason: a small off-domain base mostly adds hub noise to PPR. The full T-REx run is the real test.
 
 ### API spend (Anthropic)
 | When | What | Runs | Cost |
@@ -64,4 +65,5 @@ One line per decision, with its reason. Times are America/Vancouver unless marke
 | 2026-11-20 | GRAFT question graph, 3 repeats (incl. 300 parse calls) | 1 job | $0.110 |
 | 2026-11-20 | GRAFT top-10 hybrid, 3rd repeat (29%) | 1 | $0.027 |
 | 2026-11-20 | GRAFT exact-name build onto RoG base, cancelled at chunk 51 | 181 calls | $0.168 |
-| | **Total today so far** | | **$0.56** |
+| 2026-11-20 | GRAFT RoG base: Haiku-linking write phase (1,611 calls) + 1 answer pass | 1 job | $1.647 |
+| | **Total today so far** | | **$2.21** |
