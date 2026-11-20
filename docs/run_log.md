@@ -30,6 +30,8 @@ One line per decision, with its reason. Times are America/Vancouver unless marke
 - GRAFT question graph not adopted. Reason: 3 paid repeats 39/37/35 (mean 37.0) vs mode C 38 (single GOAt run); gold-in-final 50% vs 51%; parse worked (edges for 100/100 questions, 99 matched a graph entity) but adds a Haiku call per question for no gain.
 - GRAFT top-10 hybrid not adopted. Reason: 3 paid repeats 33/31/29 (mean 31.0) vs 38; gold-in-final 53-54% but embedding near-misses distract the answer model (same as the 50/50 hybrid).
 - Open: the 38 baseline is one GOAt run while the variants are EiG; 3 EiG baseline repeats (about $0.08) would make the comparison exact. Waits for the key.
+- Label grader fixed: code answers have their markdown fences stripped before tests run, as the small-test scorer does. Reason: gpt-oss fences its code, so every fenced answer failed (0/4 -> 3/4 on the label test); the v1 labels had the same bug.
+- Label test passed (16 questions per model, real loop): Qwen 14/16, gpt-oss 12/16 (one gpt-oss item: no JSON answer block on the retry, a model format failure, scored wrong). 32 label shards (16 per model, about 300 questions each) submitted as three-cluster twins without a per-shard smoke check. Reason: the test already proved the path; limits Qwen 3:30:00, gpt-oss 2:30:00 from measured throughput (+50%).
 
 ### API spend (Anthropic)
 | When | What | Runs | Cost |
