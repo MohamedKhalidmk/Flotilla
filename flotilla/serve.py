@@ -10,6 +10,7 @@ import argparse
 import asyncio
 import json
 import os
+import socket
 import subprocess
 import sys
 import time
@@ -17,6 +18,14 @@ import urllib.request
 from pathlib import Path
 
 from flotilla import smalltest
+
+
+def free_port() -> int:
+    """A port no other process on this node holds. Several 1-GPU jobs can share a node: a fixed port 8000 let
+    jobs reach each other's servers (Nibi, 2026-11-20)."""
+    with socket.socket() as s:
+        s.bind(("127.0.0.1", 0))
+        return s.getsockname()[1]
 
 
 def wait_healthy(port: int, proc: subprocess.Popen, timeout_s: int) -> None:
@@ -45,6 +54,7 @@ def main() -> None:
     ap.add_argument("--concurrency", type=int, default=64)
     ap.add_argument("--smoke-ids", nargs="*", help="run these first; stop if any errors or has no parsed answer")
     ap.add_argument("--startup-timeout", type=int, default=3600)
+    ap.add_argument("--smoke-only", action="store_true", help="run the smoke items and stop (checks)")
     a = ap.parse_args()
 
     system = json.loads(Path(a.system).read_text())
@@ -56,7 +66,7 @@ def main() -> None:
     try:
         for i, name in enumerate(system["servers"]):
             spec = specs[name]
-            port = 8000 + i
+            port = free_port()
             gpus = ",".join(str(g) for g in range(gpu_next, gpu_next + spec["gpus"]))
             gpu_next += spec["gpus"]
             cmd = [vllm, "serve", spec["model"], "--served-model-name", name, "--port", str(port),
@@ -84,6 +94,9 @@ def main() -> None:
             print(f"[serve] smoke: {len(rows)} items, problems: {bad}", flush=True)
             if bad or len(rows) < len(a.smoke_ids):
                 raise SystemExit("[serve] smoke check failed; full run not started")
+            if a.smoke_only:
+                print("[serve] smoke only: done", flush=True)
+                return
         t_run = time.time()
         args = argparse.Namespace(config=str(cfg_path), items_dir=a.items_dir, out=str(out), benches=a.benches, ids=a.ids,
                                   rpm=0, max_calls=10**9, concurrency=a.concurrency)
