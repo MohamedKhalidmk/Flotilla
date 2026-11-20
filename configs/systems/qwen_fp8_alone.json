@@ -1,11 +1,12 @@
 {
  "name": "qwen_fp8_alone",
- "notes": "Qwen alone, our FP8 build (rule 4.1 candidate).",
+ "notes": "Qwen alone, our FP8 build (rule 4.1 candidate). Tools through native function calling (qwen3_coder parser), like gpt-oss and Command A+.",
  "servers": {
   "qwen_fp8": {
    "url": "set-by-serve",
    "model": "qwen_fp8",
-   "quant": "fp8-ours"
+   "quant": "fp8-ours",
+   "native_tools": true
   }
  },
  "solvers": [
