@@ -59,6 +59,9 @@ One line per decision, with its reason. Times are America/Vancouver unless marke
 - test-04 pilot (50 pool questions): accuracy Fast 0.74, Tools 0.82, Deep 0.84, Vote 0.82; mean output tokens 2,110 / 2,615 / 6,058 / 21,821; GPU-seconds per 50 questions 195 / 665 / 704 / 887; cheapest correct: Fast 37, Tools 6, Deep 2, Vote 0, none 5 (some route right on 90% vs 84% best single). Full labelling submitted: 6 shards (~240 questions) per route, 24 groups as three-cluster twins; limits from the pilot scaled x1.5 + load: Fast 0:35, Tools 1:35, Deep 1:40, Vote 2:00. Deep+Tools and Vote+Tools piloted first (Nibi 28121801-2). Local GPUs only, no API spend.
 - Full benchmark runs paused before any job was submitted (user): GPUs go to test-04 labelling. After the router is decided, the full benchmarks run once with the final system and once with the best single route on the same questions, as the comparison. The full-run chunk export (CPU, login node) finishes so the chunks are ready then.
 - To use more GPUs on labelling: the Deep+Tools and Vote+Tools combos go out in 12 smaller shards each (instead of 6) once their pilot gives timings.
+- GRAFT full-T-REx build restarted with checkpoints (user): the first attempt (job 4658624) had no checkpointing and a 6-hour limit that its write phase (about 4.5 h) plus 3 repeats could overrun; cancelled at about chunk 55 ($0.519). GRAFT now saves the partial graph and writer state every 75 chunks and resumes from it; reruns keep finished repeats (test: cut off at chunk 4 of 5, resumes writing only chunk 4). Resubmitted with a 9-hour limit: 4663774 build + EiG x3, then 4663775 GOAt x3 and 4663776 question layer x3 (after the build).
+- Revised write-phase estimate: about $4.5-5 (was $2-4). Reason: with 69% of names linked to the base, almost every chunk needs a decide call with longer candidate lists ($0.52 for the first ~55 chunks). Cap $8 unchanged; the user confirmed by entering the key in a dialog that stated the new estimate.
+- Mode A explained (user question): nothing was removed from GRAFT's GNN; the trained 400-node GCN (gnn_bge_400w) still scores the PPR subgraph and GOAt/EiG explain it. Not adopted: the 1,600-node retrained GCN, EiG as default, hybrid embedding search, LLM entity linking.
 
 ### API spend (Anthropic)
 | When | What | Runs | Cost |
@@ -71,4 +74,5 @@ One line per decision, with its reason. Times are America/Vancouver unless marke
 | 2026-11-20 | GRAFT top-10 hybrid, 3rd repeat (29%) | 1 | $0.027 |
 | 2026-11-20 | GRAFT exact-name build onto RoG base, cancelled at chunk 51 | 181 calls | $0.168 |
 | 2026-11-20 | GRAFT RoG base: Haiku-linking write phase (1,611 calls) + 1 answer pass | 1 job | $1.647 |
-| | **Total today so far** | | **$2.21** |
+| 2026-11-20 | GRAFT full T-REx build, first attempt cancelled at ~chunk 55 (no checkpoints) | 390 calls | $0.519 |
+| | **Total today so far** | | **$2.73** |
