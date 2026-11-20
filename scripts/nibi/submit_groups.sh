@@ -5,7 +5,7 @@
 # Trillium: FLOTILLA_SBATCH="" (whole-node defaults). Output: $SCRATCH/flotilla/runs/smalltest-<system>-<group>/ (scored per group, merged by flotilla.scoring --run ...).
 set -euo pipefail
 SYS=$1; HOURS=$2; shift 2
-CODE=/project/def-sylu/khaledmk/flotilla
+CODE=/project/def-sylu/khaledmk/flotilla; [[ -d $CODE ]] || CODE=$(readlink -f "$HOME/projects/def-sylu")/khaledmk/flotilla  # Fir has no /project/def-sylu
 for G in "$@"; do
   case $G in
     math)   B="gsm8k math500 aime2025 aime2026"; S="gsm8k/174 math500/test/geometry/248.json aime2026/28" ;;

@@ -10,7 +10,7 @@
 #SBATCH --nodes=1
 #SBATCH --output=%x-%j.out
 set -euo pipefail
-CODE=/project/def-sylu/khaledmk/flotilla
+CODE=/project/def-sylu/khaledmk/flotilla; [[ -d $CODE ]] || CODE=$(readlink -f "$HOME/projects/def-sylu")/khaledmk/flotilla  # Fir has no /project/def-sylu
 source "$CODE/scripts/trillium/modules.sh"
 export HF_HOME="$SCRATCH/flotilla/hf" HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 TRANSFORMERS_OFFLINE=1
 export FLOTILLA_RUNS="$SCRATCH/flotilla/runs" PYTHONPATH="$CODE" PYTHONUNBUFFERED=1
