@@ -23,10 +23,13 @@ One line per decision, with its reason. Times are America/Vancouver unless marke
 - Smoke check: "stopped with no answer text" now covers any sample that ends with a normal stop and no answer text, not only the forced last round. Reason: Qwen spent 29K and 19K tokens thinking on the LiveCodeBench smoke item, stopped mid-thought where it said it would run code (likely a tool call attempted inside its thinking, which the template does not support), and gave no answer; that is model behaviour, scored wrong. Limitation noted: this may cost Qwen some LiveCodeBench items.
 - GRAFT question-graph plumbing check passed (fake gateway, empty parse): gold-in-subgraph 63%, gold-in-final 51%, identical to mode C, so the parse-before-fork path works; the real run waits for the key.
 - GRAFT 1,600-node GNN (gnn_bge_1600w, same data and settings, 35 min on one H100, val recall@10 0.590 vs 0.586) not adopted, no paid runs. Reason: free check gold-in-final 48% < 51% (gold in subgraph 79% vs 63%), query time 2.25 s vs 0.20 s.
+- GRAFT paid batch 1 (6 jobs): 3 died at start without spending (jobs starting in the same second got the same run folder); the first question-graph run crashed after its 100 parse calls (texts not embedded before workers fork; fixed with a test that fails on the old code). Reruns: question graph as one job with repeats: 3, plus one more top-10 repeat. Reason: complete 3 repeats each, one job per config so folders cannot clash.
 
 ### API spend (Anthropic)
 | When | What | Runs | Cost |
 |---|---|---|---|
 | 2026-11-19/20 | GRAFT EiG variant A, real | 1 | $0.027 |
 | 2026-11-20 | GRAFT mode C + 50/50 hybrid, GOAt and EiG (3 runs each; 2 of the 3 per variant came from re-run commands) | 6 | $0.163 |
-| | **Total today** | | **$0.19** |
+| 2026-11-20 | GRAFT top-10 hybrid, EiG (2 of 3 repeats; 33%, 31%) | 2 | $0.054 |
+| 2026-11-20 | GRAFT question graph, first try: 100 parse calls, crashed before answering | 1 | $0.010 |
+| | **Total today so far** | | **$0.25** |
