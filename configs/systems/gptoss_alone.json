@@ -1,0 +1,20 @@
+{
+ "name": "gptoss_alone",
+ "notes": "gpt-oss-20b alone at medium reasoning effort, native MXFP4 (protocol-v9). Text only: no MMMU or OCRBench.",
+ "servers": {
+  "gptoss": {
+   "url": "set-by-serve",
+   "model": "gptoss",
+   "quant": "mxfp4-native",
+   "request": {
+    "reasoning_effort": "medium"
+   }
+  }
+ },
+ "solvers": [
+  "gptoss"
+ ],
+ "n_samples": 1,
+ "max_tokens": 32768,
+ "protocol_version": "protocol-v9"
+}

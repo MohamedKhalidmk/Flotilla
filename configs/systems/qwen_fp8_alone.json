@@ -1,0 +1,17 @@
+{
+ "name": "qwen_fp8_alone",
+ "notes": "Qwen alone, our FP8 build (rule 4.1 candidate).",
+ "servers": {
+  "qwen_fp8": {
+   "url": "set-by-serve",
+   "model": "qwen_fp8",
+   "quant": "fp8-ours"
+  }
+ },
+ "solvers": [
+  "qwen_fp8"
+ ],
+ "n_samples": 1,
+ "max_tokens": 32768,
+ "protocol_version": "protocol-v9"
+}
