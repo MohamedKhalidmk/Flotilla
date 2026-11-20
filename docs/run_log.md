@@ -91,6 +91,8 @@ One line per decision, with its reason. Times are America/Vancouver unless marke
 - **2026-11-20, route need on run-03 labels** (experiments/test-04-strategy-router/runs/run-03/audit/route_need.json): only-this-route-right / cheapest-correct per route: Fast 5 / 1,310, Tools 2 / 75, Deep 1 / 42, Deep+Tools 1 / 5 (one of the 5, gsm8k-train-2234, is a known wrong gold), Vote 0 / 0, Vote+Tools 1 / 1. Oracle 0.988; dropping any one route costs at most 0.35 points (Fast) and 0 for Vote. Vote, Vote+Tools and Deep+Tools are almost never needed as labels; decision on dropping them left to the user before router training.
 - **2026-11-20, GRAFT single-stopword linking rule (SGAR, user):** the bare "The" link is not extracted from the question: the exact-name question linker checks every graph entity name against the question's words, and a T-REx entity named "The" matches nearly every question. Rule added in the question linker, the question layer and the document linker: a name that is a single stopword, article or question word (NLTK English list) is never linked and never a link target; multi-word names (The Who, Take That) stay. Document links: 0 of 10,722 decisions touched such a name, so the built graph stands. Before/after count job: Fir CPU 4740873.
 
+- **2026-11-20, all six routes kept for router training (user).** Reason: the pool is mostly easier math, so Vote and the combos may matter more on hard benchmarks (AIME, GPQA, LiveCodeBench), and their labels are already paid for. To report later: how often each route is picked per benchmark.
+
 ### API spend (Anthropic)
 | When | What | Runs | Cost |
 |---|---|---|---|
