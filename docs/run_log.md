@@ -21,6 +21,8 @@ One line per decision, with its reason. Times are America/Vancouver unless marke
 - Router-B labels: cause found (the label script makes one call with a tools-offering prompt and no tool loop, so 22 of 34 checked Qwen labels end at a TOOL line with no answer); relabelling deferred. Reason: correct labels need the full loop over 4,856 questions per model (~30 GPU-h per 1-GPU model, far more for Command A+); first see whether the three-model oracle on the small test shows a routing gain worth it.
 - GRAFT question-graph option: built now, run when the API key is available. Reason: it needs a real Haiku call per question to parse the question (a fake gateway fakes every call), so no free check is possible.
 - Smoke check: "stopped with no answer text" now covers any sample that ends with a normal stop and no answer text, not only the forced last round. Reason: Qwen spent 29K and 19K tokens thinking on the LiveCodeBench smoke item, stopped mid-thought where it said it would run code (likely a tool call attempted inside its thinking, which the template does not support), and gave no answer; that is model behaviour, scored wrong. Limitation noted: this may cost Qwen some LiveCodeBench items.
+- GRAFT question-graph plumbing check passed (fake gateway, empty parse): gold-in-subgraph 63%, gold-in-final 51%, identical to mode C, so the parse-before-fork path works; the real run waits for the key.
+- GRAFT 1,600-node GNN (gnn_bge_1600w, same data and settings, 35 min on one H100, val recall@10 0.590 vs 0.586) not adopted, no paid runs. Reason: free check gold-in-final 48% < 51% (gold in subgraph 79% vs 63%), query time 2.25 s vs 0.20 s.
 
 ### API spend (Anthropic)
 | When | What | Runs | Cost |
