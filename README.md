@@ -81,7 +81,8 @@ come with their own history (LongMemEval).
 **GRAFT findings (2026-11-21, GRAFT repo):** working memory in the graph is not kept on Haiku (about 1 point over mode C
 in two rounds, inside the spread), but writing the steps into the graph beats keeping them in the prompt by 2.6 to 2.7.
 Haiku drifted: the exact prompts that scored 38 on 2026-11-13 score about 34 today, with nothing on our side changed;
-every paid Haiku batch now starts with that fixed check. Qwen, the model Flotilla ships, is next on the same setup.
+every paid Haiku batch now starts with that fixed check. GRAFT test 06: using T-REx only as a structure guide (how
+relations connect, never as facts) lifts GRAFT from 34.7 to 45.7 on Haiku; Qwen, the model Flotilla ships, is next.
 
 ## 📜 Decisions
 
