@@ -1,0 +1,113 @@
+{
+  "method": "13-gram overlap (ignoring template n-grams found in >= 2 test questions or >= 3 pool items: 1499) or BAAI/bge-small-en-v1.5 cosine >= 0.95",
+  "strict_13gram_flagged_without_template_filter": 0,
+  "test_sets": {
+    "gsm8k_test": 1319,
+    "math500": 500,
+    "aime2025": 30,
+    "aime2026": 30,
+    "ifeval": 541,
+    "lcb_test_window": 454,
+    "gpqa_diamond": 198
+  },
+  "test_sets_missing": [],
+  "pool_items": 280124,
+  "flagged": 0,
+  "kept": 280124,
+  "per_source": {
+    "lme_turn_sharegpt_user": {
+      "items": 18073,
+      "flagged": 0
+    },
+    "lme_turn_sharegpt_assistant": {
+      "items": 26324,
+      "flagged": 0
+    },
+    "lme_turn_simulated_user": {
+      "items": 52839,
+      "flagged": 0
+    },
+    "lme_turn_simulated_assistant": {
+      "items": 120930,
+      "flagged": 0
+    },
+    "lme_turn_ultrachat_assistant": {
+      "items": 35529,
+      "flagged": 0
+    },
+    "lme_question": {
+      "items": 500,
+      "flagged": 0
+    },
+    "lme_turn_ultrachat_user": {
+      "items": 25929,
+      "flagged": 0
+    }
+  },
+  "flagged_items": [],
+  "items": {
+    "rule": "an item is dropped if its question or any turn in any of its sessions (longmemeval_s or _oracle) is a flagged unit; _m histories are not checked (not used for labels)",
+    "questions": 500,
+    "dropped": 0,
+    "kept": 500,
+    "dropped_items": {},
+    "items_per_flagged_unit": {},
+    "longmemeval_s": {
+      "items": 500,
+      "kept": 500,
+      "question_type": {
+        "knowledge-update": 78,
+        "multi-session": 133,
+        "single-session-assistant": 56,
+        "single-session-preference": 30,
+        "single-session-user": 70,
+        "temporal-reasoning": 133
+      },
+      "abstention": 30
+    },
+    "split": {
+      "train": 350,
+      "dev": 76,
+      "held_out": 74
+    },
+    "split_by_type": {
+      "train": {
+        "knowledge-update": 55,
+        "multi-session": 93,
+        "single-session-assistant": 39,
+        "single-session-preference": 21,
+        "single-session-user": 49,
+        "temporal-reasoning": 93
+      },
+      "dev": {
+        "knowledge-update": 11,
+        "multi-session": 20,
+        "single-session-assistant": 9,
+        "single-session-preference": 5,
+        "single-session-user": 11,
+        "temporal-reasoning": 20
+      },
+      "held_out": {
+        "knowledge-update": 12,
+        "multi-session": 20,
+        "single-session-assistant": 8,
+        "single-session-preference": 4,
+        "single-session-user": 10,
+        "temporal-reasoning": 20
+      }
+    },
+    "longmemeval_oracle": {
+      "items": 500,
+      "kept": 500,
+      "question_type": {
+        "knowledge-update": 78,
+        "multi-session": 133,
+        "single-session-assistant": 56,
+        "single-session-preference": 30,
+        "single-session-user": 70,
+        "temporal-reasoning": 133
+      },
+      "abstention": 30
+    }
+  }
+}
