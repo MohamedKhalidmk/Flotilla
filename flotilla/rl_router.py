@@ -343,9 +343,9 @@ def router_probs(name: str, d: Path, sp, train, out: Path, device: str | None) -
         if name == "label":
             zm = np.where(sp.mask, z, -np.inf)
             e = np.exp(zm - zm.max(1, keepdims=True))
-            return e / e.sum(1, keepdims=True), sr.masked_argmax(z, sp.mask)
+            return e / e.sum(1, keepdims=True), sr.masked_argmax(z, sp.mask, sp.cost)
         p = 1 / (1 + np.exp(-z))
-        return p, sr.cheapest_above(p, sp.mask, meta["params"]["tau"])
+        return p, sr.cheapest_above(p, sp.mask, meta["params"]["tau"], sp.cost)
     x = sr.cached_embed(out, sp, device)
     if name == "bge_lr":
         import pickle
@@ -361,7 +361,7 @@ def router_probs(name: str, d: Path, sp, train, out: Path, device: str | None) -
         if list(z["ids"]) != train.ids:
             raise SystemExit("knn: saved training questions differ from the current train split")
         p = sr.knn_proba(x, z["x"], train, meta["params"]["k"])
-    return p, sr.cheapest_above(p, sp.mask, meta["params"]["tau"])
+    return p, sr.cheapest_above(p, sp.mask, meta["params"]["tau"], sp.cost)
 
 
 def cmd_priors(a) -> None:
