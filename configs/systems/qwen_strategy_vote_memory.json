@@ -1,0 +1,29 @@
+{
+ "servers": {
+  "qwen_w4a16": {
+   "url": "set-by-serve",
+   "model": "qwen_w4a16",
+   "quant": "w4a16-ours",
+   "native_tools": true
+  }
+ },
+ "solvers": [
+  "qwen_w4a16"
+ ],
+ "max_tokens": 32768,
+ "protocol_version": "protocol-v10",
+ "name": "qwen_strategy_vote_memory",
+ "notes": "Vote+Memory: Vote (full thinking, no tools, 5 samples at 0.6, majority) plus GRAFT facts from the question's own history. Only on items with sessions (LongMemEval); graph built once per history and shared by the four Memory routes (flotilla/memory_route.py).",
+ "tools": false,
+ "n_samples": 5,
+ "temperature": 0.6,
+ "extra": {
+  "memory": {
+   "base_route": "vote",
+   "graft_preset": "plain_c",
+   "graft": {
+    "llm_mode": "local"
+   }
+  }
+ }
+}

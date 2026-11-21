@@ -73,6 +73,8 @@ def grade(item: dict, answer: str | None) -> bool:
         return tools.run_public_tests(strip_fence(answer), item["tests"], timeout_s=6)["ok"]
     if t == "instruction":
         return tools.constraint_check(item["task"], answer, loop_wrapped=True)["ok"]
+    if t == "memory":  # LongMemEval: LLM judge (flotilla/memory_route.py judge), never a silent False here
+        raise ValueError("memory answers are graded by LongMemEval's judge: python -m flotilla.memory_route judge")
     return False
 
 

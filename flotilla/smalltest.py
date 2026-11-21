@@ -71,6 +71,29 @@ async def run(a) -> None:
     trace_path = out / "trace.jsonl"
     done = {json.loads(l)["item_id"] for l in open(trace_path)} if trace_path.exists() else set()
     items = [it for it in load_items(a.items_dir, a.benches) if it["item_id"] not in done and (not a.ids or it["item_id"] in a.ids)]
+    # Memory routes (flotilla/memory_route.py): LongMemEval items get the run-item shape; items without a history are
+    # skipped (the route is unavailable on them, not wrong); graphs are built or loaded before any answer
+    # (base-route runs leave LongMemEval items as they are: how they show the history is flotilla/longmemeval.py's call)
+    from flotilla import memory_route
+    mem_conf = cfg.extra.get("memory")
+    prepared = {}
+    if mem_conf:
+        items = [memory_route.normalize_item(it) for it in items]
+        no_history = [it["item_id"] for it in items if not memory_route.has_memory(it)]
+        items = [it for it in items if memory_route.has_memory(it)]
+        print(f"Memory route: {len(no_history)} items have no history (route unavailable, skipped)", flush=True)
+        t_prep = time.time()
+        prepared = await asyncio.to_thread(memory_route.prepare, items, mem_conf,
+                                           memory_route.llm_for(mem_conf, cfg.servers, cfg.solvers),
+                                           memory_route.default_cache(out), getattr(a, "build_workers", 16))
+        built = [m for m in prepared.values() if m.get("built_in_this_run")]
+        # build time and cost apart from answering (the run's GPU time includes this; labels subtract it)
+        (out / "graft_prepare.json").write_text(json.dumps({
+            "wall_seconds": round(time.time() - t_prep, 1), "histories": len(prepared), "built": len(built),
+            "skipped_no_history": len(no_history), "errors": [k for k, m in prepared.items() if m.get("error")],
+            "build_llm_calls": sum(m["build"].get("llm_calls") or 0 for m in built),
+            "build_input_tokens": sum(m["build"].get("input_tokens") or 0 for m in built),
+            "build_output_tokens": sum(m["build"].get("output_tokens") or 0 for m in built)}, indent=1))
     print(f"{len(items)} items to run ({len(done)} already done); calls used so far {limiter.total}", flush=True)
     (out / "config.json").write_text(json.dumps({**conf, "rpm": a.rpm, "max_calls": a.max_calls}, indent=1))
     sem = asyncio.Semaphore(a.concurrency)
@@ -88,7 +111,12 @@ async def run(a) -> None:
                        prompt_versions={"solver": cfg.prompt_version, "verifier": cfg.verifier_version},
                        benchmark=it["bench"], item_id=it["item_id"], split="dev", gold=it.get("gold") if it["scorer"] != "lcb" else None)
             try:
-                await answer(it, route, cfg, tr)
+                if mem_conf:
+                    tr.prompt_versions["memory_block"] = memory_route.MEMORY_BLOCK_VERSION
+                    route = {**route, "route": f"{mem_conf['base_route']}+memory", "task_type": "memory"}
+                    await answer(memory_route.with_memory(it, prepared.get(it["item_id"]), tr), route, cfg, tr)
+                else:
+                    await answer(it, route, cfg, tr)
             except CallBudget as e:
                 stop.set()
                 print(f"STOP: {e}", flush=True)
