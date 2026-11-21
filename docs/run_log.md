@@ -126,6 +126,7 @@ One line per decision, with its reason. Times are America/Vancouver unless marke
 - **2026-11-21, GRAFT test 06 result (Haiku, 3 repeats):** B, T-REx as a structure guide (relation mapping, missed revisions, chain planning; no T-REx fact shown), 45.7 (47/46/44) vs A 34.7: **kept**. C, T-REx as a walk-only bridge, 17.3; D, C plus 5 labelled background facts, 17.7: not adopted. Spend $0.273 (B $0.110, C $0.067, D $0.086, the two Haiku checks $0.010, which collided in one folder; fixed in GRAFT eval/run.py: run folders carry the job id and an owner). Nibi (CPU, GPU, Qwen) and Trillium (free CPU only, no internet on compute nodes) are set up as twins of Fir.
 - **2026-11-21, Qwen GRAFT job widened:** the pending Fir job 4823564 was replaced by one Qwen job running mode C, the T-REx guide (test 06 B), and working memory C v2 and C- v2 on the empty-start graph: Fir 4864986 (H100) and a Nibi twin 28252727 on a 40 GB H100 slice (the group's full-H100 fairshare on Nibi is low); whichever starts first runs. Free (local Qwen).
 - **2026-11-21, decisions (user):** routers compare against Vote with a 0.5-point dev tuning margin; the T-REx guide (GRAFT test 06, 45.7) is GRAFT's default, used for the Qwen runs and the four Memory routes (preset guide_b); live RL also reports questions solved that every fixed route missed (wrong-gold questions excluded), with their chains. Submitted: a clean fixed Haiku check on its own (Fir 4867999) and the same-day A vs guide confirmation (A 4868000/4868001, guide 4868003/4868005), about $0.23, cap $1 each. GRAFT restyle: already merged into main (PR #6, on the user's earlier go); charts.py removed on graft-linking-hybrid only.
+- **2026-11-21, same-day confirmation:** clean fixed Haiku check on its own: 36 (range so far 33-36), request IDs logged on all 100 calls. Arm A 34.0 (34/34/34) vs the T-REx guide 46.0 (46/43/49) the same day: +12.0, the gain holds. Spend $0.217.
 
 ### API spend (Anthropic)
 | When | What | Runs | Cost |
@@ -147,4 +148,5 @@ One line per decision, with its reason. Times are America/Vancouver unless marke
 | 2026-11-21 | Haiku baseline check: 2026-11-13 commit x3, replay of the 38 run's facts x3, arm A rerun x3 | 2 jobs | $0.244 |
 | 2026-11-21 | GRAFT working memory round 2: C v2 x3 $0.240, C- v2 x3 $0.243 | 2 jobs | $0.483 |
 | 2026-11-21 | GRAFT test 06: guide B, bridge C, background D, 3 repeats each, plus Haiku checks | 3 jobs | $0.273 |
-| | **Total so far** | | **$6.80** |
+| 2026-11-21 | Same-day confirmation: Haiku check, arm A x3, guide x3 | 3 jobs | $0.217 |
+| | **Total so far** | | **$7.02** |
