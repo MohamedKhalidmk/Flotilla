@@ -27,9 +27,11 @@ Routers (test-04 README, Setup > Routers):
   knn      bge-small embeddings, cosine k nearest training questions; a route's chance = share of the neighbours (that
            have the route) on which it was right. Same rule as success; k and tau tuned on dev.
 
-Ties. Routes are ordered cheapest first (GPU-seconds; equal costs keep summary.json order). Every tie between routes
-goes to the cheaper route: label = cheapest correct route; argmax ties pick the cheaper route; "cheapest above tau" has
-no ties by construction; kNN neighbours with equal similarity are taken in training order.
+Ties. Routes are ordered cheapest first (GPU-seconds; equal costs keep summary.json order). "Cheaper" is judged per
+item (2026-11-21): by the row's own per-route gpu_seconds when the labels carry them (LongMemEval's full-history base
+routes cost far more than its Memory routes, the pool the other way round), else by that global order; equal per-item
+costs fall back to the global order. Every tie between routes goes to the cheaper route: label = cheapest correct
+route; argmax ties pick the cheaper route; "cheapest above tau" has no ties by construction; kNN neighbours with equal similarity are taken in training order.
 "none" (no route right). label: those items are left out of training (no route is a right answer, so they teach the
 classifier nothing about which route works); success / bge_lr / knn: kept, all routes 0, a real signal that the
 question is hard. When no available route reaches tau, the router picks the available route with the highest
@@ -87,6 +89,7 @@ class Split:
     gpu: np.ndarray              # (n, R) GPU-seconds, 0 where unavailable
     tokens: np.ndarray           # (n, R) output tokens
     routes: list = field(default_factory=list)
+    cost: np.ndarray | None = None  # (n, R) per-item cost order: the row's own gpu_seconds, else the route's mean; inf where unavailable
 
     def __len__(self):
         return len(self.ids)
@@ -94,7 +97,8 @@ class Split:
     def subset(self, idx) -> "Split":
         idx = list(idx)
         return Split(self.name, [self.ids[i] for i in idx], [self.texts[i] for i in idx], [self.sources[i] for i in idx],
-                     self.correct[idx], self.mask[idx], self.gpu[idx], self.tokens[idx], self.routes)
+                     self.correct[idx], self.mask[idx], self.gpu[idx], self.tokens[idx], self.routes,
+                     None if self.cost is None else self.cost[idx])
 
 
 def route_costs(summary: dict, routes_seen: set) -> tuple[list, dict, dict]:
@@ -180,6 +184,7 @@ def load(labels: str, items: list[str], names: list[str], held_out_ok: bool = Fa
     for n, idl in ids.items():
         R, N = len(routes), len(idl)
         c, m, g, t = np.zeros((N, R)), np.zeros((N, R), bool), np.zeros((N, R)), np.zeros((N, R))
+        oc = np.full((N, R), np.inf)  # cost order per item (see Ties in the module docstring)
         for a, i in enumerate(idl):
             row = rows[i]
             for b, r in enumerate(routes):
@@ -187,6 +192,7 @@ def load(labels: str, items: list[str], names: list[str], held_out_ok: bool = Fa
                 if not (isinstance(v, dict) and "correct" in v):
                     continue
                 m[a, b], c[a, b], t[a, b] = True, float(bool(v["correct"])), float(v.get("tokens_out") or 0)
+                oc[a, b] = float(v["gpu_seconds"]) if v.get("gpu_seconds") is not None else cost[r]
                 if v.get("gpu_seconds") is not None:
                     g[a, b] = float(v["gpu_seconds"])
                 elif rate[r] is not None and v.get("wall_seconds") is not None:
@@ -196,7 +202,7 @@ def load(labels: str, items: list[str], names: list[str], held_out_ok: bool = Fa
         empty = np.where(~m.any(1))[0]
         if len(empty):
             raise SystemExit(f"{len(empty)} {n} items have no route, e.g. {idl[empty[0]]}")
-        out[n] = Split(n, idl, [texts[i] for i in idl], [rows[i]["source"] for i in idl], c, m, g, t, routes)
+        out[n] = Split(n, idl, [texts[i] for i in idl], [rows[i]["source"] for i in idl], c, m, g, t, routes, oc)
     hashes = {f: hashlib.sha256((lab / f).read_bytes()).hexdigest()[:16] for f in ("per_question.jsonl", "split.json", "summary.json")}
     acc = {r: v["accuracy"] for r, v in summary["per_strategy"].items() if "accuracy" in v}
     return out, {"summary_accuracy": acc, "routes": routes, "cost_gpu_s": {r: round(cost[r], 3) for r in routes}, "gpu_s_per_wall_s": rate,
@@ -205,21 +211,33 @@ def load(labels: str, items: list[str], names: list[str], held_out_ok: bool = Fa
 
 # ---------------------------------------------------------------- shared rules
 
-def label_index(correct: np.ndarray, mask: np.ndarray) -> np.ndarray:
-    """Cheapest correct available route per item (routes are cheapest first), -1 for "none"."""
+def _cheapest(ok: np.ndarray, cost: np.ndarray | None) -> np.ndarray:
+    """Per item, the cheapest route among ok: by the item's own cost row when given (equal costs: the global order,
+    i.e. the lower column), else the first ok column (routes are globally cheapest first). Items with no ok route: 0."""
+    if cost is None:
+        return ok.argmax(1)
+    return np.where(ok, cost, np.inf).argmin(1)
+
+
+def label_index(correct: np.ndarray, mask: np.ndarray, cost: np.ndarray | None = None) -> np.ndarray:
+    """Cheapest correct available route per item (per-item costs when given, else routes cheapest first), -1 for "none"."""
     ok = (correct > 0.5) & mask
-    return np.where(ok.any(1), ok.argmax(1), -1)
+    return np.where(ok.any(1), _cheapest(ok, cost), -1)
 
 
-def masked_argmax(score: np.ndarray, mask: np.ndarray) -> np.ndarray:
-    """Highest score among available routes; np.argmax takes the first maximum = the cheaper route on ties."""
-    return np.where(mask, score, -np.inf).argmax(1)
+def masked_argmax(score: np.ndarray, mask: np.ndarray, cost: np.ndarray | None = None) -> np.ndarray:
+    """Highest score among available routes; ties go to the cheaper route (the item's own costs when given)."""
+    z = np.where(mask, score, -np.inf)
+    if cost is None:
+        return z.argmax(1)
+    return _cheapest(mask & (z >= z.max(1, keepdims=True)), cost)
 
 
-def cheapest_above(p: np.ndarray, mask: np.ndarray, tau: float) -> np.ndarray:
-    """Cheapest available route with p >= tau; if none reaches tau, the available route with the highest p."""
+def cheapest_above(p: np.ndarray, mask: np.ndarray, tau: float, cost: np.ndarray | None = None) -> np.ndarray:
+    """Cheapest available route with p >= tau (the item's own costs when given); if none reaches tau, the available
+    route with the highest p."""
     ok = (p >= tau - EPS) & mask
-    return np.where(ok.any(1), ok.argmax(1), masked_argmax(p, mask))
+    return np.where(ok.any(1), _cheapest(ok, cost), masked_argmax(p, mask, cost))
 
 
 def evaluate(picks: np.ndarray, sp: Split) -> dict:
@@ -258,8 +276,8 @@ def best_fixed(train: Split, summary_acc: dict | None = None, override: str | No
 
 
 def oracle_picks(sp: Split) -> np.ndarray:
-    lab = label_index(sp.correct, sp.mask)
-    return np.where(lab >= 0, lab, sp.mask.argmax(1))  # "none": the cheapest available route (wrong anyway)
+    lab = label_index(sp.correct, sp.mask, sp.cost)
+    return np.where(lab >= 0, lab, _cheapest(sp.mask, sp.cost))  # "none": the cheapest available route (wrong anyway)
 
 
 def keep_rule(res: dict, ref: dict) -> str:
@@ -288,7 +306,7 @@ def choose(cands: list[dict], ref: dict, mode: str, margin: float) -> dict:
 def tune_tau(p: np.ndarray, dev: Split, ref: dict, mode: str, margin: float, extra: dict | None = None) -> tuple[dict, list]:
     cands = []
     for tau in THRESHOLDS:
-        r = evaluate(cheapest_above(p, dev.mask, tau), dev)
+        r = evaluate(cheapest_above(p, dev.mask, tau, dev.cost), dev)
         cands.append({"params": {**(extra or {}), "tau": tau}, "accuracy": r["accuracy"], "gpu_seconds": r["gpu_seconds"]})
     return choose(cands, ref, mode, margin), cands
 
@@ -414,7 +432,7 @@ def train_modernbert(kind: str, train: Split, dev_sp: Split, a, log) -> tuple:
     set_seed(a.seed)
     dev = a.device or ("cuda" if torch.cuda.is_available() else "cpu")
     R = len(train.routes)
-    lab = label_index(train.correct, train.mask)
+    lab = label_index(train.correct, train.mask, train.cost)
     idx = [i for i in range(len(train)) if kind == "success" or lab[i] >= 0]
     rng = random.Random(a.seed)
     if a.max_train and a.max_train < len(idx):
@@ -463,7 +481,7 @@ def train_modernbert(kind: str, train: Split, dev_sp: Split, a, log) -> tuple:
         z = mb_scores(net, tok, dev_sp.texts, dev, a.max_len)
         t_eval += time.time() - t0
         if kind == "label":
-            r = evaluate(masked_argmax(z, dev_sp.mask), dev_sp)
+            r = evaluate(masked_argmax(z, dev_sp.mask, dev_sp.cost), dev_sp)
             score = (r["accuracy"], -r["gpu_seconds"])
             rec = {"epoch": ep + 1, "steps": step, "loss": round(float(loss), 4), "dev_accuracy": round(r["accuracy"], 4),
                    "dev_gpu_seconds": round(r["gpu_seconds"], 2)}
@@ -537,13 +555,13 @@ def train_routers(a, log=print) -> dict:
                          "max_train": a.max_train, "max_steps": a.max_steps, "balanced": a.balanced,
                          "epoch_log": epochs, "timing": timing})
             if name == "label":
-                picks = masked_argmax(z, dev_sp.mask)
+                picks = masked_argmax(z, dev_sp.mask, dev_sp.cost)
                 meta["params"] = {}
             else:
                 p = 1 / (1 + np.exp(-z))
                 pick, cands = tune_tau(p, dev_sp, ref, a.tune, a.margin)
                 meta.update({"params": pick["params"], "tuning": cands})
-                picks = cheapest_above(p, dev_sp.mask, pick["params"]["tau"])
+                picks = cheapest_above(p, dev_sp.mask, pick["params"]["tau"], dev_sp.cost)
             import torch
             torch.save(net.state_dict(), d / "model.pt")
             tok.save_pretrained(d)
@@ -561,7 +579,7 @@ def train_routers(a, log=print) -> dict:
                 C, tau = pick["params"]["C"], pick["params"]["tau"]
                 with open(d / "model.pkl", "wb") as f:
                     pickle.dump(models[C], f)
-                picks = cheapest_above(models[C].proba(x_dev, len(train.routes)), dev_sp.mask, tau)
+                picks = cheapest_above(models[C].proba(x_dev, len(train.routes)), dev_sp.mask, tau, dev_sp.cost)
                 meta.update({"embedder": EMBEDDER, "params": pick["params"], "tuning": cands})
             else:
                 cands = []
@@ -574,7 +592,7 @@ def train_routers(a, log=print) -> dict:
                 k, tau = pick["params"]["k"], pick["params"]["tau"]
                 np.savez(d / "knn.npz", x=x_tr, correct=train.correct, mask=train.mask, routes=np.array(train.routes),
                          ids=np.array(train.ids))
-                picks = cheapest_above(knn_proba(x_dev, x_tr, train, k), dev_sp.mask, tau)
+                picks = cheapest_above(knn_proba(x_dev, x_tr, train, k), dev_sp.mask, tau, dev_sp.cost)
                 meta.update({"embedder": EMBEDDER, "params": pick["params"], "tuning": cands})
         res = evaluate(picks, dev_sp)
         meta.update({"dev": res, "seconds": round(time.time() - t0, 1)})
@@ -597,17 +615,17 @@ def predict(name: str, d: Path, sp: Split, train: Split, out: Path, device: str 
         net.load_state_dict(torch.load(d / "model.pt", map_location=dev))
         z = mb_scores(net, AutoTokenizer.from_pretrained(d), sp.texts, dev, meta["max_len"])
         if name == "label":
-            return masked_argmax(z, sp.mask)
-        return cheapest_above(1 / (1 + np.exp(-z)), sp.mask, meta["params"]["tau"])
+            return masked_argmax(z, sp.mask, sp.cost)
+        return cheapest_above(1 / (1 + np.exp(-z)), sp.mask, meta["params"]["tau"], sp.cost)
     x = cached_embed(out, sp, device)
     if name == "bge_lr":
         with open(d / "model.pkl", "rb") as f:
             m = pickle.load(f)
-        return cheapest_above(m.proba(x, len(sp.routes)), sp.mask, meta["params"]["tau"])
+        return cheapest_above(m.proba(x, len(sp.routes)), sp.mask, meta["params"]["tau"], sp.cost)
     z = np.load(d / "knn.npz")
     if list(z["ids"]) != train.ids:
         raise SystemExit("knn: saved training questions differ from the current train split")
-    return cheapest_above(knn_proba(x, z["x"], train, meta["params"]["k"]), sp.mask, meta["params"]["tau"])
+    return cheapest_above(knn_proba(x, z["x"], train, meta["params"]["k"]), sp.mask, meta["params"]["tau"], sp.cost)
 
 
 def _fmt(v):

@@ -158,3 +158,44 @@ def test_train_and_evaluate_cheap_routers_end_to_end(tmp_path, monkeypatch):
     assert "deep (best fixed)" in md and "keep_rule" in md
     assert (out / "table_dev_by_source.csv").exists()
     assert not (out / "table_held_out.md").exists()
+
+
+def test_per_item_costs_pick_the_cheaper_route_on_each_row():
+    """2026-11-21: 'cheapest' is per item when the labels carry per-row gpu_seconds. Columns are the global order
+    (fast cheapest on average, then deep, then memory); row 0 is LongMemEval-like (full-history fast costs 300 GPU-s,
+    memory 40), row 1 is pool-like (fast 2, memory unavailable)."""
+    correct = np.array([[1, 1, 1], [1, 1, 0]], float)
+    mask = np.array([[1, 1, 1], [1, 1, 0]], bool)
+    cost = np.array([[300.0, 900.0, 40.0], [2.0, 10.0, np.inf]])
+    assert sr.label_index(correct, mask).tolist() == [0, 0]                 # global order: fast everywhere
+    assert sr.label_index(correct, mask, cost).tolist() == [2, 0]           # per row: memory on the LongMemEval row
+    p = np.array([[0.9, 0.9, 0.7], [0.8, 0.9, 0.0]])
+    assert sr.cheapest_above(p, mask, 0.6, cost).tolist() == [2, 0]
+    assert sr.cheapest_above(p, mask, 0.85, cost).tolist() == [0, 1]       # memory below tau: fast is the cheaper left
+    assert sr.masked_argmax(p, mask, cost).tolist() == [0, 1]               # row 0: fast and deep tie at 0.9 -> fast (300 < 900)
+    tie = np.array([[5.0, 5.0, 5.0], [5.0, 5.0, np.inf]])
+    assert sr.label_index(correct, mask, tie).tolist() == [0, 0]            # equal costs: the global order
+
+
+def test_load_reads_row_costs_and_task_text(tmp_path):
+    labels, items = make_labels(tmp_path)
+    d = tmp_path / "graded"
+    rows = [json.loads(l) for l in open(d / "per_question.jsonl") if not l.startswith('{"id": "h_broken"')]
+    for r in rows:  # merged labels: every available route has its own gpu_seconds; LongMemEval-like rows carry their question
+        for k in ("fast", "deep", "memory"):
+            if k in r:
+                r[k]["gpu_seconds"] = {"fast": 300.0, "deep": 900.0, "memory": 40.0}[k] if r["id"].startswith("a") else \
+                    {"fast": 2.0, "deep": 10.0}[k]
+        if r["id"].startswith("a"):
+            r["task"] = "Current date: 2023/05/01\nQuestion: where did I park?"
+    with open(d / "per_question.jsonl", "w") as f:
+        f.writelines(json.dumps(r) + "\n" for r in rows)
+    sp, info = sr.load(labels, items, ["train", "dev"])
+    tr = sp["train"]
+    a, b = tr.ids.index("a004"), tr.ids.index("b005")
+    assert tr.texts[a].endswith("where did I park?") and tr.texts[b].startswith("beta")
+    m, f_, dp = (info["routes"].index(x) for x in ("memory", "fast", "deep"))
+    assert tr.cost[a, m] == 40.0 and tr.cost[a, f_] == 300.0 and np.isinf(tr.cost[b, m])
+    lab = sr.label_index(tr.correct, tr.mask, tr.cost)
+    assert lab[a] == m and lab[b] == dp                                     # b005: fast wrong (odd item), deep right
+    assert sr.oracle_picks(tr)[a] == m

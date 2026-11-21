@@ -245,3 +245,21 @@ def test_smalltest_run_with_a_memory_config(tmp_path, monkeypatch):
     assert all("answer" not in json.dumps(r["router"]) for r in rows)
     prep = json.loads((out / "graft_prepare.json").read_text())
     assert prep["skipped_no_history"] == 1 and prep["built"] == 2 and prep["build_llm_calls"] > 0
+
+
+def test_cheapest_label_uses_the_rows_own_costs():
+    from flotilla.strategy_labels import cheapest_label
+    lme = {"fast": {"available": True, "correct": True, "gpu_seconds": 300.0},
+           "deep": {"available": True, "correct": True, "gpu_seconds": 900.0},
+           "memory": {"available": True, "correct": True, "gpu_seconds": 40.0},
+           "vote_memory": {"available": True, "correct": False, "gpu_seconds": 10.0}}
+    assert cheapest_label(lme) == "memory"                                  # cheaper than Fast on this row; wrong routes ignored
+    pool = {"fast": {"available": True, "correct": True, "gpu_seconds": 2.0},
+            "deep": {"available": True, "correct": True, "gpu_seconds": 7.0}, "memory": {"available": False}}
+    assert cheapest_label(pool) == "fast"
+    tie = {"tools": {"available": True, "correct": True, "gpu_seconds": 5.0},
+           "fast": {"available": True, "correct": True, "gpu_seconds": 5.0}}
+    assert cheapest_label(tie) == "fast"                                    # equal costs: ORDER
+    no_cost = {"deep": {"available": True, "correct": True}, "memory": {"available": True, "correct": True}}
+    assert cheapest_label(no_cost) == "deep"                                # rows without costs: ORDER
+    assert cheapest_label({"fast": {"available": True, "correct": False}}) == "none"

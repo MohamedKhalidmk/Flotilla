@@ -3,7 +3,9 @@
     python -m flotilla.strategy_labels --pool pool.clean.jsonl --runs fast=DIR [DIR ...] tools=DIR deep=DIR vote=DIR \
         --out OUT_DIR [--split]
 Per question and strategy: correct (router-label graders, code fences stripped), output tokens, calls, wall seconds.
-Label = the cheapest strategy that is correct, in ORDER (cheapest first, combos included); "none" if none is.
+Label = the cheapest strategy that is correct; "none" if none is. Cheapest is judged per row (2026-11-21): by the row's
+own per-route gpu_seconds when it has them (the --pool-labels merge adds them), ties and rows without them in ORDER
+(cheapest first, combos included). The ORDER-only label is kept as label_order.
 Memory routes (memory, memory_deep, vote_memory, deep_tools_memory) exist only on items with a history (LongMemEval):
     --memory-items LME.jsonl --verdicts verdicts.jsonl   (verdicts: python -m flotilla.memory_route judge)
 A route is "available" on an item when it was run on the item's group (pool or memory); an item missing a route its
@@ -42,6 +44,17 @@ ORDER = ["fast", "tools", "deep", "deep_tools", "vote", "vote_tools",
          "memory", "memory_deep", "deep_tools_memory", "vote_memory"]
 MEMORY_ROUTES = ("memory", "memory_deep", "deep_tools_memory", "vote_memory")
 SEED = 20261120
+
+
+def cheapest_label(row: dict) -> str:
+    """Cheapest correct available route of one row: lowest gpu_seconds where every correct route has one, ties
+    broken by ORDER; otherwise the first correct route in ORDER. "none" if no route is correct."""
+    ok = [s for s in ORDER if isinstance(row.get(s), dict) and row[s].get("available") and row[s].get("correct")]
+    if not ok:
+        return "none"
+    if all(row[s].get("gpu_seconds") is not None for s in ok):
+        return min(ok, key=lambda s: (row[s]["gpu_seconds"], ORDER.index(s)))
+    return ok[0]
 
 
 def load_traces(dirs: list[str]) -> dict[str, dict]:
@@ -247,9 +260,19 @@ def merge_pool_labels(a, out: Path, lme_rows: list[dict], lme_summary: dict, run
                     v.update({"gpu_seconds_answer": ans, "gpu_seconds_build": b, "gpu_seconds": round(ans + b, 3)})
                 else:
                     v["gpu_seconds"] = ans
+    for r in lme_rows:
+        r["label_order"], r["label"] = r["label"], cheapest_label(r)
+    lme_summary = {**lme_summary, "labels_order": lme_summary["labels"],
+                   "labels": dict(Counter(r["label"] for r in lme_rows))}
     (out / "per_question_longmemeval.jsonl").write_text("".join(json.dumps(r, ensure_ascii=False) + "\n" for r in lme_rows))
     (out / "summary_longmemeval.json").write_text(json.dumps({**lme_summary, "graft_build_gpu": build_info}, indent=1))
     rows = prows + lme_rows
+    changed = Counter()
+    for r in rows:  # per-row cost order now that every row has its gpu_seconds
+        r["label_order"] = r.get("label_order", r["label"])
+        r["label"] = cheapest_label(r)
+        if r["label"] != r["label_order"]:
+            changed["pool" if r.get("task_type") != "memory" else "longmemeval"] += 1
     with open(out / "per_question.jsonl", "w") as f:
         f.writelines(json.dumps(r, ensure_ascii=False) + "\n" for r in rows)
     msplit = json.loads(Path(a.memory_split).read_text()) if a.memory_split else {}
@@ -277,10 +300,12 @@ def merge_pool_labels(a, out: Path, lme_rows: list[dict], lme_summary: dict, run
                   "gpu_seconds_per_question": round(sum(r[s].get("gpu_seconds") or 0 for r in rs) / k, 3)}
     labels = Counter(r["label"] for r in rows)
     return {"questions": len(rows), "groups": {"pool": len(prows), "longmemeval": len(lme_rows)},
-            "labels": dict(labels), "per_strategy": per,
+            "labels": dict(labels), "labels_order": dict(Counter(r["label_order"] for r in rows)),
+            "labels_changed_by_row_cost": dict(changed), "per_strategy": per,
             "by_group": {"pool": {"from": str(pdir), "questions": psum["questions"], "labels": psum["labels"],
-                                  "per_strategy": psum["per_strategy"], "best_any_strategy": psum.get("best_any_strategy")},
-                         "longmemeval": {k: lme_summary[k] for k in ("questions", "labels", "per_strategy", "graft_build",
+                                  "per_strategy": psum["per_strategy"], "best_any_strategy": psum.get("best_any_strategy"),
+                                  "labels_by_row_cost": dict(Counter(r["label"] for r in prows))},
+                         "longmemeval": {k: lme_summary[k] for k in ("questions", "labels", "labels_order", "per_strategy", "graft_build",
                                                                      "best_any_strategy") if k in lme_summary}},
             "graft_build_gpu": build_info, "split": {k: len(v) for k, v in sp.items()},
             "best_any_strategy": round(sum(r["label"] != "none" for r in rows) / max(len(rows), 1), 4),
