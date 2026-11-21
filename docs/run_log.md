@@ -112,6 +112,8 @@ One line per decision, with its reason. Times are America/Vancouver unless marke
 
 - **2026-11-20, GRAFT working memory, run-01 (GRAFT test 05, empty-start graph, Haiku, 3 repeats):** A mode C 34.7 (SD 0.6), B question layer 33.7 (0.6), C working memory in the graph 35.3 (1.2), C- prompt only 32.7 (1.2). C not kept by the rule (+0.6 over A, inside the spread); C beats C- by 2.6, so writing to the graph matters more than answering in steps. Traces: C follows edited multi-hop chains A gives up on; C loses where a step takes the older of two conflicting facts (the step prompt lacked the newer-fact rule). Round 2: step prompt v2 with that rule, C and C- x3 (about $0.50; key dialog shown, submits if the user enters it). Spend $0.657.
 
+- **2026-11-20, GRAFT full T-REx works after the fixes:** GOAt pass (Fir CPU 4751804, local-disk venv unpacked in 33 s, gateway ready at once) repeat 0: 100 of 100 questions got facts (mean 49.2), Haiku answers from them. Released the question-layer pass (4742454, GPU) and the three Qwen jobs (4742462/4/5, GPU).
+
 ### API spend (Anthropic)
 | When | What | Runs | Cost |
 |---|---|---|---|
