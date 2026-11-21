@@ -4,7 +4,7 @@
 #   bash scripts/fir/submit_longmemeval.sh base    <route> <time> <shard>...  # fast tools deep deep_tools vote vote_tools
 #   bash scripts/fir/submit_longmemeval.sh prepare <time> <shard>... [-- extra prepare args]  # GRAFT graphs, one job per shard
 #   bash scripts/fir/submit_longmemeval.sh memory  <route> <time> <shard>...  # memory memory_deep vote_memory deep_tools_memory
-#   bash scripts/fir/submit_longmemeval.sh judge   <time> <name>              # every route's answers, LongMemEval's judge
+#   ANTHROPIC_API_KEY=... bash scripts/fir/submit_longmemeval.sh judge <time> <name>  # PAID: Haiku check, then Haiku judge (Fir)
 # Output: $LME/runs/<route>/<shard>/ (trace.jsonl, compute.json, servers.resolved.json), $LME/graft_cache, $LME/judge.
 # Base routes run 6 items at a time (2 for Vote routes: 10 requests for 5 sequences), so no request waits in vLLM
 # anywhere near the client timeout (3,600 s); CONC overrides.
@@ -45,10 +45,21 @@ case $MODE in
         --items-dir "$LME/runitems/memory" --out "$LME/runs/$R/$S${SUFFIX:-}" --benches "$S" --concurrency 32
     done ;;
   judge)
+    # PAID (protocol-v10 addendum): Claude Haiku 5.5 judges every route's answers, on Fir (the fixed Haiku check lives
+    # in GRAFT on Fir). The fixed check runs first as its own guarded CPU job; the judge (CPU, cost cap $1,
+    # scripts/fir/lme_judge_cpu.sbatch) starts afterok on it. The key only from this shell's environment.
+    # ROUTES="fast deep ..." limits the routes (default: every route folder under $LME/runs with trace.jsonl).
     TIME=$1; NAME=$2; RUNS=()
-    for d in "$LME"/runs/*/lme*; do [[ -f $d/trace.jsonl && $d != *prepare* ]] && RUNS+=("$(basename "$(dirname "$d")")=$d"); done
-    "${SB[@]}" --time=$TIME --job-name="lme-judge-$NAME" "$JOB" python -m flotilla.serve \
-      --system "$CODE/configs/systems/qwen_strategy_fast.json" --servers "$CODE/configs/servers_longmemeval_memory.json" \
-      --out "$LME/judge/$NAME" --exec "python -m flotilla.memory_route judge --items $ITEMS --runs ${RUNS[*]} --url {url} --model {model} --out $LME/judge/$NAME/verdicts.jsonl --concurrency 48" ;;
+    : "${ANTHROPIC_API_KEY:?export ANTHROPIC_API_KEY in the shell that runs this (never in a file)}"
+    for d in "$LME"/runs/*/lme*; do
+      R=$(basename "$(dirname "$d")"); [[ -f $d/trace.jsonl && $R != prepare ]] || continue
+      [[ -z ${ROUTES:-} || " $ROUTES " == *" $R "* ]] && RUNS+=("$R=$d")
+    done
+    SGAR=$(readlink -f "$HOME/projects/def-sylu")/khaledmk/SGAR
+    C=$(cd "$SGAR" && CANARY=0 sbatch --parsable scripts/fir/run_real_guarded_cpu.sbatch configs/runs/exp/canary/haiku_replay38.yaml)
+    mkdir -p "$LME/judge/$NAME"
+    J=$(sbatch --parsable --time=$TIME --dependency=afterok:$C --job-name="lme-judge-$NAME" --chdir="$LME/logs" \
+        --export=ALL,COST_CAP_USD=${COST_CAP_USD:-1} "$CODE/scripts/fir/lme_judge_cpu.sbatch" "$LME/judge/$NAME" "$ITEMS" "${RUNS[@]}")
+    echo "haiku check $C  judge $J (${#RUNS[@]} run folders) -> $LME/judge/$NAME" ;;
   *) echo "mode: base | prepare | memory | judge" >&2; exit 2 ;;
 esac

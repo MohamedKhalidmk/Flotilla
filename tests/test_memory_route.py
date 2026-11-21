@@ -263,3 +263,35 @@ def test_cheapest_label_uses_the_rows_own_costs():
     no_cost = {"deep": {"available": True, "correct": True}, "memory": {"available": True, "correct": True}}
     assert cheapest_label(no_cost) == "deep"                                # rows without costs: ORDER
     assert cheapest_label({"fast": {"available": True, "correct": False}}) == "none"
+
+
+def test_haiku_judge_logs_every_call_with_ids_and_cost(tmp_path):
+    """protocol-v10 addendum: Haiku judges with LongMemEval's prompt, thinking off, max_tokens 10, no sampling
+    parameters; each call is logged with cost, request hash, message ID, request ID and reply hash."""
+    from types import SimpleNamespace as NS
+    sent = []
+
+    class Raw:
+        headers = {"request-id": "req_123"}
+
+        def parse(self):
+            return NS(content=[NS(type="text", text="Yes.")], id="msg_1", stop_reason="end_turn",
+                      usage=NS(input_tokens=300, output_tokens=2, cache_read_input_tokens=0, cache_creation_input_tokens=0))
+
+    async def create(**params):
+        sent.append(params)
+        return Raw()
+
+    client = NS(messages=NS(with_raw_response=NS(create=create)))
+    j = mr.HaikuJudge(tmp_path / "usage.jsonl", client=client)
+    v = asyncio.run(mr.judge_answer_haiku(KU, "She is Canadian now.", j, "fast"))
+    assert v["correct"] and v["judge_model"] == "claude-haiku-5-5" and v["judge_reply"] == "Yes."
+    p = sent[0]
+    assert p["max_tokens"] == 10 and p["thinking"] == {"type": "disabled"} and p["model"] == "claude-haiku-5-5"
+    assert not {"temperature", "top_p", "top_k"} & set(p)
+    assert p["messages"][0]["content"].startswith("I will give you a question, a correct answer")
+    row = json.loads((tmp_path / "usage.jsonl").read_text())
+    assert row["request_id"] == "req_123" and row["message_id"] == "msg_1" and row["route"] == "fast"
+    assert row["cost_usd"] == pytest.approx((300 * 0.10 + 2 * 0.50) / 1e6) and len(row["request_hash"]) == 16
+    none = asyncio.run(mr.judge_answer_haiku(KU, None, j))
+    assert none["correct"] is False and len(sent) == 1        # no answer: no call, no cost
