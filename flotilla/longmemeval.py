@@ -10,6 +10,7 @@ they pass the leakage check (section 5) against every test set in flotilla.leaka
     python -m flotilla.longmemeval build  --raw-dir RAW --leakage longmemeval_units.json --out-dir OUT --report REPORT
     python -m flotilla.longmemeval sample --items OUT/memory_items.jsonl --out tests/data/longmemeval_sample.jsonl
     python -m flotilla.longmemeval tokens --raw-dir RAW --split OUT/split.json --tokenizer QWEN_DIR --out OUT/prompt_tokens.jsonl
+    python -m flotilla.longmemeval run-items --items OUT/memory_items.jsonl --out-dir RUNITEMS [--shard-size 25]
 
 units: one leakage unit per question (question text) and per distinct chat turn of longmemeval_s and _oracle, long
 turns cut into overlapping 200-word windows (bge-small reads 512 tokens; the overlap keeps every 13-gram whole).
@@ -21,6 +22,10 @@ Item format, one JSON line per question:
      question, answer (str), question_date, sessions: [{session_id, date, turns: [{role, content}]}] (dataset order),
      answer_session_ids, abstention (question_id ends in "_abs"), meta: {question_id, answer_raw?, has_answer_turns}}
 meta.has_answer_turns maps session_id -> indices of the turns the dataset marks has_answer.
+run-items: shards for flotilla.serve. RUNITEMS/base/lme_KK.jsonl hold the six base routes' items (task =
+history_prompt(item), task_type long_context, scorer lme_judge, no gold or evidence fields: grading reads the items
+file), items shuffled with SEED so every shard mixes question types; RUNITEMS/memory/lmem_KK.jsonl hold the same items, unchanged, for the Memory routes (smalltest normalizes
+them). Shard KK has the same item ids in both folders.
 tokens: Qwen chat-template token count of the solver prompt the six non-Memory routes would send (prompts/solver.v1.md,
 task type long_context, whole history rendered by history_prompt), with and without tool schemas and thinking. Nothing
 is truncated or dropped here.
@@ -294,6 +299,29 @@ def cmd_tokens(a) -> None:
     Path(a.summary).write_text(json.dumps(summary, indent=1))
 
 
+def base_item(item: dict, bench: str) -> dict:
+    """A base route's run item: the whole history in the prompt (history_prompt), task type long_context."""
+    return {"item_id": item["item_id"], "bench": bench, "scorer": "lme_judge", "task_type": TASK_TYPE,
+            "task": history_prompt(item), "gold": None, "source": item["source"], "question_type": item["question_type"]}
+
+
+def cmd_run_items(a) -> None:
+    items = [json.loads(l) for l in open(a.items)]
+    random.Random(SEED).shuffle(items)  # mixed question types in every shard, so the first shard is a fair pilot
+    out = Path(a.out_dir)
+    (out / "base").mkdir(parents=True, exist_ok=True)
+    (out / "memory").mkdir(parents=True, exist_ok=True)
+    shards = [items[i:i + a.shard_size] for i in range(0, len(items), a.shard_size)]
+    for k, sh in enumerate(shards):
+        with open(out / "base" / f"lme_{k:02d}.jsonl", "w") as f:
+            f.writelines(json.dumps(base_item(it, f"lme_{k:02d}"), ensure_ascii=False) + "\n" for it in sh)
+        with open(out / "memory" / f"lmem_{k:02d}.jsonl", "w") as f:
+            f.writelines(json.dumps(it, ensure_ascii=False) + "\n" for it in sh)
+    (out / "shards.json").write_text(json.dumps({f"{k:02d}": [it["item_id"] for it in sh] for k, sh in enumerate(shards)},
+                                                indent=1))
+    print(f"{len(items)} items in {len(shards)} shards of up to {a.shard_size} -> {out}")
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -306,8 +334,10 @@ def main() -> None:
     p.add_argument("--tokenizer", required=True); p.add_argument("--out", required=True)
     p.add_argument("--summary", required=True); p.add_argument("--workers", type=int, default=8)
     p.add_argument("--sources", nargs="+", default=["longmemeval_s", "longmemeval_oracle", "longmemeval_m"])
+    p = sub.add_parser("run-items"); p.add_argument("--items", required=True); p.add_argument("--out-dir", required=True)
+    p.add_argument("--shard-size", type=int, default=25)
     a = ap.parse_args()
-    {"units": cmd_units, "build": cmd_build, "sample": cmd_sample, "tokens": cmd_tokens}[a.cmd](a)
+    {"run-items": cmd_run_items, "units": cmd_units, "build": cmd_build, "sample": cmd_sample, "tokens": cmd_tokens}[a.cmd](a)
 
 
 if __name__ == "__main__":
