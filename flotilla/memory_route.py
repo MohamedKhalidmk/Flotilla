@@ -30,8 +30,13 @@ Commands (none of them calls a paid API; prepare and judge need a running vLLM s
     python -m flotilla.memory_route dry-run [--items LME.jsonl] [--n 3]          # fake models, prints label records
     python -m flotilla.memory_route prepare --items LME.jsonl --url http://127.0.0.1:8000/v1 --model qwen_w4a16 \
         --cache DIR [--build-workers 16] [--batch-size 25] [--limit N | --ids ...] # build every graph before the routes
-    python -m flotilla.memory_route judge --items LME.jsonl --runs memory=DIR [route=DIR ...] \
-        --url http://127.0.0.1:8000/v1 --model qwen_w4a16 --out verdicts.jsonl  # LongMemEval's judge prompts, Qwen
+    python -m flotilla.memory_route judge --items LME.jsonl --runs memory=DIR [route=DIR ...] --out verdicts.jsonl
+        # LongMemEval's judge prompts on Claude Haiku 5.5 (protocol-v10 addendum, PAID: key from ANTHROPIC_API_KEY);
+        # --backend qwen --url http://127.0.0.1:8000/v1 --model qwen_w4a16 keeps the earlier Qwen judge
+Haiku judge calls: anthropic SDK, messages.with_raw_response.create (request-id header), thinking disabled,
+max_tokens 10, no sampling parameters (the API rejects them); every call is logged to usage.jsonl next to the verdicts
+with cost_usd (GRAFT's price card and token_cost), request hash, message ID, request ID and reply hash, as GRAFT's
+gateway logs them.
 """
 import argparse
 import asyncio
@@ -478,6 +483,63 @@ def parse_judge(reply: str | None) -> bool:
     return "yes" in (reply or "").strip().lower()
 
 
+HAIKU = "claude-haiku-5-5"
+# copied from GRAFT configs/pricing.yaml (SGAR f8c5aa4); USD per million tokens
+PRICES = {HAIKU: {"long_prompt_threshold": 100000, "short": {"input": 0.10, "output": 0.50},
+                  "long": {"input": 0.50, "output": 2.50}, "cache_read_multiplier": 0.1, "cache_write_multiplier": 1.25}}
+
+
+def token_cost(model: str, input_tokens: int, output_tokens: int, cache_read_tokens: int = 0,
+               cache_write_tokens: int = 0) -> float:
+    """USD for one request, as GRAFT's eval/cost.py: the rate card depends on the request's total prompt length."""
+    p = PRICES[model]  # a model without a price is an error, never $0
+    card = p["long"] if input_tokens + cache_read_tokens + cache_write_tokens > p["long_prompt_threshold"] else p["short"]
+    return (input_tokens * card["input"] + cache_read_tokens * card["input"] * p["cache_read_multiplier"]
+            + cache_write_tokens * card["input"] * p["cache_write_multiplier"] + output_tokens * card["output"]) / 1e6
+
+
+class HaikuJudge:
+    """LongMemEval's judge on Claude Haiku: one call per answer, logged like GRAFT's gateway (usage.jsonl)."""
+
+    def __init__(self, usage_log: str | Path, model: str = HAIKU, client=None):
+        if client is None:
+            import anthropic
+            client = anthropic.AsyncAnthropic(max_retries=5)  # key from ANTHROPIC_API_KEY only
+        self.client, self.model, self.usage_log = client, model, Path(usage_log)
+        self.lock = asyncio.Lock()
+
+    async def __call__(self, prompt: str, item_id: str, route: str) -> str:
+        params = {"model": self.model, "max_tokens": 10, "thinking": {"type": "disabled"},
+                  "messages": [{"role": "user", "content": prompt}]}
+        request_hash = hashlib.sha256(json.dumps(params, sort_keys=True, ensure_ascii=False).encode()).hexdigest()[:16]
+        t0 = time.time()
+        raw = await self.client.messages.with_raw_response.create(**params)
+        msg = raw.parse()
+        text = "".join(getattr(b, "text", "") or "" for b in msg.content)
+        u = msg.usage
+        read, write = getattr(u, "cache_read_input_tokens", 0) or 0, getattr(u, "cache_creation_input_tokens", 0) or 0
+        row = {"ts": time.time(), "phase": "lme_judge", "item_id": item_id, "route": route, "model": self.model,
+               "input_tokens": u.input_tokens, "output_tokens": u.output_tokens, "cache_read_tokens": read,
+               "cache_write_tokens": write, "cost_usd": token_cost(self.model, u.input_tokens, u.output_tokens, read, write),
+               "latency_s": round(time.time() - t0, 3), "stop_reason": msg.stop_reason, "request_hash": request_hash,
+               "message_id": msg.id, "request_id": raw.headers.get("request-id"),
+               "reply_hash": hashlib.sha256(text.encode()).hexdigest()[:16]}
+        async with self.lock:
+            with open(self.usage_log, "a") as f:
+                f.write(json.dumps(row) + "\n")
+        return text
+
+
+async def judge_answer_haiku(item: dict, response: str | None, judge: HaikuJudge, route: str = "") -> dict:
+    """LongMemEval's judge prompt for the item's question type on Claude Haiku (protocol-v10 addendum)."""
+    if response is None:
+        return {"correct": False, "judge_reply": None, "judge": JUDGE_VERSION, "judge_model": judge.model,
+                "reason": "no final answer"}
+    prompt = judge_prompt(item["question_type"], item["question"], str(item["answer"]), response, is_abstention(item))
+    reply = (await judge(prompt, item["item_id"], route)).strip()
+    return {"correct": parse_judge(reply), "judge_reply": reply, "judge": JUDGE_VERSION, "judge_model": judge.model}
+
+
 async def judge_answer(item: dict, response: str | None, srv: dict) -> dict:
     """LongMemEval's judge with Qwen (thinking off) on the given server. srv: {url, model[, api_key_env]}."""
     from flotilla import system
@@ -666,12 +728,18 @@ async def _judge(a) -> None:
             t = json.loads(line)
             if t["item_id"] in items and (t["item_id"], route) not in done:
                 jobs.append((route, t))
+    if a.backend == "qwen" and not a.url:
+        raise SystemExit("--backend qwen needs --url")
     srv = {"url": a.url, "model": a.model}
+    haiku = HaikuJudge(out.parent / "usage.jsonl") if a.backend == "haiku" else None
     sem = asyncio.Semaphore(a.concurrency)
     with open(out, "a") as f:
         async def one(route, t):
             async with sem:
-                v = await judge_answer(items[t["item_id"]], t["final_answer"], srv)
+                if haiku is not None:
+                    v = await judge_answer_haiku(items[t["item_id"]], t["final_answer"], haiku, route)
+                else:
+                    v = await judge_answer(items[t["item_id"]], t["final_answer"], srv)
                 f.write(json.dumps({"item_id": t["item_id"], "route": route, "answer": t["final_answer"], **v},
                                    ensure_ascii=False) + "\n")
                 f.flush()
@@ -698,13 +766,15 @@ def main() -> None:
     p.add_argument("--batch-size", type=int, default=25, help="histories per GRAFT bridge call (0 = all at once)")
     p.add_argument("--ids", nargs="*", help="only these item_ids (pilot)")
     p.add_argument("--limit", type=int, help="only the first N items (pilot)")
-    j = sub.add_parser("judge", help="grade LongMemEval answers with LongMemEval's judge prompts on Qwen")
+    j = sub.add_parser("judge", help="grade LongMemEval answers with LongMemEval's judge prompts (Haiku; PAID)")
     j.add_argument("--items", required=True)
     j.add_argument("--runs", nargs="+", required=True, help="route=RUN_DIR ...")
-    j.add_argument("--url", required=True)
+    j.add_argument("--backend", choices=["haiku", "qwen"], default="haiku",
+                   help="haiku (protocol-v10 addendum, default) or qwen (needs --url)")
+    j.add_argument("--url")
     j.add_argument("--model", default="qwen_w4a16")
     j.add_argument("--out", required=True)
-    j.add_argument("--concurrency", type=int, default=32)
+    j.add_argument("--concurrency", type=int, default=8)
     a = ap.parse_args()
     if a.cmd == "dry-run":
         cmd_dry_run(a)
