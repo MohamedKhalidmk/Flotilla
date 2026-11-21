@@ -113,6 +113,8 @@ One line per decision, with its reason. Times are America/Vancouver unless marke
 - **2026-11-20, GRAFT working memory, run-01 (GRAFT test 05, empty-start graph, Haiku, 3 repeats):** A mode C 34.7 (SD 0.6), B question layer 33.7 (0.6), C working memory in the graph 35.3 (1.2), C- prompt only 32.7 (1.2). C not kept by the rule (+0.6 over A, inside the spread); C beats C- by 2.6, so writing to the graph matters more than answering in steps. Traces: C follows edited multi-hop chains A gives up on; C loses where a step takes the older of two conflicting facts (the step prompt lacked the newer-fact rule). Round 2: step prompt v2 with that rule, C and C- x3 (about $0.50; key dialog shown, submits if the user enters it). Spend $0.657.
 
 - **2026-11-20, GRAFT full T-REx works after the fixes:** GOAt pass (Fir CPU 4751804, local-disk venv unpacked in 33 s, gateway ready at once) repeat 0: 100 of 100 questions got facts (mean 49.2), Haiku answers from them. Released the question-layer pass (4742454, GPU) and the three Qwen jobs (4742462/4/5, GPU).
+- **2026-11-21, GRAFT full T-REx (GRAFT test 04 run-02), Haiku answer passes done:** EiG 17.7 (18/15/20), GOAt 19.0 (17/21; the third repeat hit the 2 h job limit, not rerun), question layer + EiG 17.0 (18/16/17); gold in final facts 28-34%. The empty-start document graph with mode C GOAt scores 34.7 with gold in 50.7% (test 05 arm A). **Decision: the T-REx base is not adopted**; it halves accuracy because PageRank drifts into T-REx facts that are not about the documents. GRAFT keeps the empty-start graph. Spend $0.574.
+- **2026-11-21, Qwen swap moved to the empty-start graph:** the three Qwen jobs on the T-REx graph (4742462/4/5) were cancelled before starting ($0), since that graph is not adopted. One free GPU job runs Qwen on the empty-start graph with the same prompts: arm A (mode C), and the working-memory arms C v2 and C- v2 (SGAR configs/runs/exp/qwen/). Arm A compares directly with Haiku's 34.7. Haiku's round 2 for working memory (C v2, C- v2) was not submitted: no key was entered in the dialog.
 
 ### API spend (Anthropic)
 | When | What | Runs | Cost |
@@ -130,4 +132,5 @@ One line per decision, with its reason. Times are America/Vancouver unless marke
 | 2026-11-20 | GRAFT full T-REx GOAt, 3 answer passes (Fir 4663775) | 1 job | $0.019 |
 | 2026-11-20 | GRAFT full T-REx question layer + EiG, 3 answer passes (Fir 4663776) | 1 job | $0.072 |
 | 2026-11-20 | GRAFT working memory run-01: 4 arms x 3 repeats (A $0.081, B $0.110, C $0.232, C- $0.234) | 4 jobs | $0.657 |
-| | **Total today so far** | | **$5.24** |
+| 2026-11-21 | GRAFT full T-REx pprfix answer passes, Haiku (EiG $0.198 x3, GOAt $0.134 x2, question layer $0.242 x3) | 3 jobs | $0.574 |
+| | **Total so far** | | **$5.81** |
