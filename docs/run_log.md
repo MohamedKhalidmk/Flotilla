@@ -104,6 +104,8 @@ One line per decision, with its reason. Times are America/Vancouver unless marke
 
 - **2026-11-20, autonomy (user, away):** carry on without check-ins through GRAFT T-REx, the Qwen swap, the working-memory test, the Memory routes, router training (once, on all ten routes) and live RL. Decide routine things, log every decision and dollar, heavy work on clusters, push reports; stop only for something risky or costly.
 
+- **2026-11-20, twin watcher bug:** the shell loop on the Mac (zsh) did not split the pair list, so when EiG's GPU job 4751802 started it cancelled the question-layer CPU twin 4751805 instead of the EiG CPU twin 4751803 (cancelled by hand right after). No spend, nothing lost: the question layer still has its GPU job 4742454; its CPU twin is not resubmitted while the user is away (needs the API key). Watcher replaced by a bash script per pair.
+
 ### API spend (Anthropic)
 | When | What | Runs | Cost |
 |---|---|---|---|
