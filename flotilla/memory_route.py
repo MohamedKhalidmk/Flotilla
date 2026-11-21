@@ -369,8 +369,9 @@ def load_config(route: str, servers: dict | None = None):
     """SystemConfig of a route from configs/systems/qwen_strategy_<route>.json (servers optionally replaced)."""
     from flotilla.system import SystemConfig
     conf = json.loads(ROUTE_CONFIG[route].read_text())
-    if servers:
-        conf["servers"] = servers
+    if servers:  # only where each server lives (url, model); the route's own request settings (thinking, sampling) stay
+        conf["servers"] = {k: {**conf.get("servers", {}).get(k, {}), **{f: v[f] for f in ("url", "model") if f in v}}
+                           for k, v in servers.items()}
     return SystemConfig(**{k: v for k, v in conf.items() if k not in ("name", "notes")})
 
 
