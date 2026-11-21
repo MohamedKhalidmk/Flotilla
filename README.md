@@ -28,7 +28,7 @@ was written down **before** the scored run that decided it, so nothing is tuned 
 | **Model** | Qwen3.8-27B, 4-bit (W4A16, ours), text and images |
 | **Small-test mean** | [**0.877**](experiments/test-02-model-small-test/table.csv) over 11 benchmarks |
 | **Routes** | Fast, Tools, Deep, Vote, Memory (GRAFT), and combinations |
-| **Now** | Route labels done (1,450 questions, fixed graders); GRAFT Memory routes, then the routers |
+| **Now** | Route labels done (1,450 questions, fixed graders); LongMemEval and the Memory routes (GRAFT on Qwen, no base graph), router code; then the routers |
 | **Dropped** | Command A+ (rule 4.2), gpt-oss-20b (router gain under 1 point) |
 
 ## 🧭 How it works
@@ -75,7 +75,13 @@ and on compute. Of the 17 questions no route gets right, 10 have a wrong or unan
 ([always wrong](experiments/test-04-strategy-router/runs/run-03/audit/always_wrong.md)). Before the verifier and grader
 fixes the same routes scored 0.825 to 0.899
 ([failure report](experiments/test-04-strategy-router/runs/run-02/audit/failure_report.md)). The four Memory routes
-follow the GRAFT run.
+come next: GRAFT on Qwen with no base graph (the full T-REx base halved GRAFT's accuracy, test 05), offered on items that
+come with their own history (LongMemEval).
+
+**GRAFT findings (2026-11-21, GRAFT repo):** working memory in the graph is not kept on Haiku (about 1 point over mode C
+in two rounds, inside the spread), but writing the steps into the graph beats keeping them in the prompt by 2.6 to 2.7.
+Haiku drifted: the exact prompts that scored 38 on 2026-11-13 score about 34 today, with nothing on our side changed;
+every paid Haiku batch now starts with that fixed check. Qwen, the model Flotilla ships, is next on the same setup.
 
 ## 📜 Decisions
 
@@ -97,7 +103,7 @@ decision is logged in [`docs/run_log.md`](docs/run_log.md).
 | [02 · Model small test](experiments/test-02-model-small-test/README.md) | Which models earn a place? | done | Command A+ dropped |
 | [03 · Router B](experiments/test-03-router-b-models/README.md) | Does routing between models help? | done | gpt-oss dropped |
 | [04 · Strategy router](experiments/test-04-strategy-router/README.md) | Does picking a route per question help? | running | pending |
-| [05 · GRAFT base graph](experiments/test-05-graft-base-graph/README.md) | Does a base knowledge graph help Memory? | running | RoG base not adopted |
+| [05 · GRAFT base graph](experiments/test-05-graft-base-graph/README.md) | Does a base knowledge graph help Memory? | done | No base graph: RoG and full T-REx both not adopted |
 
 Index and rules for adding a test: [`experiments/INDEX.md`](experiments/INDEX.md). Charts are drawn only from
 [`results/tables/`](results/tables/) by [`docs/design/charts.py`](docs/design/charts.py), never from typed numbers.

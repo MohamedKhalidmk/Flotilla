@@ -22,11 +22,11 @@ either on accuracy or on compute at nearly the same accuracy?
 | Deep+Tools | full | as Tools | 1 |
 | Vote | full | none | 5 at temperature 0.6, majority (public tests on code) |
 | Vote+Tools | full | as Tools | 5 |
-| Memory, Memory+Deep, Vote+Memory, Deep+Tools+Memory | as named | as named | GRAFT facts from the full T-REx graph first, all on Qwen |
+| Memory, Memory+Deep, Vote+Memory, Deep+Tools+Memory | as named | as named | GRAFT facts from a graph built from the item's own history (empty start, mode C), all on Qwen; offered only on items with a history (LongMemEval), unavailable on pool questions |
 
 Thinking is switched off through Qwen's chat template (`enable_thinking: false`). With tools off, the prompt says no
-tools are available (`prompts/solver.v1.md`, section "No-tool wording"). Memory routes come last, after the GRAFT run
-on the full T-REx graph (test 05).
+tools are available (`prompts/solver.v1.md`, section "No-tool wording"). Memory routes come last. The full T-REx base was
+tested and dropped (test 05), so GRAFT builds each item's graph from its own history.
 
 **Labels.** 1,500 questions from the leakage-checked router pool, never the 5% small test, the full benchmarks, router
 B's 476 held-out questions or GRAFT's 100 FactConsolidation questions; drawn by
@@ -78,6 +78,8 @@ benchmarks run once with the final system and once with the best single route on
 
 ## Revisions
 
+- 2026-11-21: Memory routes use no base graph (T-REx dropped, test 05) and are offered only on items with a history;
+  LongMemEval prepared for them; the six non-Memory routes run on LongMemEval first.
 - 2026-11-20: design written; four-route pilot on Nibi.
 - 2026-11-20: plan widened to ten routes (combos and Memory); run-01 holds the six-route pilot and its failure audit.
 - 2026-11-20: run-02, six routes on 1,450 questions graded; verifier A-to-D option bug fixed (system.py), instruction
