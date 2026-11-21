@@ -110,6 +110,8 @@ One line per decision, with its reason. Times are America/Vancouver unless marke
 
 - **2026-11-20, key entered (user "go"):** Haiku EiG on full T-REx, GPU/CPU twins 4762063/4762064 (cap $1); working-memory test (GRAFT test 05) on the empty-start graph, arms A mode C 4762065, B question layer 4762066, C working memory in the graph 4762067, C- prompt only 4762068 (3 repeats each, CPU, cap $1 per arm, est. about $1 total), held until the free fake-mode check 4761462 shows the plumbing works. All wait on the venv pack 4760964.
 
+- **2026-11-20, GRAFT working memory, run-01 (GRAFT test 05, empty-start graph, Haiku, 3 repeats):** A mode C 34.7 (SD 0.6), B question layer 33.7 (0.6), C working memory in the graph 35.3 (1.2), C- prompt only 32.7 (1.2). C not kept by the rule (+0.6 over A, inside the spread); C beats C- by 2.6, so writing to the graph matters more than answering in steps. Traces: C follows edited multi-hop chains A gives up on; C loses where a step takes the older of two conflicting facts (the step prompt lacked the newer-fact rule). Round 2: step prompt v2 with that rule, C and C- x3 (about $0.50; key dialog shown, submits if the user enters it). Spend $0.657.
+
 ### API spend (Anthropic)
 | When | What | Runs | Cost |
 |---|---|---|---|
@@ -125,4 +127,5 @@ One line per decision, with its reason. Times are America/Vancouver unless marke
 | 2026-11-20 | GRAFT full T-REx Haiku-linking build (537 chunks) + 3 EiG answer passes (Fir 4663774) | 1 job | $1.760 |
 | 2026-11-20 | GRAFT full T-REx GOAt, 3 answer passes (Fir 4663775) | 1 job | $0.019 |
 | 2026-11-20 | GRAFT full T-REx question layer + EiG, 3 answer passes (Fir 4663776) | 1 job | $0.072 |
-| | **Total today so far** | | **$4.58** |
+| 2026-11-20 | GRAFT working memory run-01: 4 arms x 3 repeats (A $0.081, B $0.110, C $0.232, C- $0.234) | 4 jobs | $0.657 |
+| | **Total today so far** | | **$5.24** |
