@@ -358,6 +358,9 @@ class LRRouter:
         return p
 
 
+LRRouter.__module__ = "flotilla.strategy_router"  # pickles load from any module, also when run with -m
+
+
 def knn_proba(x: np.ndarray, xt: np.ndarray, train: Split, k: int) -> np.ndarray:
     """Share of the k nearest training questions (cosine) on which each route was right, over neighbours that have
     the route; a route none of the k neighbours has falls back to its training accuracy."""
