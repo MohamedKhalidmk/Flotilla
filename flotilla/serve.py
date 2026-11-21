@@ -5,11 +5,15 @@
 configs/servers.json gives, per server name, the model path or id, GPUs and vLLM flags. GPUs are assigned in order
 (server 1 gets the first `gpus`, and so on). Each server's URL in the system config is replaced with its local port.
 Server logs go to <out>/server-<name>.log. Compute is recorded in <out>/compute.json (GPU-seconds per server).
+The vLLM command of each server (model, max-model-len, max-num-seqs, ...) is kept in <out>/servers.resolved.json.
+--exec "CMD" runs CMD (split like a shell line; {url} = the first server's base URL, {model} = its served name)
+instead of the small test once the servers are healthy, e.g. flotilla.memory_route prepare or judge on LongMemEval.
 """
 import argparse
 import asyncio
 import json
 import os
+import shlex
 import socket
 import subprocess
 import sys
@@ -47,7 +51,8 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--system", required=True)
     ap.add_argument("--servers", required=True)
-    ap.add_argument("--items-dir", required=True)
+    ap.add_argument("--items-dir")
+    ap.add_argument("--exec", dest="exec_cmd", help="run this command instead of the small test ({url}, {model} filled in)")
     ap.add_argument("--out", required=True)
     ap.add_argument("--benches", nargs="*")
     ap.add_argument("--ids", nargs="*")
@@ -56,6 +61,8 @@ def main() -> None:
     ap.add_argument("--startup-timeout", type=int, default=3600)
     ap.add_argument("--smoke-only", action="store_true", help="run the smoke items and stop (checks)")
     a = ap.parse_args()
+    if not a.items_dir and not a.exec_cmd:
+        ap.error("--items-dir is required unless --exec is given")
 
     system = json.loads(Path(a.system).read_text())
     specs = json.loads(Path(a.servers).read_text())
@@ -75,6 +82,10 @@ def main() -> None:
             log = open(out / f"server-{name}.log", "w")
             print(f"[serve] {name}: GPUs {gpus}, port {port}: {' '.join(cmd[1:])}", flush=True)
             procs.append((name, subprocess.Popen(cmd, env=env, stdout=log, stderr=subprocess.STDOUT), port, spec["gpus"]))
+            resolved = json.loads((out / "servers.resolved.json").read_text()) if i else {}
+            resolved[name] = {"servers_file": str(Path(a.servers).resolve()), "spec": spec, "cmd": cmd[1:],
+                              "gpus": gpus, "slurm_job": os.environ.get("SLURM_JOB_ID")}
+            (out / "servers.resolved.json").write_text(json.dumps(resolved, indent=1))
             system["servers"][name] = {**system["servers"][name], "url": f"http://127.0.0.1:{port}/v1", "model": name}
         for name, p, port, _ in procs:
             t0 = time.time()
@@ -83,6 +94,24 @@ def main() -> None:
             print(f"[serve] {name} healthy after {time.time() - t0:.0f} s", flush=True)
         cfg_path = out / "system.resolved.json"
         cfg_path.write_text(json.dumps(system, indent=1))
+        if a.exec_cmd:
+            first = next(iter(system["servers"]))
+            cmd = [x.replace("{url}", system["servers"][first]["url"]).replace("{model}", first)
+                   for x in shlex.split(a.exec_cmd)]
+            if cmd[0] == "python":  # the same environment as this process (the PATH python may be the bare module)
+                cmd[0] = sys.executable
+            print(f"[serve] exec: {' '.join(cmd)}", flush=True)
+            t_run = time.time()
+            rc = subprocess.run(cmd).returncode
+            run_s = time.time() - t_run
+            (out / "compute.json").write_text(json.dumps({
+                "run_seconds": round(run_s, 1), "exec": cmd, "returncode": rc,
+                "servers": {n: {"gpus": g, "gpu_seconds_run": round(run_s * g, 1),
+                                "gpu_seconds_incl_startup": round((time.time() - started.get(n, time.time())) * g, 1)}
+                            for n, _, _, g in procs}}, indent=1))
+            if rc:
+                raise SystemExit(f"[serve] exec failed with code {rc}")
+            return
         if a.smoke_ids:
             smoke = out / "smoke"
             asyncio.run(smalltest.run(argparse.Namespace(config=str(cfg_path), items_dir=a.items_dir, out=str(smoke),

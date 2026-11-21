@@ -29,7 +29,7 @@ the run folder).
 Commands (none of them calls a paid API; prepare and judge need a running vLLM server):
     python -m flotilla.memory_route dry-run [--items LME.jsonl] [--n 3]          # fake models, prints label records
     python -m flotilla.memory_route prepare --items LME.jsonl --url http://127.0.0.1:8000/v1 --model qwen_w4a16 \
-        --cache DIR [--build-workers 16]                                         # build every graph before the routes
+        --cache DIR [--build-workers 16] [--batch-size 25] [--limit N | --ids ...] # build every graph before the routes
     python -m flotilla.memory_route judge --items LME.jsonl --runs memory=DIR [route=DIR ...] \
         --url http://127.0.0.1:8000/v1 --model qwen_w4a16 --out verdicts.jsonl  # LongMemEval's judge prompts, Qwen
 """
@@ -609,23 +609,47 @@ def cmd_dry_run(a) -> None:
 
 
 def cmd_prepare(a) -> None:
+    """Graphs and retrieved facts for the items, in batches of --batch-size histories (one bridge call each), so
+    finished retrievals are cached as the job goes and a job that hits its time limit loses at most one batch."""
     items = [json.loads(l) for l in open(a.items)]
+    if a.ids:
+        items = [it for it in items if it["item_id"] in set(a.ids)]
+    if a.limit:
+        items = items[: a.limit]
     mem_conf = json.loads(Path(a.system).read_text())["extra"]["memory"]
     if a.graft_preset:
         mem_conf = {**mem_conf, "graft_preset": a.graft_preset}
     llm = llm_for(mem_conf, {"s": {"url": a.url, "model": a.model}}, ["s"]) if not a.fake else \
         {"mode": "fake", "model": "qwen-fake", "label": "fake"}
     t0 = time.time()
-    res = prepare(items, mem_conf, llm, a.cache, a.build_workers)
+    res, step = {}, max(1, a.batch_size or len(items))
+    for k in range(0, len(items), step):
+        tb = time.time()
+        part = prepare(items[k:k + step], mem_conf, llm, a.cache, a.build_workers)
+        res.update(part)
+        built = [m for m in part.values() if m.get("built_in_this_run")]
+        print(f"[prepare] batch {k // step + 1}: {len(part)} histories, built {len(built)}, "
+              f"errors {sum(bool(m.get('error')) for m in part.values())}, {time.time() - tb:.0f} s "
+              f"(total {len(res)} of {len(items)}, {time.time() - t0:.0f} s)", flush=True)
     built = [m for m in res.values() if m.get("built_in_this_run")]
-    summary = {"histories": len(res), "built": len(built), "errors": [k for k, m in res.items() if m.get("error")],
-               "wall_seconds": round(time.time() - t0, 1),
+    summary = {"histories": len(res), "built": len(built), "errors": {k: m["error"] for k, m in res.items() if m.get("error")},
+               "wall_seconds": round(time.time() - t0, 1), "build_workers": a.build_workers, "batch_size": step,
+               "graft": graft_config(mem_conf, fake=a.fake), "llm": llm.get("label"),
                "build_llm_calls": sum(m["build"].get("llm_calls") or 0 for m in built),
                "build_input_tokens": sum(m["build"].get("input_tokens") or 0 for m in built),
-               "build_output_tokens": sum(m["build"].get("output_tokens") or 0 for m in built)}
+               "build_output_tokens": sum(m["build"].get("output_tokens") or 0 for m in built),
+               "per_history": {k: {**{f: m["build"].get(f) for f in ("chunks", "chunk_chars", "llm_calls", "input_tokens",
+                                                                     "output_tokens", "llm_seconds", "wall_seconds", "cache_hit")},
+                                   "facts": len((m.get("retrieval") or {}).get("facts") or []),
+                                   "retrieval_seconds": (m.get("retrieval") or {}).get("seconds"),
+                                   "retrieval_llm_calls": (m.get("retrieval") or {}).get("llm_calls")}
+                               for k, m in res.items()}}
     Path(a.cache).mkdir(parents=True, exist_ok=True)
-    (Path(a.cache) / f"prepare-{time.strftime('%Y%m%d-%H%M%S')}.json").write_text(json.dumps(summary, indent=1))
-    print(json.dumps(summary, indent=1))
+    name = f"prepare-{os.environ.get('SLURM_JOB_ID') or time.strftime('%Y%m%d-%H%M%S')}.json"
+    (Path(a.cache) / name).write_text(json.dumps(summary, indent=1))
+    print(json.dumps({k: v for k, v in summary.items() if k not in ("per_history", "graft")}, indent=1))
+    if summary["errors"]:
+        raise SystemExit(f"{len(summary['errors'])} histories failed; see {Path(a.cache) / name}")
 
 
 async def _judge(a) -> None:
@@ -671,6 +695,9 @@ def main() -> None:
     p.add_argument("--build-workers", type=int, default=16)
     p.add_argument("--fake", action="store_true")
     p.add_argument("--graft-preset", choices=sorted(GRAFT_PRESETS), help="overrides the config's graft_preset")
+    p.add_argument("--batch-size", type=int, default=25, help="histories per GRAFT bridge call (0 = all at once)")
+    p.add_argument("--ids", nargs="*", help="only these item_ids (pilot)")
+    p.add_argument("--limit", type=int, help="only the first N items (pilot)")
     j = sub.add_parser("judge", help="grade LongMemEval answers with LongMemEval's judge prompts on Qwen")
     j.add_argument("--items", required=True)
     j.add_argument("--runs", nargs="+", required=True, help="route=RUN_DIR ...")

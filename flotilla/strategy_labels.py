@@ -11,6 +11,18 @@ group ran is dropped and counted. Unavailable routes never count as wrong; the l
 route. The GRAFT build cost is counted once per history (graft_build in per_question rows and summary).
 --split writes split.json: 70% train, 15% dev, 15% held-out, stratified by (benchmark source, task type), seeded.
 Outputs: per_question.jsonl, summary.json (accuracy, mean tokens and seconds per strategy, label counts, GPU-seconds).
+
+Adding LongMemEval to finished pool labels (test 04, 2026-11-21), without regrading the pool:
+    --pool-labels POOL_DIR --memory-items LME.jsonl --verdicts V.jsonl --memory-split LME_SPLIT.json \
+        --runs fast=DIR ... memory=DIR ... [--build-runs PREP_DIR ...] --out NEW_DIR
+POOL_DIR's rows are copied unchanged (the Memory routes marked unavailable); --runs then hold LongMemEval runs only.
+split.json = POOL_DIR's split + LME_SPLIT.json's. Every row gets per-route "gpu_seconds", so a router costs each item
+in its own group: the group's GPU-seconds per wall-second for that route (job GPU-s / questions / mean wall-s) times
+the row's wall seconds, which is the number strategy_router used for the pool rows before. Memory routes add the
+history's GRAFT build (prepare jobs' GPU-seconds shared out by each history's LLM seconds) to their gpu_seconds, as a
+router that picks a Memory route must build the graph; gpu_seconds_answer and gpu_seconds_build keep the two apart.
+summary.json: per route over all rows where it is available, plus by_group (pool as POOL_DIR's summary, longmemeval);
+summary_longmemeval.json and per_question_longmemeval.jsonl hold the LongMemEval part alone.
 """
 import argparse
 import json
@@ -73,7 +85,11 @@ def prepare_seconds(dirs: list[str]) -> float:
 
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--pool", required=True)
+    ap.add_argument("--pool", help="pool questions (JSONL with id); not needed with --pool-labels")
+    ap.add_argument("--pool-labels", help="finished pool labels folder (per_question.jsonl, split.json, summary.json) to merge")
+    ap.add_argument("--memory-split", help="split.json of the --memory-items (LongMemEval's own)")
+    ap.add_argument("--build-runs", nargs="*", default=[], help="memory_route prepare run folders (compute.json)")
+    ap.add_argument("--graft-cache", help="GRAFT cache with prepare-*.json (per-history build cost)")
     ap.add_argument("--runs", nargs="+", required=True, help="strategy=DIR [DIR ...] groups, e.g. fast=a fast=b deep=c")
     ap.add_argument("--out", required=True)
     ap.add_argument("--split", action="store_true")
@@ -85,15 +101,18 @@ def main() -> None:
     for kv in a.runs:
         k, v = kv.split("=", 1)
         runs[k].append(v)
+    if not a.pool and not a.pool_labels:
+        ap.error("--pool or --pool-labels is required")
     pool = {}
-    for line in open(a.pool):
+    for line in (open(a.pool) if a.pool else []):
         r = json.loads(line)
         pool[r["id"]] = r
     if a.memory_items:
+        from flotilla.memory_route import question_text
         for line in open(a.memory_items):
             r = json.loads(line)
             pool[r["item_id"]] = {"id": r["item_id"], "source": r.get("source", "longmemeval"), "task_type": "memory",
-                                  "question_type": r.get("question_type")}
+                                  "question_type": r.get("question_type"), "task": question_text(r)}
     verdicts_in = load_verdicts(a.verdicts)
     traces = {s: load_traces(runs[s]) for s in ORDER if s in runs}
     # groups: pool questions and memory (history) questions; each group requires every route run on any of its items
@@ -117,6 +136,8 @@ def main() -> None:
         for i in ids:
             it = pool[i]
             row = {"id": i, "source": it["source"], "task_type": it["task_type"]}
+            if it["task_type"] == "memory":  # what a router reads for a LongMemEval item: the question, not the history
+                row.update({"question_type": it.get("question_type"), "task": it.get("task")})
             for s, tr in traces.items():
                 if s not in required[group(i)]:
                     row[s] = {"available": False}
@@ -166,8 +187,104 @@ def main() -> None:
             sp["held_out"] += g[k2:]
         (out / "split.json").write_text(json.dumps({"seed": SEED, "stratified_by": ["source", "task_type"], **sp}, indent=1))
         summary["split"] = {k: len(v) for k, v in sp.items()}
+    if a.pool_labels:
+        summary = merge_pool_labels(a, out, rows, summary, runs)
     (out / "summary.json").write_text(json.dumps(summary, indent=1))
     print(json.dumps(summary, indent=1))
+
+
+def _rates(rows: list[dict], per: dict) -> dict:
+    """Route -> GPU-seconds per wall-second in this group (job GPU-s / questions / mean wall-s), as strategy_router."""
+    out = {}
+    for s, st in per.items():
+        n = st.get("questions_available") or len(rows)
+        wall = st.get("mean_wall_seconds") or 0
+        out[s] = (st["gpu_seconds_job"] / n) / wall if wall > 0 and n else None
+    return out
+
+
+def build_gpu_seconds(a, ids: list[str]) -> tuple[dict, dict]:
+    """History -> GPU-seconds of its GRAFT build: the prepare jobs' GPU-seconds shared out by LLM seconds."""
+    total = sum(json.loads((Path(d) / "compute.json").read_text())["servers"][k]["gpu_seconds_run"]
+                for d in a.build_runs if (Path(d) / "compute.json").exists()
+                for k in json.loads((Path(d) / "compute.json").read_text())["servers"])
+    llm = {}
+    for p in sorted(Path(a.graft_cache).glob("prepare-*.json")) if a.graft_cache else []:
+        for k, v in json.loads(p.read_text()).get("per_history", {}).items():
+            if not v.get("cache_hit") and v.get("llm_seconds"):
+                llm[k] = v["llm_seconds"]
+    tot_llm = sum(llm[i] for i in ids if i in llm)
+    share = {i: total * llm[i] / tot_llm for i in ids if i in llm} if tot_llm else {}
+    return share, {"prepare_gpu_seconds": round(total, 1), "histories_with_build_cost": len(share),
+                   "mean_gpu_seconds_per_history": round(total / max(len(share), 1), 1)}
+
+
+def merge_pool_labels(a, out: Path, lme_rows: list[dict], lme_summary: dict, runs: dict) -> dict:
+    """The LongMemEval rows (graded here) plus the finished pool labels (copied): see the module docstring."""
+    pdir = Path(a.pool_labels)
+    if out.resolve() == pdir.resolve():
+        raise SystemExit("--out must be a new folder: the pool labels are never overwritten")
+    psum = json.loads((pdir / "summary.json").read_text())
+    psplit = json.loads((pdir / "split.json").read_text())
+    prows = [json.loads(l) for l in open(pdir / "per_question.jsonl")]
+    mem_routes = [s for s in lme_summary["per_strategy"] if s in MEMORY_ROUTES]
+    prate = _rates(prows, psum["per_strategy"])
+    lrate = _rates(lme_rows, lme_summary["per_strategy"])
+    ids = [r["id"] for r in lme_rows]
+    build, build_info = build_gpu_seconds(a, ids)
+    for r in prows:
+        for s, v in list(r.items()):
+            if isinstance(v, dict) and v.get("available") and prate.get(s) is not None:
+                v["gpu_seconds"] = round(prate[s] * (v.get("wall_seconds") or 0), 3)
+        for s in mem_routes:
+            r[s] = {"available": False}
+    for r in lme_rows:
+        for s, v in list(r.items()):
+            if isinstance(v, dict) and v.get("available"):
+                ans = round((lrate.get(s) or 0) * (v.get("wall_seconds") or 0), 3)
+                if s in MEMORY_ROUTES:
+                    b = round(build.get(r["id"], build_info["mean_gpu_seconds_per_history"]), 3)
+                    v.update({"gpu_seconds_answer": ans, "gpu_seconds_build": b, "gpu_seconds": round(ans + b, 3)})
+                else:
+                    v["gpu_seconds"] = ans
+    (out / "per_question_longmemeval.jsonl").write_text("".join(json.dumps(r, ensure_ascii=False) + "\n" for r in lme_rows))
+    (out / "summary_longmemeval.json").write_text(json.dumps({**lme_summary, "graft_build_gpu": build_info}, indent=1))
+    rows = prows + lme_rows
+    with open(out / "per_question.jsonl", "w") as f:
+        f.writelines(json.dumps(r, ensure_ascii=False) + "\n" for r in rows)
+    msplit = json.loads(Path(a.memory_split).read_text()) if a.memory_split else {}
+    sp = {k: list(psplit[k]) + list(msplit.get(k, [])) for k in ("train", "dev", "held_out")}
+    missing = [i for i in ids if not any(i in msplit.get(k, []) for k in sp)]
+    if missing:
+        raise SystemExit(f"{len(missing)} LongMemEval items are in no split of --memory-split, e.g. {missing[:3]}")
+    (out / "split.json").write_text(json.dumps({"seed": psplit.get("seed"), "pool": {k: v for k, v in psplit.items()
+                                                                                     if k not in sp},
+                                                "longmemeval": {"source": a.memory_split, **{k: v for k, v in msplit.items()
+                                                                                             if k not in sp}},
+                                                **sp}, indent=1))
+    order = [s for s in ORDER if s in psum["per_strategy"] or s in lme_summary["per_strategy"]]
+    per = {}
+    for s in order:
+        rs = [r for r in rows if r.get(s, {}).get("available")]
+        k = len(rs) or 1
+        gp = (psum["per_strategy"].get(s) or {}).get("gpu_seconds_job", 0)
+        gl = (lme_summary["per_strategy"].get(s) or {}).get("gpu_seconds_job", 0)
+        per[s] = {"questions": len(rs), "questions_available": len(rs),
+                  "accuracy": round(sum(bool(r[s]["correct"]) for r in rs) / k, 4),
+                  "mean_output_tokens": round(sum(r[s].get("tokens_out") or 0 for r in rs) / k, 1),
+                  "mean_wall_seconds": round(sum(r[s].get("wall_seconds") or 0 for r in rs) / k, 1),
+                  "gpu_seconds_job": round(gp + gl, 1),
+                  "gpu_seconds_per_question": round(sum(r[s].get("gpu_seconds") or 0 for r in rs) / k, 3)}
+    labels = Counter(r["label"] for r in rows)
+    return {"questions": len(rows), "groups": {"pool": len(prows), "longmemeval": len(lme_rows)},
+            "labels": dict(labels), "per_strategy": per,
+            "by_group": {"pool": {"from": str(pdir), "questions": psum["questions"], "labels": psum["labels"],
+                                  "per_strategy": psum["per_strategy"], "best_any_strategy": psum.get("best_any_strategy")},
+                         "longmemeval": {k: lme_summary[k] for k in ("questions", "labels", "per_strategy", "graft_build",
+                                                                     "best_any_strategy") if k in lme_summary}},
+            "graft_build_gpu": build_info, "split": {k: len(v) for k, v in sp.items()},
+            "best_any_strategy": round(sum(r["label"] != "none" for r in rows) / max(len(rows), 1), 4),
+            "dropped_incomplete": lme_summary.get("dropped_incomplete")}
 
 
 if __name__ == "__main__":
