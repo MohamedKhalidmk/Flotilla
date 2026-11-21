@@ -46,7 +46,15 @@ away, which is where the compute saving comes from.
 3. bge-small + logistic regression, set up as 2.
 4. Nearest neighbours over the training questions.
 5. Live RL from the best of 1-4: any route step in any order or stop, sees the verifier's verdict after each step,
-   reward +1 if correct minus a time penalty, trained with real Qwen runs on train questions.
+   reward +1 if correct minus a time penalty, trained with real Qwen runs on train questions. Extra number (user,
+   2026-11-21): how many questions the RL router solves that every fixed route missed, not counting questions with a
+   wrong gold answer (the always-wrong audit). Above zero means it beats the per-question oracle of fixed routes; those
+   questions are reported with the chains that solved them.
+
+Router choices (user, 2026-11-21): the keep rule compares against Vote, the most accurate fixed route; dev tuning keeps
+a 0.5-point margin inside the rule, so a router that only just passes on dev has room for the drop to held-out
+(`flotilla/strategy_router.py --tune rule`, the default). Memory routes use GRAFT with the T-REx structure guide
+(GRAFT test 06: 45.7 vs 34.7 for plain mode C on Haiku), preset `guide_b` in the four Memory configs.
 
 ## Result
 

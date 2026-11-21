@@ -77,7 +77,7 @@ GRAFT_PRESETS = {
     "plain_c": {},
     "guide_b": {"trex_guide": "results/checkpoints/trex_guide.json", "guide_linking": True, "guide_planning": True},
 }
-DEFAULT_PRESET = "plain_c"
+DEFAULT_PRESET = "plain_c"  # code default for offline tests; the four route configs choose guide_b (GRAFT default since test 06)
 # GRAFT settings that change the graph (the rest only change retrieval)
 BUILD_KEYS = ("writer", "schema", "schema_path", "revisions", "start_graph", "start_graph_path", "writer_max_tokens",
               "writer_linking", "linking_candidates", "chunk_tokens")
