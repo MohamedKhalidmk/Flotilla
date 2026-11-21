@@ -1,0 +1,36 @@
+{
+ "servers": {
+  "qwen_w4a16": {
+   "url": "set-by-serve",
+   "model": "qwen_w4a16",
+   "quant": "w4a16-ours",
+   "native_tools": true,
+   "request": {
+    "extra_body": {
+     "chat_template_kwargs": {
+      "enable_thinking": false
+     }
+    }
+   }
+  }
+ },
+ "solvers": [
+  "qwen_w4a16"
+ ],
+ "max_tokens": 32768,
+ "protocol_version": "protocol-v10",
+ "name": "qwen_strategy_memory",
+ "notes": "Memory: Fast (no thinking, no tools, one answer) on the question plus GRAFT facts from its own history. Only on items with sessions (LongMemEval); graph built once per history and shared by the four Memory routes (flotilla/memory_route.py).",
+ "tools": false,
+ "n_samples": 1,
+ "temperature": 0.6,
+ "extra": {
+  "memory": {
+   "base_route": "fast",
+   "graft_preset": "plain_c",
+   "graft": {
+    "llm_mode": "local"
+   }
+  }
+ }
+}
