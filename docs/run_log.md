@@ -102,6 +102,8 @@ One line per decision, with its reason. Times are America/Vancouver unless marke
 
 - **2026-11-20, GRAFT full T-REx runs use the original, uncleaned graph (user).** Reason: the cleaning's 107 dropped facts are mostly real (chips, albums, years) and the single-stopword linking rule already fixes the "THE" links; the cleaned graph stays on file, unused. The EiG job that had started on the cleaned graph (4742452) was cancelled before any API call ($0). Node vectors are embedded once (GRAFT scripts/embed_graph.py; twins Fir CPU 4751008, Trillium CPU 2899413) and loaded by every pass. Passes as GPU/CPU twins, whichever starts first: EiG 4751802/4751803, GOAt 4742453/4751804, question layer 4742454/4751805 (cap $1 each); GOAt and question layer held until EiG's first answers show facts reaching Haiku; Qwen 4742462/4/5 held until the Haiku EiG result. Docs: GRAFT repo experiments/ (INDEX, test-01..05) and docs/design/ (working memory, approved; starts after this run on the empty-start graph).
 
+- **2026-11-20, autonomy (user, away):** carry on without check-ins through GRAFT T-REx, the Qwen swap, the working-memory test, the Memory routes, router training (once, on all ten routes) and live RL. Decide routine things, log every decision and dollar, heavy work on clusters, push reports; stop only for something risky or costly.
+
 ### API spend (Anthropic)
 | When | What | Runs | Cost |
 |---|---|---|---|
