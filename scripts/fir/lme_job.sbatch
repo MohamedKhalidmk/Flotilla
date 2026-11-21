@@ -32,7 +32,7 @@ exec "$L/.venv/bin/python" "\$@"
 WRAP
   chmod +x "$SLURM_TMPDIR/graft_python"
   export GRAFT_REPO="$L" GRAFT_PYTHON="$SLURM_TMPDIR/graft_python" GRAFT_COMMIT="${GRAFT_COMMIT:-unknown}"
-  (cd "$L" && PYTHONPATH="$L" "$GRAFT_PYTHON" -c "import torch, my_method.agent, eval.methods; print('[graft] imports ok, cuda', torch.cuda.is_available())") || { echo "[graft] env broken"; exit 3; }
+  (cd "$L" && PYTHONPATH="$L" "$GRAFT_PYTHON" -c "import torch, openai, my_method.agent, eval.methods, baselines.claude_gateway.server; print('[graft] imports ok, cuda', torch.cuda.is_available())") || { echo "[graft] env broken"; exit 3; }
   echo "[graft] code and venv on $SLURM_TMPDIR in $(( $(date +%s) - t0 )) s; commit $GRAFT_COMMIT; cache $FLOTILLA_GRAFT_CACHE"
 fi
 exec bash "$CODE/scripts/trillium/job.sbatch" "$@"
