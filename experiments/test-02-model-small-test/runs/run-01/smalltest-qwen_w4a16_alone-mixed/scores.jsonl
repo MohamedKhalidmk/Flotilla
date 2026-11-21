@@ -1,0 +1,70 @@
+{"item_id": "lcb/abc380_a", "id": "lcb/abc380_a", "bench": "lcb", "task_type": "code", "tokens_total": 3773, "calls": 3, "correct": true, "passed": 44, "n_tests": 44}
+{"item_id": "ifeval/3565", "id": "ifeval/3565", "bench": "ifeval", "task_type": "instruction", "tokens_total": 2130, "calls": 2, "correct": true, "prompt_strict": true, "inst_strict": [true, true], "prompt_loose": true, "inst_loose": [true, true]}
+{"item_id": "ifeval/2078", "id": "ifeval/2078", "bench": "ifeval", "task_type": "instruction", "tokens_total": 3223, "calls": 3, "correct": true, "prompt_strict": true, "inst_strict": [true], "prompt_loose": true, "inst_loose": [true]}
+{"item_id": "gpqa/recPL4ZPpVYxgMu57", "id": "gpqa/recPL4ZPpVYxgMu57", "bench": "gpqa", "task_type": "science_mc", "tokens_total": 1599, "calls": 1, "correct": true}
+{"item_id": "lcb/abc394_b", "id": "lcb/abc394_b", "bench": "lcb", "task_type": "code", "tokens_total": 4693, "calls": 3, "correct": true, "passed": 42, "n_tests": 42}
+{"item_id": "lcb/abc383_a", "id": "lcb/abc383_a", "bench": "lcb", "task_type": "code", "tokens_total": 3879, "calls": 2, "correct": true, "passed": 43, "n_tests": 43}
+{"item_id": "ifeval/2859", "id": "ifeval/2859", "bench": "ifeval", "task_type": "instruction", "tokens_total": 3334, "calls": 2, "correct": true, "prompt_strict": true, "inst_strict": [true], "prompt_loose": true, "inst_loose": [true]}
+{"item_id": "ifeval/1739", "id": "ifeval/1739", "bench": "ifeval", "task_type": "instruction", "tokens_total": 2683, "calls": 2, "correct": true, "prompt_strict": true, "inst_strict": [true, true], "prompt_loose": true, "inst_loose": [true, true]}
+{"item_id": "ifeval/3280", "id": "ifeval/3280", "bench": "ifeval", "task_type": "instruction", "tokens_total": 4022, "calls": 3, "correct": true, "prompt_strict": true, "inst_strict": [true], "prompt_loose": true, "inst_loose": [true]}
+{"item_id": "ifeval/2069", "id": "ifeval/2069", "bench": "ifeval", "task_type": "instruction", "tokens_total": 3866, "calls": 3, "correct": true, "prompt_strict": true, "inst_strict": [true, true], "prompt_loose": true, "inst_loose": [true, true]}
+{"item_id": "ifeval/2417", "id": "ifeval/2417", "bench": "ifeval", "task_type": "instruction", "tokens_total": 3741, "calls": 3, "correct": true, "prompt_strict": true, "inst_strict": [true], "prompt_loose": true, "inst_loose": [true]}
+{"item_id": "gpqa/recYt8xx80OTyDsL0", "id": "gpqa/recYt8xx80OTyDsL0", "bench": "gpqa", "task_type": "science_mc", "tokens_total": 3368, "calls": 2, "correct": true}
+{"item_id": "ifeval/2107", "id": "ifeval/2107", "bench": "ifeval", "task_type": "instruction", "tokens_total": 3154, "calls": 2, "correct": true, "prompt_strict": true, "inst_strict": [true], "prompt_loose": true, "inst_loose": [true]}
+{"item_id": "ifeval/1217", "id": "ifeval/1217", "bench": "ifeval", "task_type": "instruction", "tokens_total": 3610, "calls": 2, "correct": true, "prompt_strict": true, "inst_strict": [true], "prompt_loose": true, "inst_loose": [true]}
+{"item_id": "ifeval/181", "id": "ifeval/181", "bench": "ifeval", "task_type": "instruction", "tokens_total": 3602, "calls": 2, "correct": true, "prompt_strict": true, "inst_strict": [true], "prompt_loose": true, "inst_loose": [true]}
+{"item_id": "gpqa/recE2ihVfqEK4R9d0", "id": "gpqa/recE2ihVfqEK4R9d0", "bench": "gpqa", "task_type": "science_mc", "tokens_total": 5370, "calls": 4, "correct": true}
+{"item_id": "gpqa/rec5eA17Qr1ucNLUf", "id": "gpqa/rec5eA17Qr1ucNLUf", "bench": "gpqa", "task_type": "science_mc", "tokens_total": 6354, "calls": 4, "correct": true}
+{"item_id": "ifeval/2359", "id": "ifeval/2359", "bench": "ifeval", "task_type": "instruction", "tokens_total": 3941, "calls": 2, "correct": false, "prompt_strict": false, "inst_strict": [false], "prompt_loose": false, "inst_loose": [false]}
+{"item_id": "ifeval/1377", "id": "ifeval/1377", "bench": "ifeval", "task_type": "instruction", "tokens_total": 4521, "calls": 2, "correct": true, "prompt_strict": true, "inst_strict": [true], "prompt_loose": true, "inst_loose": [true]}
+{"item_id": "ifeval/2015", "id": "ifeval/2015", "bench": "ifeval", "task_type": "instruction", "tokens_total": 4991, "calls": 4, "correct": true, "prompt_strict": true, "inst_strict": [true], "prompt_loose": true, "inst_loose": [true]}
+{"item_id": "ifeval/1436", "id": "ifeval/1436", "bench": "ifeval", "task_type": "instruction", "tokens_total": 5423, "calls": 3, "correct": true, "prompt_strict": true, "inst_strict": [true, true], "prompt_loose": true, "inst_loose": [true, true]}
+{"item_id": "gpqa/recrNbtgTNoabJJi6", "id": "gpqa/recrNbtgTNoabJJi6", "bench": "gpqa", "task_type": "science_mc", "tokens_total": 3087, "calls": 1, "correct": true}
+{"item_id": "ifeval/2674", "id": "ifeval/2674", "bench": "ifeval", "task_type": "instruction", "tokens_total": 6068, "calls": 4, "correct": true, "prompt_strict": true, "inst_strict": [true], "prompt_loose": true, "inst_loose": [true]}
+{"item_id": "gpqa/recN4DY9Q5V03glmQ", "id": "gpqa/recN4DY9Q5V03glmQ", "bench": "gpqa", "task_type": "science_mc", "tokens_total": 5907, "calls": 3, "correct": true}
+{"item_id": "ifeval/1733", "id": "ifeval/1733", "bench": "ifeval", "task_type": "instruction", "tokens_total": 7085, "calls": 4, "correct": true, "prompt_strict": true, "inst_strict": [true], "prompt_loose": true, "inst_loose": [true]}
+{"item_id": "gpqa/recoiTJPGUmzAkief", "id": "gpqa/recoiTJPGUmzAkief", "bench": "gpqa", "task_type": "science_mc", "tokens_total": 8987, "calls": 4, "correct": true}
+{"item_id": "ifeval/3311", "id": "ifeval/3311", "bench": "ifeval", "task_type": "instruction", "tokens_total": 5766, "calls": 3, "correct": true, "prompt_strict": true, "inst_strict": [true, true, true], "prompt_loose": true, "inst_loose": [true, true, true]}
+{"item_id": "ifeval/1001", "id": "ifeval/1001", "bench": "ifeval", "task_type": "instruction", "tokens_total": 7281, "calls": 4, "correct": true, "prompt_strict": true, "inst_strict": [true], "prompt_loose": true, "inst_loose": [true]}
+{"item_id": "gpqa/rec0wZvZgiz320KRs", "id": "gpqa/rec0wZvZgiz320KRs", "bench": "gpqa", "task_type": "science_mc", "tokens_total": 6235, "calls": 3, "correct": true}
+{"item_id": "gpqa/recYOzCsevNz61Lyn", "id": "gpqa/recYOzCsevNz61Lyn", "bench": "gpqa", "task_type": "science_mc", "tokens_total": 5910, "calls": 2, "correct": true}
+{"item_id": "gpqa/recOYsaYs6RmtlTDy", "id": "gpqa/recOYsaYs6RmtlTDy", "bench": "gpqa", "task_type": "science_mc", "tokens_total": 6260, "calls": 2, "correct": true}
+{"item_id": "ifeval/279", "id": "ifeval/279", "bench": "ifeval", "task_type": "instruction", "tokens_total": 7582, "calls": 4, "correct": true, "prompt_strict": true, "inst_strict": [true, true, true], "prompt_loose": true, "inst_loose": [true, true, true]}
+{"item_id": "gpqa/recUc29lMDBEvurYo", "id": "gpqa/recUc29lMDBEvurYo", "bench": "gpqa", "task_type": "science_mc", "tokens_total": 8175, "calls": 3, "correct": true}
+{"item_id": "gpqa/recPzW1WqRnPs57D6", "id": "gpqa/recPzW1WqRnPs57D6", "bench": "gpqa", "task_type": "science_mc", "tokens_total": 9284, "calls": 4, "correct": true}
+{"item_id": "lcb/3646", "id": "lcb/3646", "bench": "lcb", "task_type": "code", "tokens_total": 9331, "calls": 3, "correct": true, "passed": 42, "n_tests": 42}
+{"item_id": "lcb/abc380_d", "id": "lcb/abc380_d", "bench": "lcb", "task_type": "code", "tokens_total": 12382, "calls": 4, "correct": true, "passed": 43, "n_tests": 43}
+{"item_id": "lcb/abc396_d", "id": "lcb/abc396_d", "bench": "lcb", "task_type": "code", "tokens_total": 14788, "calls": 4, "correct": true, "passed": 43, "n_tests": 43}
+{"item_id": "lcb/abc376_d", "id": "lcb/abc376_d", "bench": "lcb", "task_type": "code", "tokens_total": 12766, "calls": 4, "correct": true, "passed": 39, "n_tests": 39}
+{"item_id": "ifeval/2870", "id": "ifeval/2870", "bench": "ifeval", "task_type": "instruction", "tokens_total": 13829, "calls": 7, "correct": true, "prompt_strict": true, "inst_strict": [true], "prompt_loose": true, "inst_loose": [true]}
+{"item_id": "gpqa/recoy9ZLBsc7HIRBy", "id": "gpqa/recoy9ZLBsc7HIRBy", "bench": "gpqa", "task_type": "science_mc", "tokens_total": 12553, "calls": 4, "correct": true}
+{"item_id": "lcb/abc375_d", "id": "lcb/abc375_d", "bench": "lcb", "task_type": "code", "tokens_total": 12048, "calls": 4, "correct": true, "passed": 34, "n_tests": 34}
+{"item_id": "gpqa/recAAJoHMW45Lv5je", "id": "gpqa/recAAJoHMW45Lv5je", "bench": "gpqa", "task_type": "science_mc", "tokens_total": 12904, "calls": 4, "correct": true}
+{"item_id": "lcb/3604", "id": "lcb/3604", "bench": "lcb", "task_type": "code", "tokens_total": 14555, "calls": 4, "correct": true, "passed": 43, "n_tests": 43}
+{"item_id": "ifeval/1566", "id": "ifeval/1566", "bench": "ifeval", "task_type": "instruction", "tokens_total": 17382, "calls": 4, "correct": true, "prompt_strict": true, "inst_strict": [true], "prompt_loose": true, "inst_loose": [true]}
+{"item_id": "ifeval/1233", "id": "ifeval/1233", "bench": "ifeval", "task_type": "instruction", "tokens_total": 11885, "calls": 4, "correct": true, "prompt_strict": true, "inst_strict": [true, true], "prompt_loose": true, "inst_loose": [true, true]}
+{"item_id": "lcb/3659", "id": "lcb/3659", "bench": "lcb", "task_type": "code", "tokens_total": 18012, "calls": 4, "correct": true, "passed": 43, "n_tests": 43}
+{"item_id": "lcb/3773", "id": "lcb/3773", "bench": "lcb", "task_type": "code", "tokens_total": 13268, "calls": 4, "correct": true, "passed": 33, "n_tests": 33}
+{"item_id": "ifeval/3063", "id": "ifeval/3063", "bench": "ifeval", "task_type": "instruction", "tokens_total": 11915, "calls": 2, "correct": true, "prompt_strict": true, "inst_strict": [true, true], "prompt_loose": true, "inst_loose": [true, true]}
+{"item_id": "lcb/3631", "id": "lcb/3631", "bench": "lcb", "task_type": "code", "tokens_total": 18172, "calls": 4, "correct": true, "passed": 43, "n_tests": 43}
+{"item_id": "lcb/abc395_f", "id": "lcb/abc395_f", "bench": "lcb", "task_type": "code", "tokens_total": 22660, "calls": 4, "correct": true, "passed": 44, "n_tests": 44}
+{"item_id": "lcb/3696", "id": "lcb/3696", "bench": "lcb", "task_type": "code", "tokens_total": 23198, "calls": 4, "correct": true, "passed": 43, "n_tests": 43}
+{"item_id": "lcb/3647", "id": "lcb/3647", "bench": "lcb", "task_type": "code", "tokens_total": 25472, "calls": 4, "correct": false, "passed": 0, "n_tests": 43}
+{"item_id": "gpqa/rec1oj2DveQWl9Rpw", "id": "gpqa/rec1oj2DveQWl9Rpw", "bench": "gpqa", "task_type": "science_mc", "tokens_total": 19979, "calls": 2, "correct": true}
+{"item_id": "ifeval/3414", "id": "ifeval/3414", "bench": "ifeval", "task_type": "instruction", "tokens_total": 28398, "calls": 8, "correct": true, "prompt_strict": true, "inst_strict": [true, true], "prompt_loose": true, "inst_loose": [true, true]}
+{"item_id": "ifeval/3513", "id": "ifeval/3513", "bench": "ifeval", "task_type": "instruction", "tokens_total": 42732, "calls": 8, "correct": true, "prompt_strict": true, "inst_strict": [true], "prompt_loose": true, "inst_loose": [true]}
+{"item_id": "lcb/3794", "id": "lcb/3794", "bench": "lcb", "task_type": "code", "tokens_total": 34043, "calls": 4, "correct": true, "passed": 43, "n_tests": 43}
+{"item_id": "lcb/3793", "id": "lcb/3793", "bench": "lcb", "task_type": "code", "tokens_total": 33810, "calls": 4, "correct": true, "passed": 44, "n_tests": 44}
+{"item_id": "ifeval/1132", "id": "ifeval/1132", "bench": "ifeval", "task_type": "instruction", "tokens_total": 29295, "calls": 5, "correct": true, "prompt_strict": true, "inst_strict": [true, true], "prompt_loose": true, "inst_loose": [true, true]}
+{"item_id": "gpqa/rec5rjeLsEq5Fg7Oj", "id": "gpqa/rec5rjeLsEq5Fg7Oj", "bench": "gpqa", "task_type": "science_mc", "tokens_total": 28894, "calls": 3, "correct": true}
+{"item_id": "ifeval/1670", "id": "ifeval/1670", "bench": "ifeval", "task_type": "instruction", "tokens_total": 45872, "calls": 8, "correct": true, "prompt_strict": true, "inst_strict": [true, true, true], "prompt_loose": true, "inst_loose": [true, true, true]}
+{"item_id": "lcb/3686", "id": "lcb/3686", "bench": "lcb", "task_type": "code", "tokens_total": 42726, "calls": 4, "correct": false, "passed": 0, "n_tests": 42}
+{"item_id": "gpqa/recBhnXrUyTJ6WHIR", "id": "gpqa/recBhnXrUyTJ6WHIR", "bench": "gpqa", "task_type": "science_mc", "tokens_total": 39365, "calls": 4, "correct": false}
+{"item_id": "gpqa/recDj2Y2BbtV02Wv5", "id": "gpqa/recDj2Y2BbtV02Wv5", "bench": "gpqa", "task_type": "science_mc", "tokens_total": 40272, "calls": 4, "correct": false}
+{"item_id": "lcb/3674", "id": "lcb/3674", "bench": "lcb", "task_type": "code", "tokens_total": 55446, "calls": 2, "correct": false, "passed": 0, "n_tests": 42}
+{"item_id": "gpqa/recb80OwMgNnceA9t", "id": "gpqa/recb80OwMgNnceA9t", "bench": "gpqa", "task_type": "science_mc", "tokens_total": 56783, "calls": 2, "correct": false}
+{"item_id": "lcb/arc182_a", "id": "lcb/arc182_a", "bench": "lcb", "task_type": "code", "tokens_total": 70464, "calls": 2, "correct": false, "passed": 0, "n_tests": 28}
+{"item_id": "lcb/arc182_d", "id": "lcb/arc182_d", "bench": "lcb", "task_type": "code", "tokens_total": 68622, "calls": 2, "correct": false, "passed": 0, "n_tests": 28}
+{"item_id": "lcb/arc181_a", "id": "lcb/arc181_a", "bench": "lcb", "task_type": "code", "tokens_total": 78610, "calls": 5, "correct": true, "passed": 19, "n_tests": 19}
+{"item_id": "gpqa/reckl6PkaEMWM50yZ", "id": "gpqa/reckl6PkaEMWM50yZ", "bench": "gpqa", "task_type": "science_mc", "tokens_total": 92529, "calls": 6, "correct": true}
+{"item_id": "lcb/abc373_g", "id": "lcb/abc373_g", "bench": "lcb", "task_type": "code", "tokens_total": 104826, "calls": 5, "correct": false, "passed": 0, "n_tests": 27}

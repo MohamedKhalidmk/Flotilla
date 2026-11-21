@@ -1,0 +1,8 @@
+{
+ "model": "gptoss_alone",
+ "n": 16,
+ "correct": 12,
+ "runs": [
+  "/scratch/khaledmk/flotilla/runs/labeltest-gptoss_alone/smoke"
+ ]
+}

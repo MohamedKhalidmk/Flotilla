@@ -1,0 +1,14 @@
+{
+  "name": "math500-phi-w4a16-ours",
+  "model": "/scratch/khaledmk/flotilla/quant/phi4-reasoning-plus-w4a16",
+  "n": 500,
+  "accuracy": 0.786,
+  "correct": 393,
+  "truncated": 398,
+  "tokens_in": 155302,
+  "tokens_out": 12769728,
+  "wall_seconds": 17274.1,
+  "tp": 1,
+  "max_tokens": 30000,
+  "gen_tokens_per_s": 739.2
+}

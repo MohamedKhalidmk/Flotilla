@@ -1,0 +1,362 @@
+{"item_id": "gsm8k/90", "id": "gsm8k/90", "bench": "gsm8k", "task_type": "math", "tokens_total": 2793, "calls": 3, "correct": true}
+{"item_id": "gpqa/recE2ihVfqEK4R9d0", "id": "gpqa/recE2ihVfqEK4R9d0", "bench": "gpqa", "task_type": "science_mc", "tokens_total": 1358, "calls": 1, "correct": true}
+{"item_id": "gpqa/recPL4ZPpVYxgMu57", "id": "gpqa/recPL4ZPpVYxgMu57", "bench": "gpqa", "task_type": "science_mc", "tokens_total": 1403, "calls": 1, "correct": true}
+{"item_id": "gsm8k/109", "id": "gsm8k/109", "bench": "gsm8k", "task_type": "math", "tokens_total": 3811, "calls": 4, "correct": true}
+{"item_id": "gpqa/recYt8xx80OTyDsL0", "id": "gpqa/recYt8xx80OTyDsL0", "bench": "gpqa", "task_type": "science_mc", "tokens_total": 1752, "calls": 1, "correct": true}
+{"item_id": "gsm8k/120", "id": "gsm8k/120", "bench": "gsm8k", "task_type": "math", "tokens_total": 2459, "calls": 3, "correct": true}
+{"item_id": "gsm8k/70", "id": "gsm8k/70", "bench": "gsm8k", "task_type": "math", "tokens_total": 4064, "calls": 4, "correct": true}
+{"item_id": "gsm8k/174", "id": "gsm8k/174", "bench": "gsm8k", "task_type": "math", "tokens_total": 2647, "calls": 3, "correct": true}
+{"item_id": "gsm8k/148", "id": "gsm8k/148", "bench": "gsm8k", "task_type": "math", "tokens_total": 3833, "calls": 4, "correct": true}
+{"item_id": "gsm8k/155", "id": "gsm8k/155", "bench": "gsm8k", "task_type": "math", "tokens_total": 3963, "calls": 4, "correct": true}
+{"item_id": "gsm8k/223", "id": "gsm8k/223", "bench": "gsm8k", "task_type": "math", "tokens_total": 2382, "calls": 3, "correct": true}
+{"item_id": "gsm8k/178", "id": "gsm8k/178", "bench": "gsm8k", "task_type": "math", "tokens_total": 2709, "calls": 3, "correct": true}
+{"item_id": "gsm8k/140", "id": "gsm8k/140", "bench": "gsm8k", "task_type": "math", "tokens_total": 4357, "calls": 4, "correct": true}
+{"item_id": "gpqa/recPzW1WqRnPs57D6", "id": "gpqa/recPzW1WqRnPs57D6", "bench": "gpqa", "task_type": "science_mc", "tokens_total": 3170, "calls": 1, "correct": true}
+{"item_id": "gpqa/recYOzCsevNz61Lyn", "id": "gpqa/recYOzCsevNz61Lyn", "bench": "gpqa", "task_type": "science_mc", "tokens_total": 3407, "calls": 1, "correct": true}
+{"item_id": "gsm8k/175", "id": "gsm8k/175", "bench": "gsm8k", "task_type": "math", "tokens_total": 4188, "calls": 4, "correct": true}
+{"item_id": "gsm8k/226", "id": "gsm8k/226", "bench": "gsm8k", "task_type": "math", "tokens_total": 2800, "calls": 3, "correct": true}
+{"item_id": "gsm8k/253", "id": "gsm8k/253", "bench": "gsm8k", "task_type": "math", "tokens_total": 2324, "calls": 3, "correct": true}
+{"item_id": "gsm8k/285", "id": "gsm8k/285", "bench": "gsm8k", "task_type": "math", "tokens_total": 2397, "calls": 3, "correct": true}
+{"item_id": "gpqa/rec0wZvZgiz320KRs", "id": "gpqa/rec0wZvZgiz320KRs", "bench": "gpqa", "task_type": "science_mc", "tokens_total": 5550, "calls": 3, "correct": true}
+{"item_id": "gsm8k/227", "id": "gsm8k/227", "bench": "gsm8k", "task_type": "math", "tokens_total": 3081, "calls": 3, "correct": true}
+{"item_id": "aime2025/1", "id": "aime2025/1", "bench": "aime2025", "task_type": "math", "tokens_total": 5858, "calls": 4, "correct": true}
+{"item_id": "aime2026/3", "id": "aime2026/3", "bench": "aime2026", "task_type": "math", "tokens_total": 3951, "calls": 1, "correct": true}
+{"item_id": "gpqa/rec5eA17Qr1ucNLUf", "id": "gpqa/rec5eA17Qr1ucNLUf", "bench": "gpqa", "task_type": "science_mc", "tokens_total": 8014, "calls": 4, "correct": true}
+{"item_id": "gsm8k/347", "id": "gsm8k/347", "bench": "gsm8k", "task_type": "math", "tokens_total": 2394, "calls": 3, "correct": true}
+{"item_id": "gsm8k/286", "id": "gsm8k/286", "bench": "gsm8k", "task_type": "math", "tokens_total": 3677, "calls": 4, "correct": true}
+{"item_id": "gsm8k/260", "id": "gsm8k/260", "bench": "gsm8k", "task_type": "math", "tokens_total": 3927, "calls": 4, "correct": true}
+{"item_id": "gsm8k/482", "id": "gsm8k/482", "bench": "gsm8k", "task_type": "math", "tokens_total": 2543, "calls": 3, "correct": true}
+{"item_id": "aime2025/17", "id": "aime2025/17", "bench": "aime2025", "task_type": "math", "tokens_total": 7177, "calls": 4, "correct": true}
+{"item_id": "gsm8k/476", "id": "gsm8k/476", "bench": "gsm8k", "task_type": "math", "tokens_total": 3269, "calls": 4, "correct": true}
+{"item_id": "gsm8k/338", "id": "gsm8k/338", "bench": "gsm8k", "task_type": "math", "tokens_total": 4352, "calls": 4, "correct": true}
+{"item_id": "aime2026/29", "id": "aime2026/29", "bench": "aime2026", "task_type": "math", "tokens_total": 8588, "calls": 4, "correct": true}
+{"item_id": "gsm8k/499", "id": "gsm8k/499", "bench": "gsm8k", "task_type": "math", "tokens_total": 2902, "calls": 3, "correct": true}
+{"item_id": "gsm8k/588", "id": "gsm8k/588", "bench": "gsm8k", "task_type": "math", "tokens_total": 2482, "calls": 3, "correct": true}
+{"item_id": "aime2026/24", "id": "aime2026/24", "bench": "aime2026", "task_type": "math", "tokens_total": 6060, "calls": 2, "correct": true}
+{"item_id": "aime2026/7", "id": "aime2026/7", "bench": "aime2026", "task_type": "math", "tokens_total": 5125, "calls": 1, "correct": true}
+{"item_id": "gsm8k/536", "id": "gsm8k/536", "bench": "gsm8k", "task_type": "math", "tokens_total": 3636, "calls": 4, "correct": true}
+{"item_id": "gpqa/recoy9ZLBsc7HIRBy", "id": "gpqa/recoy9ZLBsc7HIRBy", "bench": "gpqa", "task_type": "science_mc", "tokens_total": 5910, "calls": 1, "correct": true}
+{"item_id": "gsm8k/383", "id": "gsm8k/383", "bench": "gsm8k", "task_type": "math", "tokens_total": 4901, "calls": 4, "correct": true}
+{"item_id": "gsm8k/578", "id": "gsm8k/578", "bench": "gsm8k", "task_type": "math", "tokens_total": 4016, "calls": 4, "correct": true}
+{"item_id": "gsm8k/157", "id": "gsm8k/157", "bench": "gsm8k", "task_type": "math", "tokens_total": 7010, "calls": 4, "correct": true}
+{"item_id": "gsm8k/408", "id": "gsm8k/408", "bench": "gsm8k", "task_type": "math", "tokens_total": 4998, "calls": 4, "correct": true}
+{"item_id": "gsm8k/645", "id": "gsm8k/645", "bench": "gsm8k", "task_type": "math", "tokens_total": 3537, "calls": 4, "correct": true}
+{"item_id": "gsm8k/626", "id": "gsm8k/626", "bench": "gsm8k", "task_type": "math", "tokens_total": 3769, "calls": 4, "correct": false}
+{"item_id": "gsm8k/330", "id": "gsm8k/330", "bench": "gsm8k", "task_type": "math", "tokens_total": 5531, "calls": 4, "correct": true}
+{"item_id": "gsm8k/755", "id": "gsm8k/755", "bench": "gsm8k", "task_type": "math", "tokens_total": 2343, "calls": 3, "correct": true}
+{"item_id": "gsm8k/816", "id": "gsm8k/816", "bench": "gsm8k", "task_type": "math", "tokens_total": 2269, "calls": 3, "correct": true}
+{"item_id": "gsm8k/636", "id": "gsm8k/636", "bench": "gsm8k", "task_type": "math", "tokens_total": 3917, "calls": 4, "correct": true}
+{"item_id": "gsm8k/602", "id": "gsm8k/602", "bench": "gsm8k", "task_type": "math", "tokens_total": 4237, "calls": 4, "correct": true}
+{"item_id": "aime2025/8", "id": "aime2025/8", "bench": "aime2025", "task_type": "math", "tokens_total": 6422, "calls": 1, "correct": true}
+{"item_id": "gsm8k/723", "id": "gsm8k/723", "bench": "gsm8k", "task_type": "math", "tokens_total": 3547, "calls": 4, "correct": true}
+{"item_id": "gsm8k/843", "id": "gsm8k/843", "bench": "gsm8k", "task_type": "math", "tokens_total": 2482, "calls": 3, "correct": true}
+{"item_id": "aime2025/6", "id": "aime2025/6", "bench": "aime2025", "task_type": "math", "tokens_total": 8775, "calls": 4, "correct": true}
+{"item_id": "gsm8k/587", "id": "gsm8k/587", "bench": "gsm8k", "task_type": "math", "tokens_total": 4685, "calls": 4, "correct": true}
+{"item_id": "gpqa/recOYsaYs6RmtlTDy", "id": "gpqa/recOYsaYs6RmtlTDy", "bench": "gpqa", "task_type": "science_mc", "tokens_total": 6642, "calls": 1, "correct": true}
+{"item_id": "gsm8k/747", "id": "gsm8k/747", "bench": "gsm8k", "task_type": "math", "tokens_total": 3671, "calls": 4, "correct": true}
+{"item_id": "gsm8k/629", "id": "gsm8k/629", "bench": "gsm8k", "task_type": "math", "tokens_total": 4507, "calls": 4, "correct": true}
+{"item_id": "gsm8k/1064", "id": "gsm8k/1064", "bench": "gsm8k", "task_type": "math", "tokens_total": 2638, "calls": 3, "correct": true}
+{"item_id": "gsm8k/1116", "id": "gsm8k/1116", "bench": "gsm8k", "task_type": "math", "tokens_total": 2451, "calls": 3, "correct": true}
+{"item_id": "gsm8k/892", "id": "gsm8k/892", "bench": "gsm8k", "task_type": "math", "tokens_total": 3671, "calls": 4, "correct": true}
+{"item_id": "gsm8k/1095", "id": "gsm8k/1095", "bench": "gsm8k", "task_type": "math", "tokens_total": 2620, "calls": 3, "correct": true}
+{"item_id": "gsm8k/1031", "id": "gsm8k/1031", "bench": "gsm8k", "task_type": "math", "tokens_total": 3436, "calls": 4, "correct": true}
+{"item_id": "gsm8k/859", "id": "gsm8k/859", "bench": "gsm8k", "task_type": "math", "tokens_total": 3876, "calls": 4, "correct": true}
+{"item_id": "gsm8k/1154", "id": "gsm8k/1154", "bench": "gsm8k", "task_type": "math", "tokens_total": 2398, "calls": 3, "correct": true}
+{"item_id": "gpqa/recBhnXrUyTJ6WHIR", "id": "gpqa/recBhnXrUyTJ6WHIR", "bench": "gpqa", "task_type": "science_mc", "tokens_total": 9688, "calls": 4, "correct": true}
+{"item_id": "gsm8k/1018", "id": "gsm8k/1018", "bench": "gsm8k", "task_type": "math", "tokens_total": 3585, "calls": 4, "correct": true}
+{"item_id": "gsm8k/955", "id": "gsm8k/955", "bench": "gsm8k", "task_type": "math", "tokens_total": 4064, "calls": 4, "correct": true}
+{"item_id": "gsm8k/1151", "id": "gsm8k/1151", "bench": "gsm8k", "task_type": "math", "tokens_total": 3704, "calls": 4, "correct": true}
+{"item_id": "aime2026/16", "id": "aime2026/16", "bench": "aime2026", "task_type": "math", "tokens_total": 9761, "calls": 4, "correct": true}
+{"item_id": "gsm8k/1016", "id": "gsm8k/1016", "bench": "gsm8k", "task_type": "math", "tokens_total": 4165, "calls": 4, "correct": true}
+{"item_id": "gsm8k/1153", "id": "gsm8k/1153", "bench": "gsm8k", "task_type": "math", "tokens_total": 3776, "calls": 4, "correct": true}
+{"item_id": "gsm8k/494", "id": "gsm8k/494", "bench": "gsm8k", "task_type": "math", "tokens_total": 6346, "calls": 4, "correct": false}
+{"item_id": "aime2026/1", "id": "aime2026/1", "bench": "aime2026", "task_type": "math", "tokens_total": 10433, "calls": 4, "correct": true}
+{"item_id": "gsm8k/1293", "id": "gsm8k/1293", "bench": "gsm8k", "task_type": "math", "tokens_total": 3456, "calls": 4, "correct": true}
+{"item_id": "gpqa/recrNbtgTNoabJJi6", "id": "gpqa/recrNbtgTNoabJJi6", "bench": "gpqa", "task_type": "science_mc", "tokens_total": 7928, "calls": 1, "correct": true}
+{"item_id": "gsm8k/1163", "id": "gsm8k/1163", "bench": "gsm8k", "task_type": "math", "tokens_total": 3620, "calls": 4, "correct": true}
+{"item_id": "aime2026/23", "id": "aime2026/23", "bench": "aime2026", "task_type": "math", "tokens_total": 8065, "calls": 1, "correct": true}
+{"item_id": "gsm8k/790", "id": "gsm8k/790", "bench": "gsm8k", "task_type": "math", "tokens_total": 5164, "calls": 4, "correct": true}
+{"item_id": "gsm8k/1261", "id": "gsm8k/1261", "bench": "gsm8k", "task_type": "math", "tokens_total": 4064, "calls": 4, "correct": true}
+{"item_id": "ifeval/2015", "id": "ifeval/2015", "bench": "ifeval", "task_type": "instruction", "tokens_total": 958, "calls": 1, "correct": true, "prompt_strict": true, "inst_strict": [true], "prompt_loose": true, "inst_loose": [true]}
+{"item_id": "gsm8k/1070", "id": "gsm8k/1070", "bench": "gsm8k", "task_type": "math", "tokens_total": 4687, "calls": 4, "correct": true}
+{"item_id": "ifeval/1739", "id": "ifeval/1739", "bench": "ifeval", "task_type": "instruction", "tokens_total": 2174, "calls": 2, "correct": true, "prompt_strict": true, "inst_strict": [true, true], "prompt_loose": true, "inst_loose": [true, true]}
+{"item_id": "ifeval/1217", "id": "ifeval/1217", "bench": "ifeval", "task_type": "instruction", "tokens_total": 2512, "calls": 2, "correct": true, "prompt_strict": true, "inst_strict": [true], "prompt_loose": true, "inst_loose": [true]}
+{"item_id": "gsm8k/1198", "id": "gsm8k/1198", "bench": "gsm8k", "task_type": "math", "tokens_total": 4609, "calls": 4, "correct": true}
+{"item_id": "ifeval/1233", "id": "ifeval/1233", "bench": "ifeval", "task_type": "instruction", "tokens_total": 2672, "calls": 2, "correct": true, "prompt_strict": true, "inst_strict": [true, true], "prompt_loose": true, "inst_loose": [true, true]}
+{"item_id": "ifeval/1132", "id": "ifeval/1132", "bench": "ifeval", "task_type": "instruction", "tokens_total": 2877, "calls": 2, "correct": true, "prompt_strict": true, "inst_strict": [true, true], "prompt_loose": true, "inst_loose": [true, true]}
+{"item_id": "aime2025/16", "id": "aime2025/16", "bench": "aime2025", "task_type": "math", "tokens_total": 11451, "calls": 4, "correct": true}
+{"item_id": "ifeval/2078", "id": "ifeval/2078", "bench": "ifeval", "task_type": "instruction", "tokens_total": 2002, "calls": 2, "correct": true, "prompt_strict": true, "inst_strict": [true], "prompt_loose": true, "inst_loose": [true]}
+{"item_id": "ifeval/181", "id": "ifeval/181", "bench": "ifeval", "task_type": "instruction", "tokens_total": 2727, "calls": 2, "correct": true, "prompt_strict": true, "inst_strict": [true], "prompt_loose": true, "inst_loose": [true]}
+{"item_id": "gsm8k/1105", "id": "gsm8k/1105", "bench": "gsm8k", "task_type": "math", "tokens_total": 5352, "calls": 4, "correct": true}
+{"item_id": "ifeval/1733", "id": "ifeval/1733", "bench": "ifeval", "task_type": "instruction", "tokens_total": 2924, "calls": 2, "correct": true, "prompt_strict": true, "inst_strict": [true], "prompt_loose": true, "inst_loose": [true]}
+{"item_id": "ifeval/1377", "id": "ifeval/1377", "bench": "ifeval", "task_type": "instruction", "tokens_total": 4983, "calls": 3, "correct": true, "prompt_strict": true, "inst_strict": [true], "prompt_loose": true, "inst_loose": [true]}
+{"item_id": "ifeval/2417", "id": "ifeval/2417", "bench": "ifeval", "task_type": "instruction", "tokens_total": 2343, "calls": 2, "correct": true, "prompt_strict": true, "inst_strict": [true], "prompt_loose": true, "inst_loose": [true]}
+{"item_id": "ifeval/2859", "id": "ifeval/2859", "bench": "ifeval", "task_type": "instruction", "tokens_total": 2568, "calls": 2, "correct": true, "prompt_strict": true, "inst_strict": [true], "prompt_loose": true, "inst_loose": [true]}
+{"item_id": "ifeval/2674", "id": "ifeval/2674", "bench": "ifeval", "task_type": "instruction", "tokens_total": 2220, "calls": 2, "correct": true, "prompt_strict": true, "inst_strict": [true], "prompt_loose": true, "inst_loose": [true]}
+{"item_id": "ifeval/2359", "id": "ifeval/2359", "bench": "ifeval", "task_type": "instruction", "tokens_total": 2821, "calls": 2, "correct": true, "prompt_strict": true, "inst_strict": [true], "prompt_loose": true, "inst_loose": [true]}
+{"item_id": "ifeval/2069", "id": "ifeval/2069", "bench": "ifeval", "task_type": "instruction", "tokens_total": 3958, "calls": 3, "correct": true, "prompt_strict": true, "inst_strict": [true, true], "prompt_loose": true, "inst_loose": [true, true]}
+{"item_id": "aime2026/4", "id": "aime2026/4", "bench": "aime2026", "task_type": "math", "tokens_total": 11561, "calls": 3, "correct": true}
+{"item_id": "gsm8k/443", "id": "gsm8k/443", "bench": "gsm8k", "task_type": "math", "tokens_total": 11855, "calls": 8, "correct": true}
+{"item_id": "aime2025/19", "id": "aime2025/19", "bench": "aime2025", "task_type": "math", "tokens_total": 12766, "calls": 4, "correct": true}
+{"item_id": "ifeval/3565", "id": "ifeval/3565", "bench": "ifeval", "task_type": "instruction", "tokens_total": 2158, "calls": 2, "correct": true, "prompt_strict": true, "inst_strict": [true, true], "prompt_loose": true, "inst_loose": [true, true]}
+{"item_id": "aime2025/22", "id": "aime2025/22", "bench": "aime2025", "task_type": "math", "tokens_total": 11552, "calls": 3, "correct": true}
+{"item_id": "aime2026/8", "id": "aime2026/8", "bench": "aime2026", "task_type": "math", "tokens_total": 12683, "calls": 4, "correct": true}
+{"item_id": "ifeval/2107", "id": "ifeval/2107", "bench": "ifeval", "task_type": "instruction", "tokens_total": 3950, "calls": 3, "correct": true, "prompt_strict": true, "inst_strict": [true], "prompt_loose": true, "inst_loose": [true]}
+{"item_id": "gpqa/recDj2Y2BbtV02Wv5", "id": "gpqa/recDj2Y2BbtV02Wv5", "bench": "gpqa", "task_type": "science_mc", "tokens_total": 10141, "calls": 1, "correct": false}
+{"item_id": "gsm8k/991", "id": "gsm8k/991", "bench": "gsm8k", "task_type": "math", "tokens_total": 4615, "calls": 1, "correct": true}
+{"item_id": "ifeval/3311", "id": "ifeval/3311", "bench": "ifeval", "task_type": "instruction", "tokens_total": 2841, "calls": 2, "correct": true, "prompt_strict": true, "inst_strict": [true, true, true], "prompt_loose": true, "inst_loose": [true, true, true]}
+{"item_id": "ifeval/1566", "id": "ifeval/1566", "bench": "ifeval", "task_type": "instruction", "tokens_total": 5608, "calls": 3, "correct": true, "prompt_strict": true, "inst_strict": [true], "prompt_loose": true, "inst_loose": [true]}
+{"item_id": "ifeval/3280", "id": "ifeval/3280", "bench": "ifeval", "task_type": "instruction", "tokens_total": 4380, "calls": 3, "correct": true, "prompt_strict": true, "inst_strict": [true], "prompt_loose": true, "inst_loose": [true]}
+{"item_id": "ifeval/279", "id": "ifeval/279", "bench": "ifeval", "task_type": "instruction", "tokens_total": 3380, "calls": 1, "correct": true, "prompt_strict": true, "inst_strict": [true, true, true], "prompt_loose": true, "inst_loose": [true, true, true]}
+{"item_id": "aime2025/29", "id": "aime2025/29", "bench": "aime2025", "task_type": "math", "tokens_total": 11508, "calls": 1, "correct": true}
+{"item_id": "lcb/abc380_a", "id": "lcb/abc380_a", "bench": "lcb", "task_type": "code", "tokens_total": 4609, "calls": 3, "correct": true, "passed": 44, "n_tests": 44}
+{"item_id": "gsm8k/1227", "id": "gsm8k/1227", "bench": "gsm8k", "task_type": "math", "tokens_total": 7213, "calls": 4, "correct": true}
+{"item_id": "aime2026/25", "id": "aime2026/25", "bench": "aime2026", "task_type": "math", "tokens_total": 12412, "calls": 1, "correct": true}
+{"item_id": "ifeval/1001", "id": "ifeval/1001", "bench": "ifeval", "task_type": "instruction", "tokens_total": 9120, "calls": 4, "correct": true, "prompt_strict": true, "inst_strict": [true], "prompt_loose": true, "inst_loose": [true]}
+{"item_id": "math500/test/geometry/248.json", "id": "math500/test/geometry/248.json", "bench": "math500", "task_type": "math", "tokens_total": 2749, "calls": 2, "correct": true}
+{"item_id": "math500/test/counting_and_probability/666.json", "id": "math500/test/counting_and_probability/666.json", "bench": "math500", "task_type": "math", "tokens_total": 3193, "calls": 3, "correct": true}
+{"item_id": "aime2025/27", "id": "aime2025/27", "bench": "aime2025", "task_type": "math", "tokens_total": 13924, "calls": 1, "correct": true}
+{"item_id": "lcb/3659", "id": "lcb/3659", "bench": "lcb", "task_type": "code", "tokens_total": 4930, "calls": 1, "correct": true, "passed": 43, "n_tests": 43}
+{"item_id": "gsm8k/711", "id": "gsm8k/711", "bench": "gsm8k", "task_type": "math", "tokens_total": 11475, "calls": 4, "correct": false}
+{"item_id": "gpqa/recUc29lMDBEvurYo", "id": "gpqa/recUc29lMDBEvurYo", "bench": "gpqa", "task_type": "science_mc", "tokens_total": 14026, "calls": 1, "correct": true}
+{"item_id": "lcb/abc375_d", "id": "lcb/abc375_d", "bench": "lcb", "task_type": "code", "tokens_total": 5349, "calls": 1, "correct": true, "passed": 34, "n_tests": 34}
+{"item_id": "math500/test/counting_and_probability/1114.json", "id": "math500/test/counting_and_probability/1114.json", "bench": "math500", "task_type": "math", "tokens_total": 1098, "calls": 1, "correct": true}
+{"item_id": "lcb/3793", "id": "lcb/3793", "bench": "lcb", "task_type": "code", "tokens_total": 3633, "calls": 1, "correct": false, "passed": 0, "n_tests": 44}
+{"item_id": "aime2025/2", "id": "aime2025/2", "bench": "aime2025", "task_type": "math", "tokens_total": 15233, "calls": 1, "correct": true}
+{"item_id": "math500/test/geometry/456.json", "id": "math500/test/geometry/456.json", "bench": "math500", "task_type": "math", "tokens_total": 4313, "calls": 4, "correct": true}
+{"item_id": "aime2025/23", "id": "aime2025/23", "bench": "aime2025", "task_type": "math", "tokens_total": 15013, "calls": 1, "correct": true}
+{"item_id": "math500/test/intermediate_algebra/47.json", "id": "math500/test/intermediate_algebra/47.json", "bench": "math500", "task_type": "math", "tokens_total": 1661, "calls": 1, "correct": true}
+{"item_id": "math500/test/prealgebra/505.json", "id": "math500/test/prealgebra/505.json", "bench": "math500", "task_type": "math", "tokens_total": 4050, "calls": 4, "correct": true}
+{"item_id": "lcb/3773", "id": "lcb/3773", "bench": "lcb", "task_type": "code", "tokens_total": 4580, "calls": 1, "correct": true, "passed": 33, "n_tests": 33}
+{"item_id": "lcb/3604", "id": "lcb/3604", "bench": "lcb", "task_type": "code", "tokens_total": 6469, "calls": 1, "correct": true, "passed": 43, "n_tests": 43}
+{"item_id": "lcb/abc396_d", "id": "lcb/abc396_d", "bench": "lcb", "task_type": "code", "tokens_total": 12093, "calls": 4, "correct": true, "passed": 43, "n_tests": 43}
+{"item_id": "math500/test/algebra/1529.json", "id": "math500/test/algebra/1529.json", "bench": "math500", "task_type": "math", "tokens_total": 2752, "calls": 3, "correct": true}
+{"item_id": "math500/test/prealgebra/1686.json", "id": "math500/test/prealgebra/1686.json", "bench": "math500", "task_type": "math", "tokens_total": 4449, "calls": 4, "correct": true}
+{"item_id": "math500/test/algebra/1199.json", "id": "math500/test/algebra/1199.json", "bench": "math500", "task_type": "math", "tokens_total": 987, "calls": 1, "correct": true}
+{"item_id": "math500/test/prealgebra/1238.json", "id": "math500/test/prealgebra/1238.json", "bench": "math500", "task_type": "math", "tokens_total": 3734, "calls": 4, "correct": true}
+{"item_id": "math500/test/algebra/1275.json", "id": "math500/test/algebra/1275.json", "bench": "math500", "task_type": "math", "tokens_total": 4713, "calls": 4, "correct": true}
+{"item_id": "ifeval/3063", "id": "ifeval/3063", "bench": "ifeval", "task_type": "instruction", "tokens_total": 9647, "calls": 2, "correct": false, "prompt_strict": false, "inst_strict": [false, true], "prompt_loose": false, "inst_loose": [false, true]}
+{"item_id": "gpqa/rec5rjeLsEq5Fg7Oj", "id": "gpqa/rec5rjeLsEq5Fg7Oj", "bench": "gpqa", "task_type": "science_mc", "tokens_total": 16504, "calls": 1, "correct": false}
+{"item_id": "gpqa/recN4DY9Q5V03glmQ", "id": "gpqa/recN4DY9Q5V03glmQ", "bench": "gpqa", "task_type": "science_mc", "tokens_total": 16488, "calls": 1, "correct": true}
+{"item_id": "aime2026/11", "id": "aime2026/11", "bench": "aime2026", "task_type": "math", "tokens_total": 16559, "calls": 1, "correct": true}
+{"item_id": "math500/test/number_theory/686.json", "id": "math500/test/number_theory/686.json", "bench": "math500", "task_type": "math", "tokens_total": 3592, "calls": 4, "correct": true}
+{"item_id": "math500/test/prealgebra/1203.json", "id": "math500/test/prealgebra/1203.json", "bench": "math500", "task_type": "math", "tokens_total": 2688, "calls": 3, "correct": false}
+{"item_id": "math500/test/algebra/101.json", "id": "math500/test/algebra/101.json", "bench": "math500", "task_type": "math", "tokens_total": 4065, "calls": 4, "correct": true}
+{"item_id": "mmmu/validation_Agriculture_5", "id": "mmmu/validation_Agriculture_5", "bench": "mmmu", "task_type": "vision", "tokens_total": 1700, "calls": 1, "correct": true, "parsed": "C"}
+{"item_id": "aime2026/27", "id": "aime2026/27", "bench": "aime2026", "task_type": "math", "tokens_total": 16977, "calls": 1, "correct": true}
+{"item_id": "mmmu/validation_Agriculture_25", "id": "mmmu/validation_Agriculture_25", "bench": "mmmu", "task_type": "vision", "tokens_total": 2811, "calls": 1, "correct": true, "parsed": "E"}
+{"item_id": "mmmu/validation_Art_Theory_2", "id": "mmmu/validation_Art_Theory_2", "bench": "mmmu", "task_type": "vision", "tokens_total": 2852, "calls": 1, "correct": true, "parsed": "C"}
+{"item_id": "lcb/abc394_b", "id": "lcb/abc394_b", "bench": "lcb", "task_type": "code", "tokens_total": 12386, "calls": 5, "correct": false, "passed": 0, "n_tests": 42}
+{"item_id": "mmmu/validation_Art_Theory_27", "id": "mmmu/validation_Art_Theory_27", "bench": "mmmu", "task_type": "vision", "tokens_total": 3555, "calls": 1, "correct": true, "parsed": "B"}
+{"item_id": "mmmu/validation_Art_Theory_30", "id": "mmmu/validation_Art_Theory_30", "bench": "mmmu", "task_type": "vision", "tokens_total": 2260, "calls": 1, "correct": true, "parsed": "D"}
+{"item_id": "math500/test/algebra/791.json", "id": "math500/test/algebra/791.json", "bench": "math500", "task_type": "math", "tokens_total": 5196, "calls": 4, "correct": true}
+{"item_id": "math500/test/prealgebra/1353.json", "id": "math500/test/prealgebra/1353.json", "bench": "math500", "task_type": "math", "tokens_total": 4191, "calls": 3, "correct": true}
+{"item_id": "mmmu/validation_Accounting_14", "id": "mmmu/validation_Accounting_14", "bench": "mmmu", "task_type": "vision", "tokens_total": 2620, "calls": 1, "correct": true, "parsed": "B"}
+{"item_id": "math500/test/intermediate_algebra/1837.json", "id": "math500/test/intermediate_algebra/1837.json", "bench": "math500", "task_type": "math", "tokens_total": 5984, "calls": 4, "correct": true}
+{"item_id": "lcb/abc383_a", "id": "lcb/abc383_a", "bench": "lcb", "task_type": "code", "tokens_total": 21100, "calls": 8, "correct": false, "passed": 0, "n_tests": 43}
+{"item_id": "mmmu/validation_Economics_13", "id": "mmmu/validation_Economics_13", "bench": "mmmu", "task_type": "vision", "tokens_total": 1199, "calls": 1, "correct": true, "parsed": "A"}
+{"item_id": "mmmu/validation_Design_29", "id": "mmmu/validation_Design_29", "bench": "mmmu", "task_type": "vision", "tokens_total": 2420, "calls": 1, "correct": true, "parsed": "D"}
+{"item_id": "math500/test/number_theory/459.json", "id": "math500/test/number_theory/459.json", "bench": "math500", "task_type": "math", "tokens_total": 5078, "calls": 4, "correct": true}
+{"item_id": "math500/test/intermediate_algebra/102.json", "id": "math500/test/intermediate_algebra/102.json", "bench": "math500", "task_type": "math", "tokens_total": 7472, "calls": 4, "correct": true}
+{"item_id": "mmmu/validation_Economics_18", "id": "mmmu/validation_Economics_18", "bench": "mmmu", "task_type": "vision", "tokens_total": 1422, "calls": 1, "correct": true, "parsed": "A"}
+{"item_id": "ifeval/3414", "id": "ifeval/3414", "bench": "ifeval", "task_type": "instruction", "tokens_total": 17594, "calls": 8, "correct": true, "prompt_strict": true, "inst_strict": [true, true], "prompt_loose": true, "inst_loose": [true, true]}
+{"item_id": "mmmu/validation_Diagnostics_and_Laboratory_Medicine_14", "id": "mmmu/validation_Diagnostics_and_Laboratory_Medicine_14", "bench": "mmmu", "task_type": "vision", "tokens_total": 5169, "calls": 1, "correct": true, "parsed": "A"}
+{"item_id": "mmmu/validation_Literature_12", "id": "mmmu/validation_Literature_12", "bench": "mmmu", "task_type": "vision", "tokens_total": 1011, "calls": 1, "correct": true, "parsed": "A"}
+{"item_id": "mmmu/validation_Biology_2", "id": "mmmu/validation_Biology_2", "bench": "mmmu", "task_type": "vision", "tokens_total": 3154, "calls": 1, "correct": true, "parsed": "D"}
+{"item_id": "mmmu/validation_Economics_24", "id": "mmmu/validation_Economics_24", "bench": "mmmu", "task_type": "vision", "tokens_total": 2773, "calls": 1, "correct": false, "parsed": "B"}
+{"item_id": "mmmu/validation_Literature_13", "id": "mmmu/validation_Literature_13", "bench": "mmmu", "task_type": "vision", "tokens_total": 1580, "calls": 1, "correct": true, "parsed": "D"}
+{"item_id": "mmmu/validation_Computer_Science_20", "id": "mmmu/validation_Computer_Science_20", "bench": "mmmu", "task_type": "vision", "tokens_total": 5901, "calls": 1, "correct": true, "parsed": "A"}
+{"item_id": "mmmu/validation_Design_4", "id": "mmmu/validation_Design_4", "bench": "mmmu", "task_type": "vision", "tokens_total": 5424, "calls": 1, "correct": true, "parsed": "A"}
+{"item_id": "mmmu/validation_Biology_21", "id": "mmmu/validation_Biology_21", "bench": "mmmu", "task_type": "vision", "tokens_total": 4687, "calls": 1, "correct": true, "parsed": "C"}
+{"item_id": "mmmu/validation_Architecture_and_Engineering_16", "id": "mmmu/validation_Architecture_and_Engineering_16", "bench": "mmmu", "task_type": "vision", "tokens_total": 4486, "calls": 1, "correct": false, "parsed": "A"}
+{"item_id": "mmmu/validation_Marketing_4", "id": "mmmu/validation_Marketing_4", "bench": "mmmu", "task_type": "vision", "tokens_total": 2915, "calls": 1, "correct": true, "parsed": "A"}
+{"item_id": "math500/test/algebra/2700.json", "id": "math500/test/algebra/2700.json", "bench": "math500", "task_type": "math", "tokens_total": 10593, "calls": 4, "correct": true}
+{"item_id": "math500/test/intermediate_algebra/1063.json", "id": "math500/test/intermediate_algebra/1063.json", "bench": "math500", "task_type": "math", "tokens_total": 11036, "calls": 4, "correct": true}
+{"item_id": "mmmu/validation_Finance_30", "id": "mmmu/validation_Finance_30", "bench": "mmmu", "task_type": "vision", "tokens_total": 8848, "calls": 3, "correct": false, "parsed": "[1249.24, '$1249.24']"}
+{"item_id": "mmmu/validation_Psychology_23", "id": "mmmu/validation_Psychology_23", "bench": "mmmu", "task_type": "vision", "tokens_total": 2811, "calls": 1, "correct": true, "parsed": "A"}
+{"item_id": "lcb/abc395_f", "id": "lcb/abc395_f", "bench": "lcb", "task_type": "code", "tokens_total": 13065, "calls": 1, "correct": true, "passed": 44, "n_tests": 44}
+{"item_id": "mmmu/validation_Physics_28", "id": "mmmu/validation_Physics_28", "bench": "mmmu", "task_type": "vision", "tokens_total": 2350, "calls": 1, "correct": true, "parsed": "D"}
+{"item_id": "lcb/3646", "id": "lcb/3646", "bench": "lcb", "task_type": "code", "tokens_total": 16723, "calls": 3, "correct": true, "passed": 42, "n_tests": 42}
+{"item_id": "mmmu/validation_Public_Health_19", "id": "mmmu/validation_Public_Health_19", "bench": "mmmu", "task_type": "vision", "tokens_total": 1659, "calls": 1, "correct": false, "parsed": "A"}
+{"item_id": "mmmu/validation_Sociology_19", "id": "mmmu/validation_Sociology_19", "bench": "mmmu", "task_type": "vision", "tokens_total": 1518, "calls": 1, "correct": true, "parsed": "A"}
+{"item_id": "mmmu/validation_Sociology_7", "id": "mmmu/validation_Sociology_7", "bench": "mmmu", "task_type": "vision", "tokens_total": 2707, "calls": 1, "correct": true, "parsed": "D"}
+{"item_id": "mmmu/validation_Sociology_2", "id": "mmmu/validation_Sociology_2", "bench": "mmmu", "task_type": "vision", "tokens_total": 1747, "calls": 1, "correct": true, "parsed": "D"}
+{"item_id": "ocrbench/30", "id": "ocrbench/30", "bench": "ocrbench", "task_type": "vision", "tokens_total": 1089, "calls": 1, "correct": true}
+{"item_id": "mmmu/validation_Sociology_21", "id": "mmmu/validation_Sociology_21", "bench": "mmmu", "task_type": "vision", "tokens_total": 4379, "calls": 1, "correct": false, "parsed": "B"}
+{"item_id": "ocrbench/70", "id": "ocrbench/70", "bench": "ocrbench", "task_type": "vision", "tokens_total": 900, "calls": 1, "correct": true}
+{"item_id": "ocrbench/105", "id": "ocrbench/105", "bench": "ocrbench", "task_type": "vision", "tokens_total": 889, "calls": 1, "correct": true}
+{"item_id": "ocrbench/35", "id": "ocrbench/35", "bench": "ocrbench", "task_type": "vision", "tokens_total": 2105, "calls": 2, "correct": true}
+{"item_id": "mmmu/validation_Sociology_22", "id": "mmmu/validation_Sociology_22", "bench": "mmmu", "task_type": "vision", "tokens_total": 2601, "calls": 1, "correct": true, "parsed": "D"}
+{"item_id": "ocrbench/118", "id": "ocrbench/118", "bench": "ocrbench", "task_type": "vision", "tokens_total": 1013, "calls": 1, "correct": true}
+{"item_id": "ocrbench/127", "id": "ocrbench/127", "bench": "ocrbench", "task_type": "vision", "tokens_total": 996, "calls": 1, "correct": true}
+{"item_id": "ocrbench/133", "id": "ocrbench/133", "bench": "ocrbench", "task_type": "vision", "tokens_total": 1666, "calls": 1, "correct": true}
+{"item_id": "ocrbench/195", "id": "ocrbench/195", "bench": "ocrbench", "task_type": "vision", "tokens_total": 1018, "calls": 1, "correct": true}
+{"item_id": "mmmu/validation_Public_Health_9", "id": "mmmu/validation_Public_Health_9", "bench": "mmmu", "task_type": "vision", "tokens_total": 7647, "calls": 3, "correct": false, "parsed": "B"}
+{"item_id": "ocrbench/179", "id": "ocrbench/179", "bench": "ocrbench", "task_type": "vision", "tokens_total": 1087, "calls": 1, "correct": true}
+{"item_id": "ocrbench/226", "id": "ocrbench/226", "bench": "ocrbench", "task_type": "vision", "tokens_total": 919, "calls": 1, "correct": true}
+{"item_id": "ocrbench/201", "id": "ocrbench/201", "bench": "ocrbench", "task_type": "vision", "tokens_total": 1020, "calls": 1, "correct": true}
+{"item_id": "ocrbench/231", "id": "ocrbench/231", "bench": "ocrbench", "task_type": "vision", "tokens_total": 986, "calls": 1, "correct": false}
+{"item_id": "ocrbench/237", "id": "ocrbench/237", "bench": "ocrbench", "task_type": "vision", "tokens_total": 999, "calls": 1, "correct": true}
+{"item_id": "ocrbench/248", "id": "ocrbench/248", "bench": "ocrbench", "task_type": "vision", "tokens_total": 955, "calls": 1, "correct": true}
+{"item_id": "ocrbench/273", "id": "ocrbench/273", "bench": "ocrbench", "task_type": "vision", "tokens_total": 917, "calls": 1, "correct": true}
+{"item_id": "math500/test/intermediate_algebra/1930.json", "id": "math500/test/intermediate_algebra/1930.json", "bench": "math500", "task_type": "math", "tokens_total": 9125, "calls": 1, "correct": true}
+{"item_id": "ocrbench/300", "id": "ocrbench/300", "bench": "ocrbench", "task_type": "vision", "tokens_total": 1186, "calls": 1, "correct": false}
+{"item_id": "lcb/abc380_d", "id": "lcb/abc380_d", "bench": "lcb", "task_type": "code", "tokens_total": 22834, "calls": 5, "correct": true, "passed": 43, "n_tests": 43}
+{"item_id": "ocrbench/244", "id": "ocrbench/244", "bench": "ocrbench", "task_type": "vision", "tokens_total": 1413, "calls": 1, "correct": false}
+{"item_id": "ocrbench/313", "id": "ocrbench/313", "bench": "ocrbench", "task_type": "vision", "tokens_total": 1086, "calls": 1, "correct": false}
+{"item_id": "ocrbench/308", "id": "ocrbench/308", "bench": "ocrbench", "task_type": "vision", "tokens_total": 2259, "calls": 2, "correct": false}
+{"item_id": "gpqa/reckl6PkaEMWM50yZ", "id": "gpqa/reckl6PkaEMWM50yZ", "bench": "gpqa", "task_type": "science_mc", "tokens_total": 25212, "calls": 1, "correct": true}
+{"item_id": "ocrbench/302", "id": "ocrbench/302", "bench": "ocrbench", "task_type": "vision", "tokens_total": 2525, "calls": 2, "correct": true}
+{"item_id": "ocrbench/409", "id": "ocrbench/409", "bench": "ocrbench", "task_type": "vision", "tokens_total": 1402, "calls": 1, "correct": true}
+{"item_id": "aime2026/2", "id": "aime2026/2", "bench": "aime2026", "task_type": "math", "tokens_total": 32749, "calls": 8, "correct": true}
+{"item_id": "ocrbench/354", "id": "ocrbench/354", "bench": "ocrbench", "task_type": "vision", "tokens_total": 4269, "calls": 2, "correct": true}
+{"item_id": "ocrbench/391", "id": "ocrbench/391", "bench": "ocrbench", "task_type": "vision", "tokens_total": 2000, "calls": 1, "correct": true}
+{"item_id": "ocrbench/423", "id": "ocrbench/423", "bench": "ocrbench", "task_type": "vision", "tokens_total": 1578, "calls": 1, "correct": true}
+{"item_id": "ocrbench/351", "id": "ocrbench/351", "bench": "ocrbench", "task_type": "vision", "tokens_total": 4569, "calls": 2, "correct": true}
+{"item_id": "ocrbench/446", "id": "ocrbench/446", "bench": "ocrbench", "task_type": "vision", "tokens_total": 1059, "calls": 1, "correct": true}
+{"item_id": "ocrbench/501", "id": "ocrbench/501", "bench": "ocrbench", "task_type": "vision", "tokens_total": 4061, "calls": 1, "correct": true}
+{"item_id": "ocrbench/376", "id": "ocrbench/376", "bench": "ocrbench", "task_type": "vision", "tokens_total": 4490, "calls": 2, "correct": true}
+{"item_id": "ocrbench/521", "id": "ocrbench/521", "bench": "ocrbench", "task_type": "vision", "tokens_total": 4082, "calls": 1, "correct": true}
+{"item_id": "ocrbench/590", "id": "ocrbench/590", "bench": "ocrbench", "task_type": "vision", "tokens_total": 2057, "calls": 1, "correct": true}
+{"item_id": "ocrbench/303", "id": "ocrbench/303", "bench": "ocrbench", "task_type": "vision", "tokens_total": 4509, "calls": 3, "correct": true}
+{"item_id": "ocrbench/498", "id": "ocrbench/498", "bench": "ocrbench", "task_type": "vision", "tokens_total": 2509, "calls": 2, "correct": false}
+{"item_id": "ocrbench/721", "id": "ocrbench/721", "bench": "ocrbench", "task_type": "vision", "tokens_total": 4004, "calls": 1, "correct": true}
+{"item_id": "ocrbench/425", "id": "ocrbench/425", "bench": "ocrbench", "task_type": "vision", "tokens_total": 3697, "calls": 2, "correct": true}
+{"item_id": "ocrbench/774", "id": "ocrbench/774", "bench": "ocrbench", "task_type": "vision", "tokens_total": 1951, "calls": 1, "correct": true}
+{"item_id": "ocrbench/718", "id": "ocrbench/718", "bench": "ocrbench", "task_type": "vision", "tokens_total": 5121, "calls": 2, "correct": true}
+{"item_id": "ocrbench/859", "id": "ocrbench/859", "bench": "ocrbench", "task_type": "vision", "tokens_total": 1464, "calls": 1, "correct": true}
+{"item_id": "ocrbench/868", "id": "ocrbench/868", "bench": "ocrbench", "task_type": "vision", "tokens_total": 971, "calls": 1, "correct": true}
+{"item_id": "ocrbench/860", "id": "ocrbench/860", "bench": "ocrbench", "task_type": "vision", "tokens_total": 1085, "calls": 1, "correct": false}
+{"item_id": "ocrbench/912", "id": "ocrbench/912", "bench": "ocrbench", "task_type": "vision", "tokens_total": 1046, "calls": 1, "correct": false}
+{"item_id": "ocrbench/931", "id": "ocrbench/931", "bench": "ocrbench", "task_type": "vision", "tokens_total": 1050, "calls": 1, "correct": true}
+{"item_id": "ocrbench/632", "id": "ocrbench/632", "bench": "ocrbench", "task_type": "vision", "tokens_total": 4723, "calls": 4, "correct": true}
+{"item_id": "ocrbench/564", "id": "ocrbench/564", "bench": "ocrbench", "task_type": "vision", "tokens_total": 5222, "calls": 2, "correct": true}
+{"item_id": "ocrbench/817", "id": "ocrbench/817", "bench": "ocrbench", "task_type": "vision", "tokens_total": 2574, "calls": 1, "correct": true}
+{"item_id": "mmmu/validation_Economics_1", "id": "mmmu/validation_Economics_1", "bench": "mmmu", "task_type": "vision", "tokens_total": 10566, "calls": 1, "correct": false, "parsed": "D"}
+{"item_id": "ocrbench/500", "id": "ocrbench/500", "bench": "ocrbench", "task_type": "vision", "tokens_total": 9924, "calls": 2, "correct": false}
+{"item_id": "ocrbench/934", "id": "ocrbench/934", "bench": "ocrbench", "task_type": "vision", "tokens_total": 1286, "calls": 1, "correct": false}
+{"item_id": "ifeval/2870", "id": "ifeval/2870", "bench": "ifeval", "task_type": "instruction", "tokens_total": 26272, "calls": 6, "correct": true, "prompt_strict": true, "inst_strict": [true], "prompt_loose": true, "inst_loose": [true]}
+{"item_id": "ruler_32k/niah_single_2/8", "id": "ruler_32k/niah_single_2/8", "bench": "ruler_32k", "task_type": "long_context", "tokens_total": 31876, "calls": 1, "correct": true, "score": 1.0}
+{"item_id": "ocrbench/938", "id": "ocrbench/938", "bench": "ocrbench", "task_type": "vision", "tokens_total": 1659, "calls": 1, "correct": false}
+{"item_id": "ruler_32k/niah_single_2/36", "id": "ruler_32k/niah_single_2/36", "bench": "ruler_32k", "task_type": "long_context", "tokens_total": 31866, "calls": 1, "correct": true, "score": 1.0}
+{"item_id": "ocrbench/624", "id": "ocrbench/624", "bench": "ocrbench", "task_type": "vision", "tokens_total": 7930, "calls": 3, "correct": true}
+{"item_id": "ruler_32k/niah_single_2/37", "id": "ruler_32k/niah_single_2/37", "bench": "ruler_32k", "task_type": "long_context", "tokens_total": 31894, "calls": 1, "correct": true, "score": 1.0}
+{"item_id": "ruler_32k/niah_single_2/12", "id": "ruler_32k/niah_single_2/12", "bench": "ruler_32k", "task_type": "long_context", "tokens_total": 32043, "calls": 1, "correct": true, "score": 1.0}
+{"item_id": "ruler_32k/niah_single_3/13", "id": "ruler_32k/niah_single_3/13", "bench": "ruler_32k", "task_type": "long_context", "tokens_total": 31817, "calls": 1, "correct": true, "score": 1.0}
+{"item_id": "ocrbench/949", "id": "ocrbench/949", "bench": "ocrbench", "task_type": "vision", "tokens_total": 2014, "calls": 1, "correct": false}
+{"item_id": "ruler_32k/niah_single_3/20", "id": "ruler_32k/niah_single_3/20", "bench": "ruler_32k", "task_type": "long_context", "tokens_total": 31861, "calls": 1, "correct": true, "score": 1.0}
+{"item_id": "ruler_32k/niah_single_2/45", "id": "ruler_32k/niah_single_2/45", "bench": "ruler_32k", "task_type": "long_context", "tokens_total": 32246, "calls": 1, "correct": true, "score": 1.0}
+{"item_id": "ruler_32k/niah_single_3/34", "id": "ruler_32k/niah_single_3/34", "bench": "ruler_32k", "task_type": "long_context", "tokens_total": 31927, "calls": 1, "correct": true, "score": 1.0}
+{"item_id": "ruler_32k/niah_multikey_1/10", "id": "ruler_32k/niah_multikey_1/10", "bench": "ruler_32k", "task_type": "long_context", "tokens_total": 31957, "calls": 1, "correct": true, "score": 1.0}
+{"item_id": "aime2026/21", "id": "aime2026/21", "bench": "aime2026", "task_type": "math", "tokens_total": 31846, "calls": 5, "correct": true}
+{"item_id": "ruler_32k/niah_multikey_1/47", "id": "ruler_32k/niah_multikey_1/47", "bench": "ruler_32k", "task_type": "long_context", "tokens_total": 31939, "calls": 1, "correct": true, "score": 1.0}
+{"item_id": "ruler_32k/niah_single_3/6", "id": "ruler_32k/niah_single_3/6", "bench": "ruler_32k", "task_type": "long_context", "tokens_total": 32380, "calls": 1, "correct": true, "score": 1.0}
+{"item_id": "aime2025/18", "id": "aime2025/18", "bench": "aime2025", "task_type": "math", "tokens_total": 28940, "calls": 1, "correct": true}
+{"item_id": "ruler_32k/niah_multikey_2/40", "id": "ruler_32k/niah_multikey_2/40", "bench": "ruler_32k", "task_type": "long_context", "tokens_total": 25799, "calls": 1, "correct": true, "score": 1.0}
+{"item_id": "ruler_32k/niah_multiquery/38", "id": "ruler_32k/niah_multiquery/38", "bench": "ruler_32k", "task_type": "long_context", "tokens_total": 32201, "calls": 1, "correct": true, "score": 1.0}
+{"item_id": "ruler_32k/niah_multivalue/27", "id": "ruler_32k/niah_multivalue/27", "bench": "ruler_32k", "task_type": "long_context", "tokens_total": 32250, "calls": 1, "correct": true, "score": 1.0}
+{"item_id": "mmmu/validation_Pharmacy_30", "id": "mmmu/validation_Pharmacy_30", "bench": "mmmu", "task_type": "vision", "tokens_total": 10599, "calls": 1, "correct": true, "parsed": "D"}
+{"item_id": "ruler_32k/niah_multivalue/7", "id": "ruler_32k/niah_multivalue/7", "bench": "ruler_32k", "task_type": "long_context", "tokens_total": 33039, "calls": 1, "correct": true, "score": 1.0}
+{"item_id": "mmmu/validation_Math_4", "id": "mmmu/validation_Math_4", "bench": "mmmu", "task_type": "vision", "tokens_total": 11751, "calls": 1, "correct": false, "parsed": "D"}
+{"item_id": "mmmu/validation_Biology_14", "id": "mmmu/validation_Biology_14", "bench": "mmmu", "task_type": "vision", "tokens_total": 13877, "calls": 1, "correct": true, "parsed": "E"}
+{"item_id": "ruler_32k/niah_multiquery/15", "id": "ruler_32k/niah_multiquery/15", "bench": "ruler_32k", "task_type": "long_context", "tokens_total": 33349, "calls": 1, "correct": true, "score": 1.0}
+{"item_id": "mmmu/validation_Materials_30", "id": "mmmu/validation_Materials_30", "bench": "mmmu", "task_type": "vision", "tokens_total": 12953, "calls": 1, "correct": false, "parsed": "D"}
+{"item_id": "ruler_32k/ruler_qa_squad/26", "id": "ruler_32k/ruler_qa_squad/26", "bench": "ruler_32k", "task_type": "long_context", "tokens_total": 30901, "calls": 1, "correct": true, "score": 1.0}
+{"item_id": "math500/test/geometry/561.json", "id": "math500/test/geometry/561.json", "bench": "math500", "task_type": "math", "tokens_total": 19262, "calls": 4, "correct": true}
+{"item_id": "gpqa/rec1oj2DveQWl9Rpw", "id": "gpqa/rec1oj2DveQWl9Rpw", "bench": "gpqa", "task_type": "science_mc", "tokens_total": 32908, "calls": 1, "correct": false}
+{"item_id": "ruler_32k/ruler_qa_squad/29", "id": "ruler_32k/ruler_qa_squad/29", "bench": "ruler_32k", "task_type": "long_context", "tokens_total": 32095, "calls": 1, "correct": true, "score": 1.0}
+{"item_id": "ruler_32k/ruler_qa_hotpot/18", "id": "ruler_32k/ruler_qa_hotpot/18", "bench": "ruler_32k", "task_type": "long_context", "tokens_total": 31432, "calls": 1, "correct": false, "score": 0.0}
+{"item_id": "ruler_32k/ruler_vt/9", "id": "ruler_32k/ruler_vt/9", "bench": "ruler_32k", "task_type": "long_context", "tokens_total": 132357, "calls": 4, "correct": false, "score": 0.8}
+{"item_id": "ruler_64k/niah_single_2/17", "id": "ruler_64k/niah_single_2/17", "bench": "ruler_64k", "task_type": "long_context", "tokens_total": 62917, "calls": 1, "correct": true, "score": 1.0}
+{"item_id": "ruler_32k/ruler_qa_squad/2", "id": "ruler_32k/ruler_qa_squad/2", "bench": "ruler_32k", "task_type": "long_context", "tokens_total": 33055, "calls": 1, "correct": true, "score": 1.0}
+{"item_id": "math500/test/precalculus/1133.json", "id": "math500/test/precalculus/1133.json", "bench": "math500", "task_type": "math", "tokens_total": 27916, "calls": 4, "correct": true}
+{"item_id": "lcb/arc181_a", "id": "lcb/arc181_a", "bench": "lcb", "task_type": "code", "tokens_total": 44213, "calls": 8, "correct": false, "passed": 0, "n_tests": 19}
+{"item_id": "ruler_64k/niah_single_2/30", "id": "ruler_64k/niah_single_2/30", "bench": "ruler_64k", "task_type": "long_context", "tokens_total": 63167, "calls": 1, "correct": true, "score": 1.0}
+{"item_id": "ruler_64k/niah_single_2/26", "id": "ruler_64k/niah_single_2/26", "bench": "ruler_64k", "task_type": "long_context", "tokens_total": 63348, "calls": 1, "correct": true, "score": 1.0}
+{"item_id": "gsm8k/116", "id": "gsm8k/116", "bench": "gsm8k", "task_type": "math", "tokens_total": 40033, "calls": 8, "correct": true}
+{"item_id": "ruler_64k/niah_single_2/32", "id": "ruler_64k/niah_single_2/32", "bench": "ruler_64k", "task_type": "long_context", "tokens_total": 63290, "calls": 1, "correct": true, "score": 1.0}
+{"item_id": "ruler_64k/niah_single_2/34", "id": "ruler_64k/niah_single_2/34", "bench": "ruler_64k", "task_type": "long_context", "tokens_total": 63293, "calls": 1, "correct": true, "score": 1.0}
+{"item_id": "ruler_64k/niah_multikey_1/1", "id": "ruler_64k/niah_multikey_1/1", "bench": "ruler_64k", "task_type": "long_context", "tokens_total": 63020, "calls": 1, "correct": true, "score": 1.0}
+{"item_id": "lcb/3686", "id": "lcb/3686", "bench": "lcb", "task_type": "code", "tokens_total": 26400, "calls": 1, "correct": false, "passed": 23, "n_tests": 42}
+{"item_id": "ruler_64k/niah_multikey_1/46", "id": "ruler_64k/niah_multikey_1/46", "bench": "ruler_64k", "task_type": "long_context", "tokens_total": 63241, "calls": 1, "correct": true, "score": 1.0}
+{"item_id": "ruler_64k/niah_multikey_3/6", "id": "ruler_64k/niah_multikey_3/6", "bench": "ruler_64k", "task_type": "long_context", "tokens_total": 48239, "calls": 1, "correct": true, "score": 1.0}
+{"item_id": "mmmu/validation_Mechanical_Engineering_11", "id": "mmmu/validation_Mechanical_Engineering_11", "bench": "mmmu", "task_type": "vision", "tokens_total": 17760, "calls": 1, "correct": true, "parsed": "A"}
+{"item_id": "ruler_64k/niah_single_3/42", "id": "ruler_64k/niah_single_3/42", "bench": "ruler_64k", "task_type": "long_context", "tokens_total": 63853, "calls": 1, "correct": true, "score": 1.0}
+{"item_id": "ruler_64k/niah_multikey_3/20", "id": "ruler_64k/niah_multikey_3/20", "bench": "ruler_64k", "task_type": "long_context", "tokens_total": 48540, "calls": 1, "correct": false, "score": 0.0}
+{"item_id": "aime2025/4", "id": "aime2025/4", "bench": "aime2025", "task_type": "math", "tokens_total": 38972, "calls": 4, "correct": true}
+{"item_id": "ruler_64k/niah_multiquery/15", "id": "ruler_64k/niah_multiquery/15", "bench": "ruler_64k", "task_type": "long_context", "tokens_total": 63851, "calls": 1, "correct": true, "score": 1.0}
+{"item_id": "ruler_64k/niah_multiquery/26", "id": "ruler_64k/niah_multiquery/26", "bench": "ruler_64k", "task_type": "long_context", "tokens_total": 63610, "calls": 1, "correct": true, "score": 1.0}
+{"item_id": "mmmu/validation_Mechanical_Engineering_15", "id": "mmmu/validation_Mechanical_Engineering_15", "bench": "mmmu", "task_type": "vision", "tokens_total": 19549, "calls": 1, "correct": false, "parsed": "B"}
+{"item_id": "ruler_64k/niah_multiquery/36", "id": "ruler_64k/niah_multiquery/36", "bench": "ruler_64k", "task_type": "long_context", "tokens_total": 64191, "calls": 1, "correct": true, "score": 1.0}
+{"item_id": "ruler_32k/ruler_vt/31", "id": "ruler_32k/ruler_vt/31", "bench": "ruler_32k", "task_type": "long_context", "tokens_total": 137026, "calls": 4, "correct": false, "score": 0.4}
+{"item_id": "ruler_64k/niah_multivalue/35", "id": "ruler_64k/niah_multivalue/35", "bench": "ruler_64k", "task_type": "long_context", "tokens_total": 64234, "calls": 1, "correct": true, "score": 1.0}
+{"item_id": "aime2025/9", "id": "aime2025/9", "bench": "aime2025", "task_type": "math", "tokens_total": 39912, "calls": 2, "correct": true}
+{"item_id": "ruler_64k/niah_multivalue/49", "id": "ruler_64k/niah_multivalue/49", "bench": "ruler_64k", "task_type": "long_context", "tokens_total": 63812, "calls": 1, "correct": true, "score": 1.0}
+{"item_id": "ruler_64k/niah_multivalue/42", "id": "ruler_64k/niah_multivalue/42", "bench": "ruler_64k", "task_type": "long_context", "tokens_total": 65324, "calls": 1, "correct": true, "score": 1.0}
+{"item_id": "aime2026/10", "id": "aime2026/10", "bench": "aime2026", "task_type": "math", "tokens_total": 44085, "calls": 4, "correct": true}
+{"item_id": "ruler_64k/niah_multiquery/42", "id": "ruler_64k/niah_multiquery/42", "bench": "ruler_64k", "task_type": "long_context", "tokens_total": 127463, "calls": 2, "correct": true, "score": 1.0}
+{"item_id": "gpqa/recAAJoHMW45Lv5je", "id": "gpqa/recAAJoHMW45Lv5je", "bench": "gpqa", "task_type": "science_mc", "tokens_total": 41667, "calls": 2, "correct": true}
+{"item_id": "gpqa/recoiTJPGUmzAkief", "id": "gpqa/recoiTJPGUmzAkief", "bench": "gpqa", "task_type": "science_mc", "tokens_total": 42586, "calls": 2, "correct": true}
+{"item_id": "mmmu/validation_Physics_18", "id": "mmmu/validation_Physics_18", "bench": "mmmu", "task_type": "vision", "tokens_total": 22302, "calls": 1, "correct": true, "parsed": "A"}
+{"item_id": "ruler_64k/ruler_vt/36", "id": "ruler_64k/ruler_vt/36", "bench": "ruler_64k", "task_type": "long_context", "tokens_total": 127430, "calls": 2, "correct": false, "score": 0.0}
+{"item_id": "ruler_64k/ruler_qa_hotpot/35", "id": "ruler_64k/ruler_qa_hotpot/35", "bench": "ruler_64k", "task_type": "long_context", "tokens_total": 59823, "calls": 1, "correct": false, "score": 0.0}
+{"item_id": "gsm8k/315", "id": "gsm8k/315", "bench": "gsm8k", "task_type": "math", "tokens_total": 42455, "calls": 8, "correct": true}
+{"item_id": "ruler_64k/ruler_qa_squad/5", "id": "ruler_64k/ruler_qa_squad/5", "bench": "ruler_64k", "task_type": "long_context", "tokens_total": 66145, "calls": 1, "correct": false, "score": 0.0}
+{"item_id": "ifeval/3513", "id": "ifeval/3513", "bench": "ifeval", "task_type": "instruction", "tokens_total": 47264, "calls": 5, "correct": false, "prompt_strict": false, "inst_strict": [false], "prompt_loose": false, "inst_loose": [false]}
+{"item_id": "aime2026/30", "id": "aime2026/30", "bench": "aime2026", "task_type": "math", "tokens_total": 46650, "calls": 7, "correct": true}
+{"item_id": "ruler_64k/ruler_qa_hotpot/47", "id": "ruler_64k/ruler_qa_hotpot/47", "bench": "ruler_64k", "task_type": "long_context", "tokens_total": 60024, "calls": 1, "correct": false, "score": 0.0}
+{"item_id": "aime2025/10", "id": "aime2025/10", "bench": "aime2025", "task_type": "math", "tokens_total": 54747, "calls": 4, "correct": true}
+{"item_id": "mmmu/validation_History_12", "id": "mmmu/validation_History_12", "bench": "mmmu", "task_type": "vision", "tokens_total": 40768, "calls": 2, "correct": true, "parsed": "A"}
+{"item_id": "aime2025/30", "id": "aime2025/30", "bench": "aime2025", "task_type": "math", "tokens_total": 56383, "calls": 2, "correct": true}
+{"item_id": "mmmu/validation_Clinical_Medicine_20", "id": "mmmu/validation_Clinical_Medicine_20", "bench": "mmmu", "task_type": "vision", "tokens_total": 51875, "calls": 6, "correct": false, "parsed": "A"}
+{"item_id": "aime2025/11", "id": "aime2025/11", "bench": "aime2025", "task_type": "math", "tokens_total": 57396, "calls": 2, "correct": true}
+{"item_id": "lcb/3631", "id": "lcb/3631", "bench": "lcb", "task_type": "code", "tokens_total": 43707, "calls": 5, "correct": false, "passed": 0, "n_tests": 43}
+{"item_id": "aime2026/17", "id": "aime2026/17", "bench": "aime2026", "task_type": "math", "tokens_total": 60171, "calls": 4, "correct": true}
+{"item_id": "mmmu/validation_Sociology_12", "id": "mmmu/validation_Sociology_12", "bench": "mmmu", "task_type": "vision", "tokens_total": 38121, "calls": 2, "correct": false, "parsed": "B"}
+{"item_id": "ruler_32k/niah_single_2/0", "id": "ruler_32k/niah_single_2/0", "bench": "ruler_32k", "task_type": "long_context", "tokens_total": 96238, "calls": 2, "correct": true, "score": 1.0}
+{"item_id": "ruler_32k/niah_single_1/9", "id": "ruler_32k/niah_single_1/9", "bench": "ruler_32k", "task_type": "long_context", "tokens_total": 128561, "calls": 3, "correct": false, "score": 0.0}
+{"item_id": "aime2025/13", "id": "aime2025/13", "bench": "aime2025", "task_type": "math", "tokens_total": 61060, "calls": 2, "correct": false}
+{"item_id": "ifeval/1436", "id": "ifeval/1436", "bench": "ifeval", "task_type": "instruction", "tokens_total": 46080, "calls": 5, "correct": true, "prompt_strict": true, "inst_strict": [true, true], "prompt_loose": true, "inst_loose": [true, true]}
+{"item_id": "ruler_32k/niah_multivalue/18", "id": "ruler_32k/niah_multivalue/18", "bench": "ruler_32k", "task_type": "long_context", "tokens_total": 96437, "calls": 2, "correct": false, "score": 0.75}
+{"item_id": "aime2026/28", "id": "aime2026/28", "bench": "aime2026", "task_type": "math", "tokens_total": 64132, "calls": 2, "correct": true}
+{"item_id": "lcb/abc376_d", "id": "lcb/abc376_d", "bench": "lcb", "task_type": "code", "tokens_total": 62491, "calls": 5, "correct": false, "passed": 0, "n_tests": 39}
+{"item_id": "ruler_32k/ruler_qa_hotpot/21", "id": "ruler_32k/ruler_qa_hotpot/21", "bench": "ruler_32k", "task_type": "long_context", "tokens_total": 93008, "calls": 2, "correct": true, "score": 1.0}
+{"item_id": "ruler_64k/niah_single_1/2", "id": "ruler_64k/niah_single_1/2", "bench": "ruler_64k", "task_type": "long_context", "tokens_total": 159011, "calls": 2, "correct": true, "score": 1.0}
+{"item_id": "ruler_64k/niah_single_2/20", "id": "ruler_64k/niah_single_2/20", "bench": "ruler_64k", "task_type": "long_context", "tokens_total": 158435, "calls": 2, "correct": true, "score": 1.0}
+{"item_id": "mmmu/validation_Electronics_7", "id": "mmmu/validation_Electronics_7", "bench": "mmmu", "task_type": "vision", "tokens_total": 51330, "calls": 2, "correct": true, "parsed": "C"}
+{"item_id": "ruler_64k/niah_single_3/33", "id": "ruler_64k/niah_single_3/33", "bench": "ruler_64k", "task_type": "long_context", "tokens_total": 158142, "calls": 2, "correct": true, "score": 1.0}
+{"item_id": "ruler_64k/niah_multikey_3/48", "id": "ruler_64k/niah_multikey_3/48", "bench": "ruler_64k", "task_type": "long_context", "tokens_total": 273684, "calls": 5, "correct": true, "score": 1.0}
+{"item_id": "ifeval/1670", "id": "ifeval/1670", "bench": "ifeval", "task_type": "instruction", "tokens_total": 66698, "calls": 2, "correct": false, "prompt_strict": false, "inst_strict": [false, false, false], "prompt_loose": false, "inst_loose": [false, false, false]}
+{"item_id": "aime2025/20", "id": "aime2025/20", "bench": "aime2025", "task_type": "math", "tokens_total": 104013, "calls": 8, "correct": true}
+{"item_id": "ruler_64k/ruler_qa_hotpot/1", "id": "ruler_64k/ruler_qa_hotpot/1", "bench": "ruler_64k", "task_type": "long_context", "tokens_total": 148930, "calls": 2, "correct": false, "score": 0.0}
+{"item_id": "aime2025/24", "id": "aime2025/24", "bench": "aime2025", "task_type": "math", "tokens_total": 85057, "calls": 6, "correct": false}
+{"item_id": "ruler_64k/ruler_qa_hotpot/30", "id": "ruler_64k/ruler_qa_hotpot/30", "bench": "ruler_64k", "task_type": "long_context", "tokens_total": 153245, "calls": 2, "correct": true, "score": 1.0}
+{"item_id": "ruler_64k/ruler_qa_squad/12", "id": "ruler_64k/ruler_qa_squad/12", "bench": "ruler_64k", "task_type": "long_context", "tokens_total": 150388, "calls": 2, "correct": false, "score": 0.3333333333333333}
+{"item_id": "lcb/abc373_g", "id": "lcb/abc373_g", "bench": "lcb", "task_type": "code", "tokens_total": 67916, "calls": 2, "correct": false, "passed": 0, "n_tests": 27}
+{"item_id": "lcb/arc182_a", "id": "lcb/arc182_a", "bench": "lcb", "task_type": "code", "tokens_total": 68802, "calls": 2, "correct": false, "passed": 0, "n_tests": 28}
+{"item_id": "lcb/3696", "id": "lcb/3696", "bench": "lcb", "task_type": "code", "tokens_total": 67206, "calls": 2, "correct": false, "passed": 0, "n_tests": 43}
+{"item_id": "aime2026/26", "id": "aime2026/26", "bench": "aime2026", "task_type": "math", "tokens_total": 82379, "calls": 3, "correct": false}
+{"item_id": "lcb/3647", "id": "lcb/3647", "bench": "lcb", "task_type": "code", "tokens_total": 67480, "calls": 2, "correct": false, "passed": 0, "n_tests": 43}
+{"item_id": "lcb/3674", "id": "lcb/3674", "bench": "lcb", "task_type": "code", "tokens_total": 67532, "calls": 2, "correct": false, "passed": 0, "n_tests": 42}
+{"item_id": "mmmu/validation_Energy_and_Power_17", "id": "mmmu/validation_Energy_and_Power_17", "bench": "mmmu", "task_type": "vision", "tokens_total": 67300, "calls": 2, "correct": true, "parsed": "A"}
+{"item_id": "mmmu/validation_Manage_24", "id": "mmmu/validation_Manage_24", "bench": "mmmu", "task_type": "vision", "tokens_total": 70380, "calls": 2, "correct": false, "parsed": "E"}
+{"item_id": "mmmu/validation_Music_8", "id": "mmmu/validation_Music_8", "bench": "mmmu", "task_type": "vision", "tokens_total": 67200, "calls": 2, "correct": false, "parsed": "A"}
+{"item_id": "ocrbench/907", "id": "ocrbench/907", "bench": "ocrbench", "task_type": "vision", "tokens_total": 67136, "calls": 2, "correct": false}
+{"item_id": "gpqa/recb80OwMgNnceA9t", "id": "gpqa/recb80OwMgNnceA9t", "bench": "gpqa", "task_type": "science_mc", "tokens_total": 85378, "calls": 5, "correct": false}
+{"item_id": "mmmu/validation_Energy_and_Power_4", "id": "mmmu/validation_Energy_and_Power_4", "bench": "mmmu", "task_type": "vision", "tokens_total": 80351, "calls": 5, "correct": false, "parsed": "C"}
+{"item_id": "lcb/arc182_d", "id": "lcb/arc182_d", "bench": "lcb", "task_type": "code", "tokens_total": 82616, "calls": 5, "correct": false, "passed": 0, "n_tests": 28}
+{"item_id": "ruler_32k/ruler_cwe/38", "id": "ruler_32k/ruler_cwe/38", "bench": "ruler_32k", "task_type": "long_context", "tokens_total": 110510, "calls": 2, "correct": false, "score": 0.0}
+{"item_id": "ruler_64k/niah_single_1/35", "id": "ruler_64k/niah_single_1/35", "bench": "ruler_64k", "task_type": "long_context", "tokens_total": 191502, "calls": 2, "correct": false, "score": 0.0}
+{"item_id": "aime2026/15", "id": "aime2026/15", "bench": "aime2026", "task_type": "math", "tokens_total": 100898, "calls": 3, "correct": false}
+{"item_id": "ruler_64k/ruler_cwe/19", "id": "ruler_64k/ruler_cwe/19", "bench": "ruler_64k", "task_type": "long_context", "tokens_total": 156302, "calls": 2, "correct": false, "score": 0.0}
+{"item_id": "ruler_64k/ruler_cwe/28", "id": "ruler_64k/ruler_cwe/28", "bench": "ruler_64k", "task_type": "long_context", "tokens_total": 156350, "calls": 2, "correct": false, "score": 0.0}
+{"item_id": "ruler_64k/ruler_fwe/12", "id": "ruler_64k/ruler_fwe/12", "bench": "ruler_64k", "task_type": "long_context", "tokens_total": 194272, "calls": 2, "correct": false, "score": 0.0}
+{"item_id": "math500/test/geometry/434.json", "id": "math500/test/geometry/434.json", "bench": "math500", "task_type": "math", "tokens_total": 96467, "calls": 4, "correct": false}
+{"item_id": "lcb/3794", "id": "lcb/3794", "bench": "lcb", "task_type": "code", "tokens_total": 101815, "calls": 6, "correct": false, "passed": 0, "n_tests": 43}
+{"item_id": "ruler_32k/ruler_cwe/39", "id": "ruler_32k/ruler_cwe/39", "bench": "ruler_32k", "task_type": "long_context", "tokens_total": 166103, "calls": 3, "correct": false, "score": 0.0}
+{"item_id": "ruler_32k/ruler_fwe/8", "id": "ruler_32k/ruler_fwe/8", "bench": "ruler_32k", "task_type": "long_context", "tokens_total": 193315, "calls": 3, "correct": false, "score": 0.0}
+{"item_id": "ruler_32k/ruler_cwe/7", "id": "ruler_32k/ruler_cwe/7", "bench": "ruler_32k", "task_type": "long_context", "tokens_total": 246063, "calls": 5, "correct": false, "score": 0.0}
+{"item_id": "ruler_32k/ruler_fwe/35", "id": "ruler_32k/ruler_fwe/35", "bench": "ruler_32k", "task_type": "long_context", "tokens_total": 275008, "calls": 5, "correct": false, "score": 0.0}
+{"item_id": "ruler_32k/ruler_cwe/42", "id": "ruler_32k/ruler_cwe/42", "bench": "ruler_32k", "task_type": "long_context", "tokens_total": 386907, "calls": 5, "correct": false, "score": 0.0}
+{"item_id": "ruler_32k/ruler_fwe/11", "id": "ruler_32k/ruler_fwe/11", "bench": "ruler_32k", "task_type": "long_context", "tokens_total": 323439, "calls": 5, "correct": false, "score": 0.0}
+{"item_id": "ruler_64k/ruler_fwe/22", "id": "ruler_64k/ruler_fwe/22", "bench": "ruler_64k", "task_type": "long_context", "tokens_total": 480184, "calls": 5, "correct": false, "score": 0.0}

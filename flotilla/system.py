@@ -36,6 +36,7 @@ class SystemConfig:
     temperature: float = 0.6               # sampling for N > 1; N = 1 uses 0.0
     max_tokens: int = 32768
     tool_rounds: int = 3
+    tools: bool = True                     # False: no tool schemas sent, prompt says no tools (strategies Fast, Deep, Vote)
     cross_check: bool = False
     verifier: bool = True
     prompt_version: str = "v1"
@@ -67,11 +68,13 @@ def solver_messages(task: str, task_type: str, version: str, retrieved: list[str
     return [{"role": "system", "content": system}, {"role": "user", "content": user}]
 
 
-def native_tool_prompt(system: str, version: str) -> str:
-    """Swap the TOOL-line sentence of the solver prompt for its native-tool wording (same prompt file)."""
+def native_tool_prompt(system: str, version: str, section: str = "Native-tool wording") -> str:
+    """Swap the TOOL-line sentence of the solver prompt for another wording kept in the same prompt file:
+    the native-tool wording (tools offered through function calls) or the no-tool wording (no tools offered)."""
     md = (PROMPTS / f"solver.{version}.md").read_text()
     text_rule = re.search(r"You may request a Python tool by writing a line\n.*?before you continue\.", md, re.S)
-    native = _section(md, "Native-tool wording (replaces the TOOL-line sentence for servers with native function calling)")
+    title = next((m for m in re.findall(r"^## (.+)$", md, re.M) if m.startswith(section)), section)
+    native = _section(md, title)
     return system.replace(text_rule.group(0), native) if text_rule and native else system
 
 
@@ -163,22 +166,28 @@ async def _solve_once(name: str, srv: dict, messages: list[dict], cfg: SystemCon
     t0, tok_in, tok_out, text_all = time.time(), 0, 0, ""
     msgs = list(messages)
     native = bool(srv.get("native_tools"))
-    extra = {"tools": TOOL_SCHEMAS} if native else {}
-    if native and msgs and msgs[0]["role"] == "system":  # the prompt must not teach the text TOOL-line format
-        msgs[0] = {**msgs[0], "content": native_tool_prompt(msgs[0]["content"], cfg.prompt_version)}
+    extra = {"tools": TOOL_SCHEMAS} if native and cfg.tools else {}
+    if msgs and msgs[0]["role"] == "system" and (native or not cfg.tools):  # never teach the text TOOL-line format
+        msgs[0] = {**msgs[0], "content": native_tool_prompt(msgs[0]["content"], cfg.prompt_version,
+                                                            "Native-tool wording" if cfg.tools else "No-tool wording")}
     for rnd in range(cfg.tool_rounds + 1):
         last = rnd == cfg.tool_rounds and rnd > 0
         if last:   # tool budget used up: the last call must answer
             msgs.append({"role": "user", "content": FINAL_ROUND_NOTE})
-        r = await _create(name, srv, client, msgs, cfg, temperature,
-                          **({**extra, "tool_choice": "none"} if native and last else extra))
+        # last round: no tools offered at all (gpt-oss still returned tool calls under tool_choice "none")
+        r = await _create(name, srv, client, msgs, cfg, temperature, **({} if last else extra))
         msg = r.choices[0].message
         out = msg.content or ""
+        reasoning = getattr(msg, "reasoning_content", None) or getattr(msg, "reasoning", None) or ""
+        trace.call_log.append({"model": name, "round": rnd, "last": last, "finish_reason": r.choices[0].finish_reason,
+                            "tokens_out": r.usage.completion_tokens, "content_chars": len(out),
+                            "reasoning_chars": len(reasoning), "tool_calls": len(msg.tool_calls or []),
+                            "content_tail": out[-300:], "reasoning_tail": reasoning[-300:]})
         tok_in += r.usage.prompt_tokens
         tok_out += r.usage.completion_tokens
         if native:
             calls = msg.tool_calls or []
-            if not calls:
+            if not calls or last:  # on the last round a stray tool call is not run; its text is the answer
                 text_all += out
                 break
             text_all += out + "\n"
@@ -242,6 +251,22 @@ def vote(task_type: str, answers: list[str], public_tests: list[dict] | None = N
 
 # ------------------------------------------------------------------ verifier (deterministic first)
 
+_OPTION_LINE = re.compile(r"^\s*\(?([A-Z])[.)]\s", re.M)
+
+
+def n_options(task: str, options: list[str] | None) -> int:
+    """How many answer letters are valid: the item's options list, else the lettered lines in the question text
+    (MMLU-Pro has ten, A to J), else four. Before 2026-11-20 this fell back to four whenever an item had no options
+    list, so pool questions with options E to J had every E-J answer rejected."""
+    if options:
+        return len(options)
+    letters = _OPTION_LINE.findall(task or "")
+    run = 0
+    while run < len(letters) and letters[run] == chr(65 + run):
+        run += 1
+    return run if run >= 2 else 4
+
+
 def verify(task: str, task_type: str, answer: str | None, options: list[str] | None = None,
            public_tests: list[dict] | None = None) -> dict:
     checks = []
@@ -251,13 +276,13 @@ def verify(task: str, task_type: str, answer: str | None, options: list[str] | N
         r = tools.sympy_check(answer)
         checks.append({"name": "math_parses", "passed": r["ok"], "detail": r["detail"]})
     elif task_type in ("science_mc",) or options:
-        ok = answer.strip().upper()[:1] in [chr(65 + i) for i in range(len(options or "ABCD"))]
+        ok = answer.strip().upper()[:1] in [chr(65 + i) for i in range(n_options(task, options))]
         checks.append({"name": "valid_option", "passed": ok, "detail": answer[:20]})
     elif task_type == "code" and public_tests:
         r = tools.run_public_tests(answer, public_tests)
         checks.append({"name": "public_tests", "passed": r["ok"], "detail": r["output"]})
     elif task_type == "instruction":
-        r = tools.constraint_check(task, answer)
+        r = tools.constraint_check(task, answer, loop_wrapped=True)
         checks.append({"name": "constraints", "passed": r["ok"], "detail": r["detail"]})
     passed = all(c["passed"] for c in checks)
     return {"verdict": "accept" if passed else "reject", "checks": checks,

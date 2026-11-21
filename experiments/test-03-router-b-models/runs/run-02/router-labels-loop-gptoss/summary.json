@@ -1,0 +1,23 @@
+{
+ "model": "gptoss",
+ "n": 4760,
+ "correct": 3933,
+ "runs": [
+  "/scratch/khaledmk/flotilla/runs/labels-gptoss_alone/label_00",
+  "/scratch/khaledmk/flotilla/runs/labels-gptoss_alone/label_01",
+  "/scratch/khaledmk/flotilla/runs/labels-gptoss_alone/label_02",
+  "/scratch/khaledmk/flotilla/runs/labels-gptoss_alone/label_03",
+  "/scratch/khaledmk/flotilla/runs/labels-gptoss_alone/label_04",
+  "/scratch/khaledmk/flotilla/runs/labels-gptoss_alone/label_05",
+  "/scratch/khaledmk/flotilla/runs/labels-gptoss_alone/label_06",
+  "/scratch/khaledmk/flotilla/runs/labels-gptoss_alone/label_07",
+  "/scratch/khaledmk/flotilla/runs/labels-gptoss_alone/label_08",
+  "/scratch/khaledmk/flotilla/runs/labels-gptoss_alone/label_09",
+  "/scratch/khaledmk/flotilla/runs/labels-gptoss_alone/label_10",
+  "/scratch/khaledmk/flotilla/runs/labels-gptoss_alone/label_11",
+  "/scratch/khaledmk/flotilla/runs/labels-gptoss_alone/label_12",
+  "/scratch/khaledmk/flotilla/runs/labels-gptoss_alone/label_13",
+  "/scratch/khaledmk/flotilla/runs/labels-gptoss_alone/label_14",
+  "/scratch/khaledmk/flotilla/runs/labels-gptoss_alone/label_15"
+ ]
+}

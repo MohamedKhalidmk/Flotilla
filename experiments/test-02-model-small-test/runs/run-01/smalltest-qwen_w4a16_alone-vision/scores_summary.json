@@ -1,0 +1,18 @@
+{
+ "per_bench": {
+  "mmmu": {
+   "n": 45,
+   "accuracy": 0.7556,
+   "tokens_total": 262538,
+   "calls": 59
+  },
+  "ocrbench": {
+   "n": 50,
+   "accuracy": 0.88,
+   "score_per_1000": 880.0,
+   "tokens_total": 92654,
+   "calls": 70
+  }
+ },
+ "mean_over_benches": 0.8178
+}

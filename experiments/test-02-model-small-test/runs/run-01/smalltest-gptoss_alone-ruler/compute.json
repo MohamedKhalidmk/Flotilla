@@ -1,0 +1,10 @@
+{
+ "run_seconds": 763.8,
+ "servers": {
+  "gptoss": {
+   "gpus": 1,
+   "gpu_seconds_run": 763.8,
+   "gpu_seconds_incl_startup": 770.2
+  }
+ }
+}

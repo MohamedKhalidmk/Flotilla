@@ -1,0 +1,54 @@
+{
+ "questions": 50,
+ "labels": {
+  "fast": 37,
+  "tools": 6,
+  "deep": 2,
+  "none": 5
+ },
+ "per_strategy": {
+  "fast": {
+   "accuracy": 0.74,
+   "mean_output_tokens": 2109.5,
+   "mean_wall_seconds": 75.7,
+   "max_wall_seconds": 194.3,
+   "gpu_seconds_job": 195.2
+  },
+  "tools": {
+   "accuracy": 0.82,
+   "mean_output_tokens": 2615.0,
+   "mean_wall_seconds": 122.2,
+   "max_wall_seconds": 664.8,
+   "gpu_seconds_job": 665.1
+  },
+  "deep": {
+   "accuracy": 0.84,
+   "mean_output_tokens": 6057.7,
+   "mean_wall_seconds": 127.4,
+   "max_wall_seconds": 704.0,
+   "gpu_seconds_job": 704.1
+  },
+  "deep_tools": {
+   "accuracy": 0.82,
+   "mean_output_tokens": 6290.7,
+   "mean_wall_seconds": 129.0,
+   "max_wall_seconds": 847.9,
+   "gpu_seconds_job": 848.4
+  },
+  "vote": {
+   "accuracy": 0.82,
+   "mean_output_tokens": 21820.9,
+   "mean_wall_seconds": 373.3,
+   "max_wall_seconds": 887.1,
+   "gpu_seconds_job": 887.3
+  },
+  "vote_tools": {
+   "accuracy": 0.82,
+   "mean_output_tokens": 19994.8,
+   "mean_wall_seconds": 287.5,
+   "max_wall_seconds": 855.4,
+   "gpu_seconds_job": 855.7
+  }
+ },
+ "best_any_strategy": 0.9
+}

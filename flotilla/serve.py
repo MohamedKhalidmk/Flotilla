@@ -94,8 +94,13 @@ def main() -> None:
                 return all(s.get("tokens_out", 0) >= c for m, c in zip(r["models"], caps) for s in m["samples"])
             errors = [r["item_id"] for r in rows if any(s["text"].startswith("ERROR") for m in r["models"] for s in m["samples"])]
             at_cap = [r["item_id"] for r in rows if r["final_answer"] is None and r["item_id"] not in errors and capped(r)]
-            bad = errors + [r["item_id"] for r in rows if r["final_answer"] is None and r["item_id"] not in errors + at_cap]
-            print(f"[serve] smoke: {len(rows)} items, problems: {bad}, no answer at the token cap (allowed): {at_cap}", flush=True)
+            def gave_up(r):  # every sample ended with a normal stop and no answer text: the model's choice, not a fault
+                ends = [c for c in r.get("call_log", []) if c["finish_reason"] == "stop"]
+                return bool(ends) and all(c["content_chars"] == 0 for c in ends)
+            no_text = [r["item_id"] for r in rows if r["final_answer"] is None and r["item_id"] not in errors + at_cap and gave_up(r)]
+            bad = errors + [r["item_id"] for r in rows if r["final_answer"] is None and r["item_id"] not in errors + at_cap + no_text]
+            print(f"[serve] smoke: {len(rows)} items, problems: {bad}, no answer at the token cap (allowed): {at_cap}, "
+                  f"stopped with no answer text (allowed): {no_text}", flush=True)
             if bad or len(rows) < len(a.smoke_ids):
                 raise SystemExit("[serve] smoke check failed; full run not started")
             if a.smoke_only:

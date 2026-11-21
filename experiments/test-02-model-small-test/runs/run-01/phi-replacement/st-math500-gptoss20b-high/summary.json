@@ -1,0 +1,19 @@
+{
+  "name": "st-math500-gptoss20b-high",
+  "model": "/scratch/khaledmk/flotilla/hf/hub/models--openai--gpt-oss-20b/snapshots/6cee5e81ee83917806bbde320786a8fb61efebee",
+  "variant": {
+    "chat_template_kwargs": {
+      "reasoning_effort": "high"
+    }
+  },
+  "n": 25,
+  "accuracy": 0.84,
+  "correct": 21,
+  "truncated": 4,
+  "tokens_in": 3534,
+  "tokens_out": 180809,
+  "wall_seconds": 183.2,
+  "tp": 1,
+  "max_tokens": 32768,
+  "gen_tokens_per_s": 986.7
+}

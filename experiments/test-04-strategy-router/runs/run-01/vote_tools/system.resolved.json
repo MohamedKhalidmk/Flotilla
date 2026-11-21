@@ -1,0 +1,20 @@
+{
+ "servers": {
+  "qwen_w4a16": {
+   "url": "http://127.0.0.1:38075/v1",
+   "model": "qwen_w4a16",
+   "quant": "w4a16-ours",
+   "native_tools": true
+  }
+ },
+ "solvers": [
+  "qwen_w4a16"
+ ],
+ "max_tokens": 32768,
+ "protocol_version": "protocol-v10",
+ "name": "qwen_strategy_vote_tools",
+ "notes": "Vote+Tools: full thinking, native tool calls, 5 samples at temperature 0.6, majority (public tests on code).",
+ "tools": true,
+ "n_samples": 5,
+ "temperature": 0.6
+}

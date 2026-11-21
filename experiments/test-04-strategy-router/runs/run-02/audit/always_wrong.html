@@ -1,0 +1,3989 @@
+<!doctype html><meta charset=utf-8><title>Test 04 run-02: always wrong</title><style>body{font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;color:#1f2328;background:#fff;margin:0}
+main{max-width:1100px;margin:32px auto;padding:0 24px} h1{font-size:28px} h2{font-size:22px;margin-top:44px;border-bottom:2px solid #1f2328;padding-bottom:6px}
+h3{font-size:16px;margin-top:30px;border-top:1px solid #d1d9e0;padding-top:18px} table{border-collapse:collapse;width:100%;margin:10px 0;font-size:13px}
+th,td{border:1px solid #d1d9e0;padding:5px 9px;vertical-align:top;text-align:left} th{background:#f6f8fa}
+pre{background:#f6f8fa;padding:12px;border-radius:6px;white-space:pre-wrap;font-size:12.5px} summary{cursor:pointer;color:#0969da}
+@media print{details{display:block} details>*{display:block}}</style><main><h1>Test 04 run-02: questions every route got wrong</h1>
+<p>69 of 1450 questions; six routes each. For each: the question, the gold answer, every route's answer through the verifier (first answer, verdict, final), and the diagnosis made by hand. Built by <code>always_wrong.py</code> from <code>failures.jsonl</code> and <code>diagnosis.json</code>.</p>
+<table>
+<thead>
+<tr>
+<th>Diagnosis</th>
+<th>Questions</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>verifier bug</td>
+<td>22</td>
+</tr>
+<tr>
+<td>grader bug</td>
+<td>34</td>
+</tr>
+<tr>
+<td>wrong gold</td>
+<td>6</td>
+</tr>
+<tr>
+<td>model wrong</td>
+<td>7</td>
+</tr>
+</tbody>
+</table>
+<h2>Verifier bug (22)</h2>
+<h3>mmlupro-10583 · science_mc · gold: H</h3>
+<details open><summary>Question</summary>
+<pre><code class="language-text">Which of the following is LEAST likely to indicate a phishing attack?
+
+A. An e-mail from a utility company asks you to enter your date of birth and social security number for verification purposes
+B. An e-mail from a social networking site asks you to click on a link to view a photo or video
+C. An e-mail from your bank asks you to reply with your password to confirm a recent transaction.
+D. An e-mail indicates that you have won a large sum of money and asks you to enter your bank account number so that the money can be transferred to you
+E. An e-mail from a merchant asks that you click on a link to reset your password
+F. An e-mail from your company's IT department asks you to enter your login details to upgrade your system
+G. An e-mail from an online retailer asks for your payment card details to confirm a purchase
+H. An e-mail from your bank asks you to call the number on your card to verify a transaction
+</code></pre>
+</details>
+<p><strong>Diagnosis (verifier bug):</strong> 6 of 6 routes answered H, the gold, on the first try (Fast, Tools, Deep, Deep+Tools, Vote, Vote+Tools). The verifier's option check accepted only A to D (the item has no options list) and rejected it; the retries ended on B, E, G.</p>
+<table>
+<thead>
+<tr>
+<th>Route</th>
+<th>First answer → verdict</th>
+<th>Final answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fast</td>
+<td>H (reject) → B (accept)</td>
+<td>B</td>
+</tr>
+<tr>
+<td>Tools</td>
+<td>H (reject) → G (reject)</td>
+<td>G</td>
+</tr>
+<tr>
+<td>Deep</td>
+<td>H (reject) → B (accept)</td>
+<td>B</td>
+</tr>
+<tr>
+<td>Deep+Tools</td>
+<td>H (reject) → B (accept)</td>
+<td>B</td>
+</tr>
+<tr>
+<td>Vote</td>
+<td>H (reject) → B (accept)</td>
+<td>B</td>
+</tr>
+<tr>
+<td>Vote+Tools</td>
+<td>H (reject) → E (reject)</td>
+<td>E</td>
+</tr>
+</tbody>
+</table>
+<h3>mmlupro-10693 · science_mc · gold: H</h3>
+<details open><summary>Question</summary>
+<pre><code class="language-text">You've just finished training a decision tree for spam classification, and it is getting abnormally bad performance on both your training and test sets. You know that your implementation has no bugs, so what could be causing the problem?
+
+A. You are overfitting.
+B. Your decision trees are too deep.
+C. You need to increase the learning rate.
+D. Your data is not properly normalized.
+E. The dataset is too small.
+F. None of the above.
+G. You need to decrease the learning rate.
+H. Your decision trees are too shallow.
+</code></pre>
+</details>
+<p><strong>Diagnosis (verifier bug):</strong> 6 of 6 routes answered H, the gold, on the first try (Fast, Tools, Deep, Deep+Tools, Vote, Vote+Tools). The verifier's option check accepted only A to D (the item has no options list) and rejected it; the retries ended on E, F.</p>
+<table>
+<thead>
+<tr>
+<th>Route</th>
+<th>First answer → verdict</th>
+<th>Final answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fast</td>
+<td>H (reject) → E (reject)</td>
+<td>E</td>
+</tr>
+<tr>
+<td>Tools</td>
+<td>H (reject) → F (reject)</td>
+<td>F</td>
+</tr>
+<tr>
+<td>Deep</td>
+<td>H (reject) → F (reject)</td>
+<td>F</td>
+</tr>
+<tr>
+<td>Deep+Tools</td>
+<td>H (reject) → F (reject)</td>
+<td>F</td>
+</tr>
+<tr>
+<td>Vote</td>
+<td>H (reject) → F (reject)</td>
+<td>F</td>
+</tr>
+<tr>
+<td>Vote+Tools</td>
+<td>H (reject) → F (reject)</td>
+<td>F</td>
+</tr>
+</tbody>
+</table>
+<h3>mmlupro-11648 · science_mc · gold: H</h3>
+<details open><summary>Question</summary>
+<pre><code class="language-text">If a binary code is to represent 110 differentcodewords, calculate the number of bits required and evaluate its efficiency as compared to a decimal system to accomplish the same task.
+
+A. 8 bits, 100 percent
+B. 9 bits, 88 percent
+C. 4 bits, 80 percent
+D. 5 bits, 75 percent
+E. 8 bits, 85 percent
+F. 6 bits, 60 percent
+G. 5 bits, 50 percent
+H. 7 bits, 97 percent
+I. 7 bits, 89 percent
+J. 6 bits, 85 percent
+</code></pre>
+</details>
+<p><strong>Diagnosis (verifier bug):</strong> 6 of 6 routes answered H, the gold, on the first try (Fast, Tools, Deep, Deep+Tools, Vote, Vote+Tools). The verifier's option check accepted only A to D (the item has no options list) and rejected it; the retries ended on E, I.</p>
+<table>
+<thead>
+<tr>
+<th>Route</th>
+<th>First answer → verdict</th>
+<th>Final answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fast</td>
+<td>H (reject) → E (reject)</td>
+<td>E</td>
+</tr>
+<tr>
+<td>Tools</td>
+<td>H (reject) → I (reject)</td>
+<td>I</td>
+</tr>
+<tr>
+<td>Deep</td>
+<td>H (reject) → I (reject)</td>
+<td>I</td>
+</tr>
+<tr>
+<td>Deep+Tools</td>
+<td>H (reject) → I (reject)</td>
+<td>I</td>
+</tr>
+<tr>
+<td>Vote</td>
+<td>H (reject) → I (reject)</td>
+<td>I</td>
+</tr>
+<tr>
+<td>Vote+Tools</td>
+<td>H (reject) → I (reject)</td>
+<td>I</td>
+</tr>
+</tbody>
+</table>
+<h3>mmlupro-11935 · science_mc · gold: G</h3>
+<details open><summary>Question</summary>
+<pre><code class="language-text">Let the currenti, enter the positive terminal of a circuit element across which the voltage v_1 is present, Find the power being absorbed by the element at t = 10s if i_1 = 2e-(0.1)tAand A (a) \nu_1 = 6{(di_1) /dt}(b) \nu_1 = (1/6)^t\int_oi_1dt^1 + 2 V
+
+A. -0.34 W, 3.00 W
+B. -0.35 W, 3.05 W
+C. -0.29 W, 3.15 W
+D. -0.31 W, 2.98 W
+E. -0.32 W, 3.0 W
+F. -0.33 W, 3.03 W
+G. -0.325 W, 3.02 W
+H. -0.3 W, 3.1 W
+I. -0.28 W, 3.2 W
+J. -0.4 W, 2.9 W
+</code></pre>
+</details>
+<p><strong>Diagnosis (verifier bug):</strong> 6 of 6 routes answered G, the gold, on the first try (Fast, Tools, Deep, Deep+Tools, Vote, Vote+Tools). The verifier's option check accepted only A to D (the item has no options list) and rejected it; the retries ended on E, F, no answer.</p>
+<table>
+<thead>
+<tr>
+<th>Route</th>
+<th>First answer → verdict</th>
+<th>Final answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fast</td>
+<td>G (reject) → E (reject)</td>
+<td>E</td>
+</tr>
+<tr>
+<td>Tools</td>
+<td>G (reject) → E (reject)</td>
+<td>E</td>
+</tr>
+<tr>
+<td>Deep</td>
+<td>G (reject) → F (reject)</td>
+<td>F</td>
+</tr>
+<tr>
+<td>Deep+Tools</td>
+<td>G (reject) → no answer (reject)</td>
+<td>no answer</td>
+</tr>
+<tr>
+<td>Vote</td>
+<td>G (reject) → F (reject)</td>
+<td>F</td>
+</tr>
+<tr>
+<td>Vote+Tools</td>
+<td>G (reject) → E (reject)</td>
+<td>E</td>
+</tr>
+</tbody>
+</table>
+<h3>mmlupro-2825 · science_mc · gold: G</h3>
+<details open><summary>Question</summary>
+<pre><code class="language-text">The frequency of the gene for sickle-cell anemia in African-Americans is less than that found in the people living in their ancestral home in Africa. What factors might account for this difference?
+
+A. Sickle-cell disease is more deadly in America
+B. Sickle-cell disease has been completely eradicated in America
+C. The sickle-cell gene mutates at a lower rate in America
+D. Genetic drift has led to a decrease in the frequency of the sickle-cell gene in African-Americans
+E. Increased medical intervention in America allows individuals with sickle-cell disease to live longer and reproduce more
+F. There is no difference in the frequency of the sickle-cell gene between African-Americans and their African ancestors
+G. In America, the incidence of malaria is insignificant, sickle-cell genes are being diluted by normal genes and interracial marriages.
+H. There is a higher survival rate for sickle-cell carriers in America
+I. Sickle-cell allele is more dominant in Africa
+J. The sickle-cell allele is being actively selected against in the African-American population
+</code></pre>
+</details>
+<p><strong>Diagnosis (verifier bug):</strong> 6 of 6 routes answered G, the gold, on the first try (Fast, Tools, Deep, Deep+Tools, Vote, Vote+Tools). The verifier's option check accepted only A to D (the item has no options list) and rejected it; the retries ended on D, J.</p>
+<table>
+<thead>
+<tr>
+<th>Route</th>
+<th>First answer → verdict</th>
+<th>Final answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fast</td>
+<td>G (reject) → J (reject)</td>
+<td>J</td>
+</tr>
+<tr>
+<td>Tools</td>
+<td>G (reject) → J (reject)</td>
+<td>J</td>
+</tr>
+<tr>
+<td>Deep</td>
+<td>G (reject) → D (accept)</td>
+<td>D</td>
+</tr>
+<tr>
+<td>Deep+Tools</td>
+<td>G (reject) → J (reject)</td>
+<td>J</td>
+</tr>
+<tr>
+<td>Vote</td>
+<td>G (reject) → D (accept)</td>
+<td>D</td>
+</tr>
+<tr>
+<td>Vote+Tools</td>
+<td>G (reject) → J (reject)</td>
+<td>J</td>
+</tr>
+</tbody>
+</table>
+<h3>mmlupro-2902 · science_mc · gold: H</h3>
+<details open><summary>Question</summary>
+<pre><code class="language-text">Describe the kingdoms within which algae are classified.
+
+A. Algae are classified under the Fungi, Plantae, and Archaea kingdoms.
+B. Algae are categorized solely within the Bacteria kingdom.
+C. Algae are only classified under the Plant kingdom.
+D. Algae fall into the Animal, Fungi, and Protista kingdoms.
+E. Algae are exclusively part of the Protista kingdom, with no sub-kingdom classifications.
+F. Algae are divided among the Protista, Fungi, and Viruses kingdoms.
+G. Algae are grouped into the Animalia, Plantae, and Protista kingdoms.
+H. Algae fall into the Plant, Protistan, and Monera kingdoms, including the Chlorophyta, Rhodophyta, Phaeophyta, Euglenophyta, Chrysophyta, Pyrrophyta, and Cyanophyta.
+I. Algae are classified under the Plant, Animal and Fungi kingdoms.
+J. Algae fall into the Protista, Bacteria, and Archaea kingdoms.
+</code></pre>
+</details>
+<p><strong>Diagnosis (verifier bug):</strong> 6 of 6 routes answered H, the gold, on the first try (Fast, Tools, Deep, Deep+Tools, Vote, Vote+Tools). The verifier's option check accepted only A to D (the item has no options list) and rejected it; the retries ended on C, E.</p>
+<table>
+<thead>
+<tr>
+<th>Route</th>
+<th>First answer → verdict</th>
+<th>Final answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fast</td>
+<td>H (reject) → C (accept)</td>
+<td>C</td>
+</tr>
+<tr>
+<td>Tools</td>
+<td>H (reject) → E (reject)</td>
+<td>E</td>
+</tr>
+<tr>
+<td>Deep</td>
+<td>H (reject) → E (reject)</td>
+<td>E</td>
+</tr>
+<tr>
+<td>Deep+Tools</td>
+<td>H (reject) → E (reject)</td>
+<td>E</td>
+</tr>
+<tr>
+<td>Vote</td>
+<td>H (reject) → C (accept)</td>
+<td>C</td>
+</tr>
+<tr>
+<td>Vote+Tools</td>
+<td>H (reject) → E (reject)</td>
+<td>E</td>
+</tr>
+</tbody>
+</table>
+<h3>mmlupro-3029 · science_mc · gold: H</h3>
+<details open><summary>Question</summary>
+<pre><code class="language-text">What do the words 'gymnosperm' and 'angiosperm' mean? What characteristics distinguish conifers from flowering plants?
+
+A. Gymnosperm means 'naked seeds' and angiosperm means 'enclosed seeds'. Conifers are distinguished from flowering plants by their ability to grow in colder climates and their distinct cone-like fruits.
+B. Gymnosperm means 'naked seeds' and angiosperm means 'enclosed seeds', but conifers are not distinguished from flowering plants as both include species with cones and flowers.
+C. Conifers are distinguished from flowering plants by their broad, flat leaves.
+D. Both gymnosperms and angiosperms mean 'enclosed seeds'; however, conifers have leaves that change color and drop in the autumn, unlike flowering plants.
+E. Angiosperms mean 'naked seeds' and gymnosperms mean 'enclosed seeds'. Conifers are distinguished from flowering plants by their soft, fleshy cones and brightly colored flowers.
+F. Gymnosperm means 'enclosed seeds' and angiosperm means 'naked seeds'.
+G. Angiosperms produce cones while conifers produce flowers and fruits.
+H. Gymnosperm means 'naked seeds' and angiosperm means 'enclosed seeds'. Conifers are distinguished from flowering plants by their needle-like leaves, xylem consisting almost entirely of tracheids, and their reproductive structures (cones).
+I. Gymnosperms are plants with flowers and fruits, while angiosperms are plants with cones and needle-like leaves.
+J. Gymnosperm means 'enclosed seeds' and angiosperm means 'naked seeds'. Conifers
+[… cut at 1,500 characters]
+</code></pre>
+</details>
+<p><strong>Diagnosis (verifier bug):</strong> 6 of 6 routes answered H, the gold, on the first try (Fast, Tools, Deep, Deep+Tools, Vote, Vote+Tools). The verifier's option check accepted only A to D (the item has no options list) and rejected it; the retries ended on A.</p>
+<table>
+<thead>
+<tr>
+<th>Route</th>
+<th>First answer → verdict</th>
+<th>Final answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fast</td>
+<td>H (reject) → A (accept)</td>
+<td>A</td>
+</tr>
+<tr>
+<td>Tools</td>
+<td>H (reject) → A (accept)</td>
+<td>A</td>
+</tr>
+<tr>
+<td>Deep</td>
+<td>H (reject) → A (accept)</td>
+<td>A</td>
+</tr>
+<tr>
+<td>Deep+Tools</td>
+<td>H (reject) → A (accept)</td>
+<td>A</td>
+</tr>
+<tr>
+<td>Vote</td>
+<td>H (reject) → A (accept)</td>
+<td>A</td>
+</tr>
+<tr>
+<td>Vote+Tools</td>
+<td>H (reject) → A (accept)</td>
+<td>A</td>
+</tr>
+</tbody>
+</table>
+<h3>mmlupro-3079 · science_mc · gold: H</h3>
+<details open><summary>Question</summary>
+<pre><code class="language-text">What are some advantages of doing genetics in bacteria and yeastinstead of in larger organisms (i.e.,multicellular eukaryotes)?
+
+A. Bacteria and yeast are more complex organisms.
+B. Bacteria and yeast have longer life cycles, allowing for extended study over time.
+C. Bacteria and yeast can perform more complex behaviors than multicellular organisms, which makes them better for study.
+D. Bacteria and yeast have larger genomes, providing more genetic material to work with.
+E. Bacteria and yeast are less susceptible to genetic diseases, making them more stable for experimentation.
+F. Bacteria and yeast have a slower rate of mutation.
+G. Bacteria and yeast do not require ethical considerations when used in experiments.
+H. Bacteria and yeast grow quickly, inexpensively, in a small space and have a high probability of mutation. Prokaryotes are haploid, making single inactivation more likely. Yeast are eukaryotic, closely related to multicellular animals and plants, and can be grown in either the haploid or diploid state.
+I. Bacteria and yeast have a lower rate of genetic recombination, making genetic mapping simpler.
+J. Bacteria and yeast are easier to maintain in a lab.
+</code></pre>
+</details>
+<p><strong>Diagnosis (verifier bug):</strong> 6 of 6 routes answered H, the gold, on the first try (Fast, Tools, Deep, Deep+Tools, Vote, Vote+Tools). The verifier's option check accepted only A to D (the item has no options list) and rejected it; the retries ended on G, J.</p>
+<table>
+<thead>
+<tr>
+<th>Route</th>
+<th>First answer → verdict</th>
+<th>Final answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fast</td>
+<td>H (reject) → J (reject)</td>
+<td>J</td>
+</tr>
+<tr>
+<td>Tools</td>
+<td>H (reject) → J (reject)</td>
+<td>J</td>
+</tr>
+<tr>
+<td>Deep</td>
+<td>H (reject) → J (reject)</td>
+<td>J</td>
+</tr>
+<tr>
+<td>Deep+Tools</td>
+<td>H (reject) → J (reject)</td>
+<td>J</td>
+</tr>
+<tr>
+<td>Vote</td>
+<td>H (reject) → G (reject)</td>
+<td>G</td>
+</tr>
+<tr>
+<td>Vote+Tools</td>
+<td>H (reject) → J (reject)</td>
+<td>J</td>
+</tr>
+</tbody>
+</table>
+<h3>mmlupro-3127 · science_mc · gold: J</h3>
+<details open><summary>Question</summary>
+<pre><code class="language-text">Can chromosome instability cause cancer ?
+
+A. Chromosomal instability prevents cancer.
+B. Chromosomal instability is solely caused by the presence of cancer.
+C. Chromosomal instability has no link to cancer.
+D. Chromosomal instability is only found in benign tumors and not associated with cancerous growths.
+E. Chromosomal instability can be reversed, thereby curing cancer.
+F. Chromosomal instability protects cells from becoming cancerous by enhancing genetic diversity.
+G. Chromosomal instability directly causes cancer.
+H. Chromosomal instability is a type of cancer.
+I. Chromosomal instability is the result of a healthy immune response to cancer cells.
+J. Chromosomal instability may create an environment that is highly susceptible to certain forms of cancer.
+</code></pre>
+</details>
+<p><strong>Diagnosis (verifier bug):</strong> 6 of 6 routes answered J, the gold, on the first try (Fast, Tools, Deep, Deep+Tools, Vote, Vote+Tools). The verifier's option check accepted only A to D (the item has no options list) and rejected it; the retries ended on G.</p>
+<table>
+<thead>
+<tr>
+<th>Route</th>
+<th>First answer → verdict</th>
+<th>Final answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fast</td>
+<td>J (reject) → G (reject)</td>
+<td>G</td>
+</tr>
+<tr>
+<td>Tools</td>
+<td>J (reject) → G (reject)</td>
+<td>G</td>
+</tr>
+<tr>
+<td>Deep</td>
+<td>J (reject) → G (reject)</td>
+<td>G</td>
+</tr>
+<tr>
+<td>Deep+Tools</td>
+<td>J (reject) → G (reject)</td>
+<td>G</td>
+</tr>
+<tr>
+<td>Vote</td>
+<td>J (reject) → G (reject)</td>
+<td>G</td>
+</tr>
+<tr>
+<td>Vote+Tools</td>
+<td>J (reject) → G (reject)</td>
+<td>G</td>
+</tr>
+</tbody>
+</table>
+<h3>mmlupro-3173 · science_mc · gold: J</h3>
+<details open><summary>Question</summary>
+<pre><code class="language-text">All linear genomes share a common problem of replication. Define the problem and describe how the process of reverse transcriptionelegantly solves it.
+
+A. The challenge for all linear genomes is that the DNA polymerases cannot initiate replication de novo. Retroviruses counteract this by using a protein to initiate the synthesis.
+B. The problem with all linear genomes is the inability to replicate without the presence of primer sequences. Retroviruses address this by creating a primer from an RNA template.
+C. The problem faced by all linear genomes is maintaining the structure of the genome. Retroviruses solved this problem by strengthening the bonds between nucleotides.
+D. The difficulty with linear genomes is the formation of secondary structures that impede replication. Retroviruses prevent this by using reverse transcriptase to unwind these structures.
+E. The issue faced by all linear genomes is replication speed. Retroviruses solved this problem by making the process more efficient.
+F. The problem faced by all linear genomes is avoiding mutations. Retroviruses solved this problem with an error-checking mechanism.
+G. Linear genomes face the challenge of DNA damage during replication, which can lead to cell death. Retroviruses have evolved a robust repair system to address this.
+H. All linear genomes struggle with the degradation of DNA at the ends during replication. Retroviruses circumvent this by integrating their DNA into the host genome.
+I. Linear genomes cannot repli
+[… cut at 1,500 characters]
+</code></pre>
+</details>
+<p><strong>Diagnosis (verifier bug):</strong> 5 of 6 routes answered J, the gold, on the first try (Tools, Deep, Deep+Tools, Vote, Vote+Tools). The verifier's option check accepted only A to D (the item has no options list) and rejected it; the retries ended on H, I.</p>
+<table>
+<thead>
+<tr>
+<th>Route</th>
+<th>First answer → verdict</th>
+<th>Final answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fast</td>
+<td>I (reject) → H (reject)</td>
+<td>H</td>
+</tr>
+<tr>
+<td>Tools</td>
+<td>J (reject) → I (reject)</td>
+<td>I</td>
+</tr>
+<tr>
+<td>Deep</td>
+<td>J (reject) → I (reject)</td>
+<td>I</td>
+</tr>
+<tr>
+<td>Deep+Tools</td>
+<td>J (reject) → I (reject)</td>
+<td>I</td>
+</tr>
+<tr>
+<td>Vote</td>
+<td>J (reject) → I (reject)</td>
+<td>I</td>
+</tr>
+<tr>
+<td>Vote+Tools</td>
+<td>J (reject) → I (reject)</td>
+<td>I</td>
+</tr>
+</tbody>
+</table>
+<h3>mmlupro-3257 · science_mc · gold: J</h3>
+<details open><summary>Question</summary>
+<pre><code class="language-text">Howarethe type of muscle tissues differentiated?
+
+A. Muscle tissues are differentiated by the presence or absence of striations under a microscope
+B. Muscle tissues are differentiated by the types of hormones they respond to
+C. Muscle tissues are differentiated by their color under standard lighting conditions
+D. Muscle tissues are differentiated by their size and shape
+E. Muscle tissues are differentiated by their ability to produce electrical impulses
+F. Muscle tissues are differentiated by their ability to heal and regenerate
+G. Muscle tissues are differentiated by the number of nuclei per cell
+H. Muscle tissues are differentiated by the speed of contraction and relaxation
+I. Muscle tissues are differentiated by their location in the body
+J. Skeletal muscle is responsible for most voluntary movements, smooth muscle is involved in most involuntary movements of internal organs, and cardiac muscle is the tissue of which much of the heart wall is composed.
+</code></pre>
+</details>
+<p><strong>Diagnosis (verifier bug):</strong> 2 of 6 routes answered J, the gold, on the first try (Fast, Vote). The verifier's option check accepted only A to D (the item has no options list) and rejected it; the retries ended on A.</p>
+<table>
+<thead>
+<tr>
+<th>Route</th>
+<th>First answer → verdict</th>
+<th>Final answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fast</td>
+<td>J (reject) → A (accept)</td>
+<td>A</td>
+</tr>
+<tr>
+<td>Tools</td>
+<td>A (accept)</td>
+<td>A</td>
+</tr>
+<tr>
+<td>Deep</td>
+<td>A (accept)</td>
+<td>A</td>
+</tr>
+<tr>
+<td>Deep+Tools</td>
+<td>A (accept)</td>
+<td>A</td>
+</tr>
+<tr>
+<td>Vote</td>
+<td>J (reject) → A (accept)</td>
+<td>A</td>
+</tr>
+<tr>
+<td>Vote+Tools</td>
+<td>A (accept)</td>
+<td>A</td>
+</tr>
+</tbody>
+</table>
+<h3>mmlupro-3403 · science_mc · gold: I</h3>
+<details open><summary>Question</summary>
+<pre><code class="language-text">The muscle fibers innervated by a motor unit will contract if a stimulus of sufficient magnitude is propagated or it will not contract at all. This is known as the all-or- none law. If this is true, how can muscle force be graded? For example, we use the same muscles to lift a one ounce object that we use to lift a 20 lb. object.
+
+A. Muscle force is graded by the frequency of nerve impulses alone.
+B. Muscle force is graded by the weight of the object being lifted.
+C. Muscle force is graded by the amount of energy consumed.
+D. Muscle force is graded by altering the amount of blood flow to the muscle.
+E. Muscle force is graded by the duration of muscle fiber contraction.
+F. Muscle force is graded by the size of the muscle.
+G. Muscle force is graded by the type of muscle fiber being activated.
+H. Muscle force is graded by the number of motor units activated simultaneously.
+I. Muscle force can be graded through the process of recruitment and by varying the tension produced by individual fibers.
+J. Muscle force is graded by the length of the muscle at the start of contraction.
+</code></pre>
+</details>
+<p><strong>Diagnosis (verifier bug):</strong> 6 of 6 routes answered I, the gold, on the first try (Fast, Tools, Deep, Deep+Tools, Vote, Vote+Tools). The verifier's option check accepted only A to D (the item has no options list) and rejected it; the retries ended on H.</p>
+<table>
+<thead>
+<tr>
+<th>Route</th>
+<th>First answer → verdict</th>
+<th>Final answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fast</td>
+<td>I (reject) → H (reject)</td>
+<td>H</td>
+</tr>
+<tr>
+<td>Tools</td>
+<td>I (reject) → H (reject)</td>
+<td>H</td>
+</tr>
+<tr>
+<td>Deep</td>
+<td>I (reject) → H (reject)</td>
+<td>H</td>
+</tr>
+<tr>
+<td>Deep+Tools</td>
+<td>I (reject) → H (reject)</td>
+<td>H</td>
+</tr>
+<tr>
+<td>Vote</td>
+<td>I (reject) → H (reject)</td>
+<td>H</td>
+</tr>
+<tr>
+<td>Vote+Tools</td>
+<td>I (reject) → H (reject)</td>
+<td>H</td>
+</tr>
+</tbody>
+</table>
+<h3>mmlupro-3588 · science_mc · gold: E</h3>
+<details open><summary>Question</summary>
+<pre><code class="language-text">In water vapor at 25°C, what is the average speed of a water molecule in meters/sec? Recall that 1 Joule = 1Kg-m^2/sec^2. The Boltzmann constant, k = 1.3806 × 10^-23 J/deg.
+
+A. 500 m/sec
+B. 700 m/sec
+C. 550 m/sec
+D. 480 m/sec
+E. 642 m/sec
+F. 750 m/sec
+G. 430 m/sec
+H. 600 m/sec
+I. 690 m/sec
+J. 800 m/sec
+</code></pre>
+</details>
+<p><strong>Diagnosis (verifier bug):</strong> 6 of 6 routes answered E, the gold, on the first try (Fast, Tools, Deep, Deep+Tools, Vote, Vote+Tools). The verifier's option check accepted only A to D (the item has no options list) and rejected it; the retries ended on H.</p>
+<table>
+<thead>
+<tr>
+<th>Route</th>
+<th>First answer → verdict</th>
+<th>Final answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fast</td>
+<td>E (reject) → H (reject)</td>
+<td>H</td>
+</tr>
+<tr>
+<td>Tools</td>
+<td>E (reject) → H (reject)</td>
+<td>H</td>
+</tr>
+<tr>
+<td>Deep</td>
+<td>E (reject) → H (reject)</td>
+<td>H</td>
+</tr>
+<tr>
+<td>Deep+Tools</td>
+<td>E (reject) → H (reject)</td>
+<td>H</td>
+</tr>
+<tr>
+<td>Vote</td>
+<td>E (reject) → H (reject)</td>
+<td>H</td>
+</tr>
+<tr>
+<td>Vote+Tools</td>
+<td>E (reject) → H (reject)</td>
+<td>H</td>
+</tr>
+</tbody>
+</table>
+<h3>mmlupro-3746 · science_mc · gold: J</h3>
+<details open><summary>Question</summary>
+<pre><code class="language-text">For the indicator phenolphthalein (In^-),HInis colorless and In^- is red;K_dissis 10^-9. If one has a colorless solution of 50 ml phenolphthalein, how much 0.10 MNaOHsolution would one have to add to make itred: K_W = 10^-14 .
+
+A. 2.5 × 10^-5 liters
+B. 0.100 liters
+C. 5.0 × 10^-4 liters
+D. 5.0 × 10^-6 liters
+E. 0.010 liters
+F. 0.050 liters
+G. 1.0 × 10^-6 liters
+H. 7.5 × 10^-5 liters
+I. 1.0 × 10^-4 liters
+J. 5.0 × 10^-5 liters
+</code></pre>
+</details>
+<p><strong>Diagnosis (verifier bug):</strong> 6 of 6 routes answered J, the gold, on the first try (Fast, Tools, Deep, Deep+Tools, Vote, Vote+Tools). The verifier's option check accepted only A to D (the item has no options list) and rejected it; the retries ended on D, I.</p>
+<table>
+<thead>
+<tr>
+<th>Route</th>
+<th>First answer → verdict</th>
+<th>Final answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fast</td>
+<td>J (reject) → I (reject)</td>
+<td>I</td>
+</tr>
+<tr>
+<td>Tools</td>
+<td>J (reject) → D (accept)</td>
+<td>D</td>
+</tr>
+<tr>
+<td>Deep</td>
+<td>J (reject) → D (accept)</td>
+<td>D</td>
+</tr>
+<tr>
+<td>Deep+Tools</td>
+<td>J (reject) → D (accept)</td>
+<td>D</td>
+</tr>
+<tr>
+<td>Vote</td>
+<td>J (reject) → D (accept)</td>
+<td>D</td>
+</tr>
+<tr>
+<td>Vote+Tools</td>
+<td>J (reject) → D (accept)</td>
+<td>D</td>
+</tr>
+</tbody>
+</table>
+<h3>mmlupro-3808 · science_mc · gold: G</h3>
+<details open><summary>Question</summary>
+<pre><code class="language-text">The units for the rate of a chemical reaction are
+
+A. L mol-1 s-1
+B. s-1 mol L-1
+C. s-1 L mol-1
+D. L2 mol-1 s-1
+E. mol L-2 s-1
+F. L2 mol-2 s-1
+G. mol L-1 s-1
+H. it depends on the particular reaction
+</code></pre>
+</details>
+<p><strong>Diagnosis (verifier bug):</strong> 6 of 6 routes answered G, the gold, on the first try (Fast, Tools, Deep, Deep+Tools, Vote, Vote+Tools). The verifier's option check accepted only A to D (the item has no options list) and rejected it; the retries ended on B, H.</p>
+<table>
+<thead>
+<tr>
+<th>Route</th>
+<th>First answer → verdict</th>
+<th>Final answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fast</td>
+<td>G (reject) → H (reject)</td>
+<td>H</td>
+</tr>
+<tr>
+<td>Tools</td>
+<td>G (reject) → H (reject)</td>
+<td>H</td>
+</tr>
+<tr>
+<td>Deep</td>
+<td>G (reject) → H (reject)</td>
+<td>H</td>
+</tr>
+<tr>
+<td>Deep+Tools</td>
+<td>G (reject) → H (reject)</td>
+<td>H</td>
+</tr>
+<tr>
+<td>Vote</td>
+<td>G (reject) → H (reject)</td>
+<td>H</td>
+</tr>
+<tr>
+<td>Vote+Tools</td>
+<td>G (reject) → B (accept)</td>
+<td>B</td>
+</tr>
+</tbody>
+</table>
+<h3>mmlupro-4079 · science_mc · gold: J</h3>
+<details open><summary>Question</summary>
+<pre><code class="language-text">Which of the following is expected to have the highest electronegativity?
+
+A. Fe
+B. Pb
+C. Ag
+D. Zn
+E. Au
+F. Mg
+G. Al
+H. Cu
+I. W
+J. S
+</code></pre>
+</details>
+<p><strong>Diagnosis (verifier bug):</strong> 6 of 6 routes answered J, the gold, on the first try (Fast, Tools, Deep, Deep+Tools, Vote, Vote+Tools). The verifier's option check accepted only A to D (the item has no options list) and rejected it; the retries ended on E, S.</p>
+<table>
+<thead>
+<tr>
+<th>Route</th>
+<th>First answer → verdict</th>
+<th>Final answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fast</td>
+<td>J (reject) → S (reject)</td>
+<td>S</td>
+</tr>
+<tr>
+<td>Tools</td>
+<td>J (reject) → S (reject)</td>
+<td>S</td>
+</tr>
+<tr>
+<td>Deep</td>
+<td>J (reject) → S (reject)</td>
+<td>S</td>
+</tr>
+<tr>
+<td>Deep+Tools</td>
+<td>J (reject) → S (reject)</td>
+<td>S</td>
+</tr>
+<tr>
+<td>Vote</td>
+<td>J (reject) → S (reject)</td>
+<td>S</td>
+</tr>
+<tr>
+<td>Vote+Tools</td>
+<td>J (reject) → E (reject)</td>
+<td>E</td>
+</tr>
+</tbody>
+</table>
+<h3>mmlupro-4091 · science_mc · gold: E</h3>
+<details open><summary>Question</summary>
+<pre><code class="language-text">The following data show how the standard molar constant-pressure heat capacity of sulfur dioxide varies with temperature. By how much does the standard molar enthalpy of $\mathrm{SO}_2(\mathrm{~g})$ increase when the temperature is raised from $298.15 \mathrm{~K}$ to $1500 \mathrm{~K}$ ?
+
+A. 49.2 $\mathrm{~kJ} \mathrm{~mol}^{-1}$
+B. 85.7 $\mathrm{~kJ} \mathrm{~mol}^{-1}$
+C. 67.8 $\mathrm{~kJ} \mathrm{~mol}^{-1}$
+D. 54.9 $\mathrm{~kJ} \mathrm{~mol}^{-1}$
+E. 62.2 $\mathrm{~kJ} \mathrm{~mol}^{-1}$
+F. 78.3 $\mathrm{~kJ} \mathrm{~mol}^{-1}$
+G. 58.1 $\mathrm{~kJ} \mathrm{~mol}^{-1}$
+H. 75.6 $\mathrm{~kJ} \mathrm{~mol}^{-1}$
+I. 70.5 $\mathrm{~kJ} \mathrm{~mol}^{-1}$
+J. 93.4 $\mathrm{~kJ} \mathrm{~mol}^{-1}$
+</code></pre>
+</details>
+<p><strong>Diagnosis (verifier bug):</strong> 5 of 6 routes answered E, the gold, on the first try (Fast, Tools, Deep+Tools, Vote, Vote+Tools). The verifier's option check accepted only A to D (the item has no options list) and rejected it; the retries ended on C, G, no answer.</p>
+<table>
+<thead>
+<tr>
+<th>Route</th>
+<th>First answer → verdict</th>
+<th>Final answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fast</td>
+<td>E (reject) → G (reject)</td>
+<td>G</td>
+</tr>
+<tr>
+<td>Tools</td>
+<td>E (reject) → G (reject)</td>
+<td>G</td>
+</tr>
+<tr>
+<td>Deep</td>
+<td>G (reject) → no answer (reject)</td>
+<td>no answer</td>
+</tr>
+<tr>
+<td>Deep+Tools</td>
+<td>E (reject) → no answer (reject)</td>
+<td>no answer</td>
+</tr>
+<tr>
+<td>Vote</td>
+<td>E (reject) → no answer (reject)</td>
+<td>no answer</td>
+</tr>
+<tr>
+<td>Vote+Tools</td>
+<td>E (reject) → C (accept)</td>
+<td>C</td>
+</tr>
+</tbody>
+</table>
+<h3>mmlupro-4610 · science_mc · gold: G</h3>
+<details open><summary>Question</summary>
+<pre><code class="language-text">A substance that is NOT generally considered to be a toxic pollutant in water is
+
+A. nitrogen
+B. a halogenated hydrocarbon
+C. chlorine
+D. copper
+E. arsenic
+F. benzene
+G. carbonic acid
+H. mercury
+I. cyanide
+J. lead
+</code></pre>
+</details>
+<p><strong>Diagnosis (verifier bug):</strong> 6 of 6 routes answered G, the gold, on the first try (Fast, Tools, Deep, Deep+Tools, Vote, Vote+Tools). The verifier's option check accepted only A to D (the item has no options list) and rejected it; the retries ended on A.</p>
+<table>
+<thead>
+<tr>
+<th>Route</th>
+<th>First answer → verdict</th>
+<th>Final answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fast</td>
+<td>G (reject) → A (accept)</td>
+<td>A</td>
+</tr>
+<tr>
+<td>Tools</td>
+<td>G (reject) → A (accept)</td>
+<td>A</td>
+</tr>
+<tr>
+<td>Deep</td>
+<td>G (reject) → A (accept)</td>
+<td>A</td>
+</tr>
+<tr>
+<td>Deep+Tools</td>
+<td>G (reject) → A (accept)</td>
+<td>A</td>
+</tr>
+<tr>
+<td>Vote</td>
+<td>G (reject) → A (accept)</td>
+<td>A</td>
+</tr>
+<tr>
+<td>Vote+Tools</td>
+<td>G (reject) → A (accept)</td>
+<td>A</td>
+</tr>
+</tbody>
+</table>
+<h3>mmlupro-7880 · science_mc · gold: J</h3>
+<details open><summary>Question</summary>
+<pre><code class="language-text">A mass of $100 \mathrm{~g}$ stretches a spring $5 \mathrm{~cm}$. If the mass is set in motion from its equilibrium position with a downward velocity of $10 \mathrm{~cm} / \mathrm{s}$, and if there is no damping, determine when does the mass first return to its equilibrium position.
+
+A. $3\pi/14$ s
+B. $2\pi/7$ s
+C. $\pi/5$ s
+D. $\pi/10$ s
+E. $\pi/20$ s
+F. $\pi/6$ s
+G. $\pi/12$ s
+H. $\pi/8$ s
+I. $\pi/7$ s
+J. $\pi/14$ s
+</code></pre>
+</details>
+<p><strong>Diagnosis (verifier bug):</strong> 6 of 6 routes answered J, the gold, on the first try (Fast, Tools, Deep, Deep+Tools, Vote, Vote+Tools). The verifier's option check accepted only A to D (the item has no options list) and rejected it; the retries ended on I, π/14.</p>
+<table>
+<thead>
+<tr>
+<th>Route</th>
+<th>First answer → verdict</th>
+<th>Final answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fast</td>
+<td>J (reject) → I (reject)</td>
+<td>I</td>
+</tr>
+<tr>
+<td>Tools</td>
+<td>J (reject) → I (reject)</td>
+<td>I</td>
+</tr>
+<tr>
+<td>Deep</td>
+<td>J (reject) → I (reject)</td>
+<td>I</td>
+</tr>
+<tr>
+<td>Deep+Tools</td>
+<td>J (reject) → π/14 (reject)</td>
+<td>π/14</td>
+</tr>
+<tr>
+<td>Vote</td>
+<td>J (reject) → I (reject)</td>
+<td>I</td>
+</tr>
+<tr>
+<td>Vote+Tools</td>
+<td>J (reject) → I (reject)</td>
+<td>I</td>
+</tr>
+</tbody>
+</table>
+<h3>mmlupro-8447 · science_mc · gold: J</h3>
+<details open><summary>Question</summary>
+<pre><code class="language-text">To determine the average number of children living in single-family homes, a researcher picks a simple random sample of 50 such homes. However, even after one follow-up visit the interviewer is unable to make contact with anyone in 8 of these homes. Concerned about nonresponse bias, the researcher picks another simple random sample and instructs the interviewer to keep trying until contact is made with someone in a total of 50 homes. The average number of children is determined to be 1.73. Is this estimate probably too low or too high?
+
+A. Too high, because the sample size is not large enough.
+B. Too low, because nonresponse bias tends to underestimate average results.
+C. Too high, because convenience samples overestimate average results.
+D. Too low, because of undercoverage bias.
+E. Too low, because the sample size is not large enough.
+F. Too high, due to the possibility of a skewed sample.
+G. Too high, because of undercoverage bias.
+H. Too low, because convenience samples overestimate average results.
+I. Too low, due to the possibility of a skewed sample.
+J. Too high, because nonresponse bias tends to overestimate average results.
+</code></pre>
+</details>
+<p><strong>Diagnosis (verifier bug):</strong> 4 of 6 routes answered J, the gold, on the first try (Fast, Deep, Deep+Tools, Vote). The verifier's option check accepted only A to D (the item has no options list) and rejected it; the retries ended on B, C.</p>
+<table>
+<thead>
+<tr>
+<th>Route</th>
+<th>First answer → verdict</th>
+<th>Final answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fast</td>
+<td>J (reject) → B (accept)</td>
+<td>B</td>
+</tr>
+<tr>
+<td>Tools</td>
+<td>B (accept)</td>
+<td>B</td>
+</tr>
+<tr>
+<td>Deep</td>
+<td>J (reject) → B (accept)</td>
+<td>B</td>
+</tr>
+<tr>
+<td>Deep+Tools</td>
+<td>J (reject) → B (accept)</td>
+<td>B</td>
+</tr>
+<tr>
+<td>Vote</td>
+<td>J (reject) → C (accept)</td>
+<td>C</td>
+</tr>
+<tr>
+<td>Vote+Tools</td>
+<td>B (accept)</td>
+<td>B</td>
+</tr>
+</tbody>
+</table>
+<h3>mmlupro-9288 · science_mc · gold: E</h3>
+<details open><summary>Question</summary>
+<pre><code class="language-text">What is the gravitational force on a person whose mass is 70 kg when he is sitting in an automobile that accelerates at 4 m/s^2?
+
+A. 8.4 × 10^2 N
+B. 140 N
+C. 350 N
+D. 2.8 × 10^2 N
+E. 6.86 × 10^2N
+F. 700 N
+G. 280 N
+H. 4 N
+I. 70 N
+J. 0 N (assuming there is no gravity)
+</code></pre>
+</details>
+<p><strong>Diagnosis (verifier bug):</strong> 6 of 6 routes answered E, the gold, on the first try (Fast, Tools, Deep, Deep+Tools, Vote, Vote+Tools). The verifier's option check accepted only A to D (the item has no options list) and rejected it; the retries ended on 6.86 × 10^2N, F.</p>
+<table>
+<thead>
+<tr>
+<th>Route</th>
+<th>First answer → verdict</th>
+<th>Final answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fast</td>
+<td>E (reject) → F (reject)</td>
+<td>F</td>
+</tr>
+<tr>
+<td>Tools</td>
+<td>E (reject) → F (reject)</td>
+<td>F</td>
+</tr>
+<tr>
+<td>Deep</td>
+<td>E (reject) → F (reject)</td>
+<td>F</td>
+</tr>
+<tr>
+<td>Deep+Tools</td>
+<td>E (reject) → F (reject)</td>
+<td>F</td>
+</tr>
+<tr>
+<td>Vote</td>
+<td>E (reject) → F (reject)</td>
+<td>F</td>
+</tr>
+<tr>
+<td>Vote+Tools</td>
+<td>E (reject) → 6.86 × 10^2N (reject)</td>
+<td>6.86 × 10^2N</td>
+</tr>
+</tbody>
+</table>
+<h3>mmlupro-9725 · science_mc · gold: F</h3>
+<details open><summary>Question</summary>
+<pre><code class="language-text">Mercury orbits the sun in about one-fifth of an Earth year. If 1 AU is defined as the distance from the Earth to the sun, what is the approximate distance between Mercury and the sun?
+
+A. (1/2) AU
+B. (1/4) AU
+C. (1/25) AU
+D. (1/9) AU
+E. (1/5) AU
+F. (1/3) AU
+G. (1/15) AU
+H. (1/7) AU
+I. (1/10) AU
+J. (1/20) AU
+</code></pre>
+</details>
+<p><strong>Diagnosis (verifier bug):</strong> 6 of 6 routes answered F, the gold, on the first try (Fast, Tools, Deep, Deep+Tools, Vote, Vote+Tools). The verifier's option check accepted only A to D (the item has no options list) and rejected it; the retries ended on (1/3) AU, B, no answer.</p>
+<table>
+<thead>
+<tr>
+<th>Route</th>
+<th>First answer → verdict</th>
+<th>Final answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fast</td>
+<td>F (reject) → B (accept)</td>
+<td>B</td>
+</tr>
+<tr>
+<td>Tools</td>
+<td>F (reject) → (1/3) AU (reject)</td>
+<td>(1/3) AU</td>
+</tr>
+<tr>
+<td>Deep</td>
+<td>F (reject) → (1/3) AU (reject)</td>
+<td>(1/3) AU</td>
+</tr>
+<tr>
+<td>Deep+Tools</td>
+<td>F (reject) → no answer (reject)</td>
+<td>no answer</td>
+</tr>
+<tr>
+<td>Vote</td>
+<td>F (reject) → no answer (reject)</td>
+<td>no answer</td>
+</tr>
+<tr>
+<td>Vote+Tools</td>
+<td>F (reject) → (1/3) AU (reject)</td>
+<td>(1/3) AU</td>
+</tr>
+</tbody>
+</table>
+<h2>Grader bug (34)</h2>
+<h3>lcb-abc314_e · code · gold: the task's stdin/stdout tests</h3>
+<details open><summary>Question</summary>
+<pre><code class="language-text">There are N roulette wheels.
+The i-th (1\leq i\leq N) wheel has P _ i integers S _ {i,1},S _ {i,2},\ldots,S _ {i,P _ i} written on it, and you can play it once by paying C _ i yen.
+When you play the i-th wheel once, an integer j between 1 and P _ i, inclusive, is chosen uniformly at random, and you earn S _ {i,j} points.
+The points you earn from the wheels are determined independently of past results.
+Takahashi wants to earn at least M points.
+Takahashi will act to minimize the amount of money he pays before he earns at least M points.
+After each play, he can choose which wheel to play next based on the previous results.
+Find the expected amount of money Takahashi will pay before he earns at least M points.
+More formal definition
+Here is a more formal statement.
+For a strategy that Takahashi can adopt in choosing which wheel to play, the expected amount of money E that he pays before he earns at least M points with that strategy is defined as follows.
+
+- For a natural number X, let f(X) be the expected amount of money Takahashi pays before he earns at least M points or plays the wheels X times in total according to that strategy. Let E=\displaystyle\lim _ {X\to+\infty}f(X).
+
+Under the conditions of this problem, it can be proved that \displaystyle\lim _ {X\to+\infty}f(X) is finite no matter what strategy Takahashi adopts.
+Find the value of E when he adopts a strategy that minimizes E.
+
+Input
+
+The input is given from Standard Input in the following format:
+N M
+C _ 1 P _ 1 S _
+</code></pre>
+</details>
+<p><strong>Diagnosis (grader bug):</strong> Float output. The task allows 1e-5 error; the grader compares text exactly (215.913355350494385 vs 215.913355350494384765625). With the stated tolerance Fast, Deep, Deep+Tools, Vote and Vote+Tools pass 15/15 tests.</p>
+<table>
+<thead>
+<tr>
+<th>Route</th>
+<th>First answer → verdict</th>
+<th>Final answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fast</td>
+<td>import sys from sys import stdin def mai… (accept)</td>
+<td>import sys from sys import stdin def main(): input = sys.stdin.read data = input().split() idx = 0 N = int(data[idx]); idx += 1 M = int(data[idx]); idx += 1 whe…</td>
+</tr>
+<tr>
+<td>Tools</td>
+<td>import sys def solve(): input_data = sys… (accept)</td>
+<td>import sys def solve(): input_data = sys.stdin.read().split() idx = 0 N = int(input_data[idx]); idx += 1 M = int(input_data[idx]); idx += 1 wheels = [] for i in…</td>
+</tr>
+<tr>
+<td>Deep</td>
+<td>no answer (reject) → import sys def main(): data = sys.stdin.… (accept)</td>
+<td>import sys def main(): data = sys.stdin.read().split() if not data: return it = iter(data) N = int(next(it)) M = int(next(it)) wheels = [] for _ in range(N): C …</td>
+</tr>
+<tr>
+<td>Deep+Tools</td>
+<td>import sys def main(): data = sys.stdin.… (accept)</td>
+<td>import sys def main(): data = sys.stdin.read().split() idx = 0 N = int(data[idx]); idx += 1 M = int(data[idx]); idx += 1 wheels = [] for i in range(N): C = int(…</td>
+</tr>
+<tr>
+<td>Vote</td>
+<td>```python import sys def main(): data = … (accept)</td>
+<td>```python import sys def main(): data = list(map(int, sys.stdin.buffer.read().split())) if not data: return it = iter(data) N = next(it) M = next(it) wheels = […</td>
+</tr>
+<tr>
+<td>Vote+Tools</td>
+<td>import sys def main(): input = sys.stdin… (accept)</td>
+<td>import sys def main(): input = sys.stdin.readline N, M = map(int, input().split()) wheels = [] for _ in range(N): parts = list(map(int, input().split())) C = pa…</td>
+</tr>
+</tbody>
+</table>
+<h3>lcb-abc315_f · code · gold: the task's stdin/stdout tests</h3>
+<details open><summary>Question</summary>
+<pre><code class="language-text">There is a race through checkpoints 1,2,\dots,N in this order on a coordinate plane.
+The coordinates of checkpoint i are (X_i,Y_i), and all checkpoints have different coordinates.
+Checkpoints other than checkpoints 1 and N can be skipped.
+However, let C be the number of checkpoints skipped, and the following penalty will be imposed:
+
+- \displaystyle 2^{C−1} if C&gt;0, and
+- 0 if C=0.
+
+Let s be the total distance traveled (Euclidean distance) from checkpoint 1 to checkpoint N plus the penalty.
+Find the minimum achievable value as s.
+
+Input
+
+The input is given from Standard Input in the following format:
+N
+X_1 Y_1
+X_2 Y_2
+\vdots
+X_N Y_N
+
+Output
+
+Print the answer. Your output is considered correct if the absolute or relative error from the true value is at most 10^{-5}.
+
+Constraints
+
+
+- All input values are integers.
+- 2 \le N \le 10^4
+- 0 \le X_i,Y_i \le 10^4
+- (X_i,Y_i) \neq (X_j,Y_j) if i \neq j.
+
+Sample Input 1
+
+6
+0 0
+1 1
+2 0
+0 1
+1 0
+2 1
+
+Sample Output 1
+
+5.82842712474619009753
+
+Consider passing through checkpoints 1,2,5,6 and skip checkpoints 3,4.
+
+- Move from checkpoint 1 to 2. The distance between them is \sqrt{2}.
+- Move from checkpoint 2 to 5. The distance between them is 1.
+- Move from checkpoint 5 to 6. The distance between them is \sqrt{2}.
+- Two checkpoints are skipped, so the penalty of 2 is imposed.
+
+In this way, you can achieve s = 3 + 2\sqrt{2} \approx 5.828427.
+You cannot make s smaller than this value.
+
+Sample Input 2
+
+10
+1 8
+3 7
+9 4
+4 9
+6 1
+7 5
+0 0
+1 3
+6 8
+6 4
+</code></pre>
+</details>
+<p><strong>Diagnosis (grader bug):</strong> Float output, task allows 1e-5 error, grader compares text. With tolerance every route that answered passes 15/15 (Deep hit the token cap twice, no answer).</p>
+<table>
+<thead>
+<tr>
+<th>Route</th>
+<th>First answer → verdict</th>
+<th>Final answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fast</td>
+<td>no answer (reject) → import sys import math def main(): input… (accept)</td>
+<td>import sys import math def main(): input_data = sys.stdin.read().split() idx = 0 N = int(input_data[idx]); idx += 1 points = [] for i in range(N): x = int(input…</td>
+</tr>
+<tr>
+<td>Tools</td>
+<td>import sys import math def main(): input… (accept)</td>
+<td>import sys import math def main(): input_data = sys.stdin.read().split() idx = 0 N = int(input_data[idx]); idx += 1 points = [] for _ in range(N): x = int(input…</td>
+</tr>
+<tr>
+<td>Deep</td>
+<td>no answer (reject) → no answer (reject)</td>
+<td>no answer</td>
+</tr>
+<tr>
+<td>Deep+Tools</td>
+<td>import sys, math def main(): data = sys.… (accept)</td>
+<td>import sys, math def main(): data = sys.stdin.buffer.read().split() idx = 0 N = int(data[idx]); idx += 1 X = [0] * (N + 1) Y = [0] * (N + 1) for i in range(1, N…</td>
+</tr>
+<tr>
+<td>Vote</td>
+<td>import sys import math def main(): data … (accept)</td>
+<td>import sys import math def main(): data = sys.stdin.buffer.read().split() if not data: return it = iter(data) N = int(next(it)) X = [0] * N Y = [0] * N for i in…</td>
+</tr>
+<tr>
+<td>Vote+Tools</td>
+<td>import sys, math def solve(inp): data = … (accept)</td>
+<td>import sys, math def solve(inp): data = inp.split() idx = 0 N = int(data[idx]); idx += 1 pts = [] for _ in range(N): x = int(data[idx]); y = int(data[idx+1]); i…</td>
+</tr>
+</tbody>
+</table>
+<h3>lcb-abc324_f · code · gold: the task's stdin/stdout tests</h3>
+<details open><summary>Question</summary>
+<pre><code class="language-text">There is a directed graph with N vertices and M edges. Each edge has two positive integer values: beauty and cost.
+For i = 1, 2, \ldots, M, the i-th edge is directed from vertex u_i to vertex v_i, with beauty b_i and cost c_i.
+Here, the constraints guarantee that u_i \lt v_i.
+Find the maximum value of the following for a path P from vertex 1 to vertex N.
+
+- The total beauty of all edges on P divided by the total cost of all edges on P.
+
+Here, the constraints guarantee that the given graph has at least one path from vertex 1 to vertex N.
+
+Input
+
+The input is given from Standard Input in the following format:
+N M
+u_1 v_1 b_1 c_1
+u_2 v_2 b_2 c_2
+\vdots
+u_M v_M b_M c_M
+
+Output
+
+Print the answer. Your output will be judged as correct if the relative or absolute error from the true answer is at most 10^{-9}.
+
+Constraints
+
+
+- 2 \leq N \leq 2 \times 10^5
+- 1 \leq M \leq 2 \times 10^5
+- 1 \leq u_i \lt v_i \leq N
+- 1 \leq b_i, c_i \leq 10^4
+- There is a path from vertex 1 to vertex N.
+- All input values are integers.
+
+Sample Input 1
+
+5 7
+1 2 3 6
+1 3 9 5
+2 3 1 5
+2 4 5 3
+2 5 1 9
+3 4 4 8
+4 5 2 7
+
+Sample Output 1
+
+0.7500000000000000
+
+For the path P that passes through the 2-nd, 6-th, and 7-th edges in this order and visits vertices 1 \rightarrow 3 \rightarrow 4 \rightarrow 5, the total beauty of all edges on P divided by the total cost of all edges on P
+is
+(b_2 + b_6 + b_7) / (c_2 + c_6 + c_7) = (9 + 4 + 2) / (5 + 8 + 7) = 15 / 20 = 0.75, and this is the maximum possible val
+[… cut at 1,500 characters]
+</code></pre>
+</details>
+<p><strong>Diagnosis (grader bug):</strong> Float output, task allows 1e-9 error, grader compares text (0.749999999999999 vs 0.75). With tolerance Fast, Deep+Tools, Vote and Vote+Tools pass 15/15.</p>
+<table>
+<thead>
+<tr>
+<th>Route</th>
+<th>First answer → verdict</th>
+<th>Final answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fast</td>
+<td>import sys import math def solve(): inpu… (accept)</td>
+<td>import sys import math def solve(): input = sys.stdin.read data = input().split() if not data: return iterator = iter(data) N = int(next(iterator)) M = int(next…</td>
+</tr>
+<tr>
+<td>Tools</td>
+<td>no answer (reject) → import sys from collections import defau… (accept)</td>
+<td>import sys from collections import defaultdict def main(): data = sys.stdin.buffer.read().split() idx = 0 N = int(data[idx]); idx += 1 M = int(data[idx]); idx +…</td>
+</tr>
+<tr>
+<td>Deep</td>
+<td>no answer (reject) → no answer (reject)</td>
+<td>no answer</td>
+</tr>
+<tr>
+<td>Deep+Tools</td>
+<td>no answer (reject) → import sys def main(): data = sys.stdin.… (accept)</td>
+<td>import sys def main(): data = sys.stdin.buffer.read().split() if not data: return it = iter(data) N = int(next(it)) M = int(next(it)) adj = [[] for _ in range(N…</td>
+</tr>
+<tr>
+<td>Vote</td>
+<td>```python import sys from operator impor… (accept)</td>
+<td>```python import sys from operator import itemgetter def main(): data = sys.stdin.buffer.read().split() if not data: return it = iter(data) n = int(next(it)) m …</td>
+</tr>
+<tr>
+<td>Vote+Tools</td>
+<td>import sys def main(): data = sys.stdin.… (accept)</td>
+<td>import sys def main(): data = sys.stdin.buffer.read().split() if not data: return it = iter(data) N = int(next(it)) M = int(next(it)) head = [-1] * (N + 1) to =…</td>
+</tr>
+</tbody>
+</table>
+<h3>lcb-abc327_e · code · gold: the task's stdin/stdout tests</h3>
+<details open><summary>Question</summary>
+<pre><code class="language-text">Takahashi participated in N contests and earned a performance P_i in the i-th contest.
+He wants to choose some (at least one) contests from these and maximize his rating calculated from the results of those contests.
+Find the maximum possible rating he can achieve by optimally choosing the contests.
+Here, Takahashi's rating R is calculated as the following, where k is the number of chosen contests and (Q_1, Q_2, \ldots, Q_k) are the performances in the chosen contests in the order he participated:
+
+\displaystyle R=\frac{\sum_{i=1}^k (0.9)^{k-i}Q_i}{\sum_{i=1}^k (0.9)^{k-i}}-\frac{1200}{\sqrt{k}}.
+
+Input
+
+The input is given from Standard Input in the following format:
+N
+P_1 P_2 \ldots P_N
+
+Output
+
+Print the maximum possible rating that Takahashi can achieve.
+Your output will be considered correct if the absolute or relative error from the true value is at most 10^{-6}.
+
+Constraints
+
+
+- 1\leq N\leq 5000
+- 1\leq P_i\leq 5000
+- All input values are integers.
+
+Sample Input 1
+
+3
+1000 600 1200
+
+Sample Output 1
+
+256.735020470879931
+
+If Takahashi chooses the first and third contests, his rating will be:
+\displaystyle R=\frac{0.9\times 1000+ 1.0\times 1200}{0.9+1.0}-\frac{1200}{\sqrt{2}}=256.73502....
+This is the maximum possible rating.
+
+Sample Input 2
+
+3
+600 1000 1200
+
+Sample Output 2
+
+261.423219407873376
+
+The rating is maximized when all the first, second, and third contests are selected.
+
+Sample Input 3
+
+1
+100
+
+Sample Output 3
+
+-1100.000000000000000
+
+The rating can also be negative
+[… cut at 1,500 characters]
+</code></pre>
+</details>
+<p><strong>Diagnosis (grader bug):</strong> Float output, task allows 1e-6 error, grader compares text. With tolerance Tools, Deep+Tools and Vote+Tools pass 15/15 (Vote answered in C++, Fast and Deep gave no answer).</p>
+<table>
+<thead>
+<tr>
+<th>Route</th>
+<th>First answer → verdict</th>
+<th>Final answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fast</td>
+<td>no answer (reject) → no answer (reject)</td>
+<td>no answer</td>
+</tr>
+<tr>
+<td>Tools</td>
+<td>import sys import math def solve(): inpu… (accept)</td>
+<td>import sys import math def solve(): input_data = sys.stdin.read().split() if not input_data: return N = int(input_data[0]) P = [int(x) for x in input_data[1:1+N…</td>
+</tr>
+<tr>
+<td>Deep</td>
+<td>no answer (reject) → no answer (reject)</td>
+<td>no answer</td>
+</tr>
+<tr>
+<td>Deep+Tools</td>
+<td>import sys, math def main(): data = sys.… (accept)</td>
+<td>import sys, math def main(): data = sys.stdin.buffer.read().split() N = int(data[0]) P = [int(x) for x in data[1:1+N]] neg_inf = float('-inf') prev = [float(x) …</td>
+</tr>
+<tr>
+<td>Vote</td>
+<td>```cpp #include <iostream> #include &lt;vec… (accept)</td>
+<td>```cpp #include <iostream> #include <vector> #include <algorithm> #include <cmath> #include <iomanip> using namespace std; int main() { ios::sync_with_stdio(fal…</td>
+</tr>
+<tr>
+<td>Vote+Tools</td>
+<td>import sys, math def main(): data = sys.… (accept)</td>
+<td>import sys, math def main(): data = sys.stdin.buffer.read().split() N = int(data[0]) P = [float(x) for x in data[1:1+N]] c = 0.9 try: import numpy as np Pn = np…</td>
+</tr>
+</tbody>
+</table>
+<h3>lcb-abc350_e · code · gold: the task's stdin/stdout tests</h3>
+<details open><summary>Question</summary>
+<pre><code class="language-text">You are given an integer N. You can perform the following two types of operations:
+
+- Pay X yen to replace N with \displaystyle\left\lfloor\frac{N}{A}\right\rfloor.
+- Pay Y yen to roll a die (dice) that shows an integer between 1 and 6, inclusive, with equal probability. Let b be the outcome of the die, and replace N with \displaystyle\left\lfloor\frac{N}{b}\right\rfloor.
+
+Here, \lfloor s \rfloor denotes the greatest integer less than or equal to s. For example, \lfloor 3 \rfloor=3 and \lfloor 2.5 \rfloor=2.
+Determine the minimum expected cost paid before N becomes 0 when optimally choosing operations.
+The outcome of the die in each operation is independent of other rolls, and the choice of operation can be made after observing the results of the previous operations.
+
+Input
+
+The input is given from Standard Input in the following format:
+N A X Y
+
+Output
+
+Print the answer.
+Your output will be considered correct if the absolute or relative error from the true answer is at most 10^{-6}.
+
+Constraints
+
+
+- 1 \leq N \leq 10^{18}
+- 2 \leq A \leq 6
+- 1 \leq X, Y \leq 10^9
+- All input values are integers.
+
+Sample Input 1
+
+3 2 10 20
+
+Sample Output 1
+
+20.000000000000000
+
+The available operations are as follows:
+
+- Pay 10 yen. Replace N with \displaystyle\left\lfloor\frac{N}{2}\right\rfloor.
+- Pay 20 yen. Roll a die. Let b be the outcome, and replace N with \displaystyle\left\lfloor\frac{N}{b}\right\rfloor.
+
+The optimal strategy is to perform the first operation twice.
+
+Sample Input 2
+</code></pre>
+</details>
+<p><strong>Diagnosis (grader bug):</strong> Float output, task allows 1e-6 error, grader compares text. With tolerance every route passes 20/20.</p>
+<table>
+<thead>
+<tr>
+<th>Route</th>
+<th>First answer → verdict</th>
+<th>Final answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fast</td>
+<td>no answer (reject) → import sys sys.setrecursionlimit(100000)… (accept)</td>
+<td>import sys sys.setrecursionlimit(100000) def solve(): N, A, X, Y = map(int, input().split()) memo = {} def f(n): if n == 0: return 0.0 if n in memo: return memo…</td>
+</tr>
+<tr>
+<td>Tools</td>
+<td>import sys sys.setrecursionlimit(100000)… (accept)</td>
+<td>import sys sys.setrecursionlimit(100000) def main(): N, A, X, Y = map(int, sys.stdin.read().split()) memo = {0: 0.0} def f(n): if n in memo: return memo[n] opt1…</td>
+</tr>
+<tr>
+<td>Deep</td>
+<td>no answer (reject) → ```python import sys from functools impo… (accept)</td>
+<td>```python import sys from functools import lru_cache def main(): N, A, X, Y = map(int, sys.stdin.readline().split()) sys.setrecursionlimit(1000000) @lru_cache(m…</td>
+</tr>
+<tr>
+<td>Deep+Tools</td>
+<td>import sys from fractions import Fractio… (accept)</td>
+<td>import sys from fractions import Fraction def solve(): N, A, X, Y = map(int, input().split()) # Generate all 5-smooth numbers d &lt;= N smooth = set() pow2 = 1 whi…</td>
+</tr>
+<tr>
+<td>Vote</td>
+<td>import sys from functools import lru_cac… (accept)</td>
+<td>import sys from functools import lru_cache def main(): data = sys.stdin.read().split() if not data: return N, A, X, Y = map(int, data[:4]) sys.setrecursionlimit…</td>
+</tr>
+<tr>
+<td>Vote+Tools</td>
+<td>import sys def main(): data = sys.stdin.… (accept)</td>
+<td>import sys def main(): data = sys.stdin.read().split() N, A, X, Y = int(data[0]), int(data[1]), int(data[2]), int(data[3]) sys.setrecursionlimit(1000000) memo =…</td>
+</tr>
+</tbody>
+</table>
+<h3>math-train-counting_and_probability-582 · math · gold: 0.20</h3>
+<details open><summary>Question</summary>
+<pre><code class="language-text">Objects $A$ and $B$ move simultaneously in the coordinate plane via a sequence of steps, each of length one. Object $A$ starts at $(0,0)$ and each of its steps is either right or up, both equally likely. Object $B$ starts at $(5,7)$ and each of its steps is either left or down, both equally likely. Which of the following is closest to the probability that the objects meet?
+
+A. 0.10
+
+B. 0.15
+
+C. 0.20
+
+D. 0.25
+
+E. 0.30
+
+(Type the letter that corresponds to your answer.)
+</code></pre>
+</details>
+<p><strong>Diagnosis (grader bug):</strong> The question says 'Type the letter'; every route answered C, which is 0.20, the gold value. The grader compares the letter with the value.</p>
+<table>
+<thead>
+<tr>
+<th>Route</th>
+<th>First answer → verdict</th>
+<th>Final answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fast</td>
+<td>C (accept)</td>
+<td>C</td>
+</tr>
+<tr>
+<td>Tools</td>
+<td>C (accept)</td>
+<td>C</td>
+</tr>
+<tr>
+<td>Deep</td>
+<td>C (accept)</td>
+<td>C</td>
+</tr>
+<tr>
+<td>Deep+Tools</td>
+<td>C (accept)</td>
+<td>C</td>
+</tr>
+<tr>
+<td>Vote</td>
+<td>C (accept)</td>
+<td>C</td>
+</tr>
+<tr>
+<td>Vote+Tools</td>
+<td>C (accept)</td>
+<td>C</td>
+</tr>
+</tbody>
+</table>
+<h3>math-train-geometry-625 · math · gold: \frac{bx}{h}(h-x)</h3>
+<details open><summary>Question</summary>
+<pre><code class="language-text">The base of a triangle is of length $b$, and the altitude is of length $h$. A rectangle of height $x$ is inscribed in the triangle with the base of the rectangle in the base of the triangle. The area of the rectangle is:
+$\textbf{(A)}\ \frac{bx}{h}(h-x)\qquad \textbf{(B)}\ \frac{hx}{b}(b-x)\qquad \textbf{(C)}\ \frac{bx}{h}(h-2x)\qquad \textbf{(D)}\ x(b-x)\qquad \textbf{(E)}\ x(h-x)$
+</code></pre>
+</details>
+<p><strong>Diagnosis (grader bug):</strong> Every route answered A; option A is the gold expression bx/h (h - x). The grader compares the letter with the expression.</p>
+<table>
+<thead>
+<tr>
+<th>Route</th>
+<th>First answer → verdict</th>
+<th>Final answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fast</td>
+<td>A (accept)</td>
+<td>A</td>
+</tr>
+<tr>
+<td>Tools</td>
+<td>A (accept)</td>
+<td>A</td>
+</tr>
+<tr>
+<td>Deep</td>
+<td>A (accept)</td>
+<td>A</td>
+</tr>
+<tr>
+<td>Deep+Tools</td>
+<td>A (accept)</td>
+<td>A</td>
+</tr>
+<tr>
+<td>Vote</td>
+<td>A (accept)</td>
+<td>A</td>
+</tr>
+<tr>
+<td>Vote+Tools</td>
+<td>A (accept)</td>
+<td>A</td>
+</tr>
+</tbody>
+</table>
+<h3>math-train-prealgebra-724 · math · gold: $3.50</h3>
+<details open><summary>Question</summary>
+<pre><code class="language-text">For a sale, a store owner reduces the price of a $\$10$ scarf by $30\%$. Later the price is lowered again, this time by $50\%$ of the reduced price. What is the current price, in dollars?
+</code></pre>
+</details>
+<p><strong>Diagnosis (grader bug):</strong> Answers 3.5 and 3.50; gold '$3.50'. The math checker does not strip the escaped dollar sign.</p>
+<table>
+<thead>
+<tr>
+<th>Route</th>
+<th>First answer → verdict</th>
+<th>Final answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fast</td>
+<td>3.5 (accept)</td>
+<td>3.5</td>
+</tr>
+<tr>
+<td>Tools</td>
+<td>3.50 (accept)</td>
+<td>3.50</td>
+</tr>
+<tr>
+<td>Deep</td>
+<td>3.5 (accept)</td>
+<td>3.5</td>
+</tr>
+<tr>
+<td>Deep+Tools</td>
+<td>3.50 (accept)</td>
+<td>3.50</td>
+</tr>
+<tr>
+<td>Vote</td>
+<td>3.5 (accept)</td>
+<td>3.5</td>
+</tr>
+<tr>
+<td>Vote+Tools</td>
+<td>3.50 (accept)</td>
+<td>3.50</td>
+</tr>
+</tbody>
+</table>
+<h3>math-train-prealgebra-838 · math · gold: \text{Softball, Kickball, Picnic}</h3>
+<details open><summary>Question</summary>
+<pre><code class="language-text">The students at Sherry Curtis School were able to vote for one or more events for their field day. Below are the top three choices. List the names of the choices from most popular to least popular, separated by commas.
+
+\begin{tabular}{|c|c|c|c|} \hline
+Event &amp; Kickball &amp; Picnic &amp; Softball \\ \hline 
+&amp; &amp; &amp;\\[-1.5ex]
+Fraction liking event &amp; $\frac{11}{30}$ &amp; $\frac{7}{20}$ &amp; $\frac{5}{12}$ \\[1ex] \hline
+\end{tabular}
+</code></pre>
+</details>
+<p><strong>Diagnosis (grader bug):</strong> Every route answered 'Softball, Kickball, Picnic', exactly the gold '\text{Softball, Kickball, Picnic}'. The math checker cannot compare text answers.</p>
+<table>
+<thead>
+<tr>
+<th>Route</th>
+<th>First answer → verdict</th>
+<th>Final answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fast</td>
+<td>Softball, Kickball, Picnic (accept)</td>
+<td>Softball, Kickball, Picnic</td>
+</tr>
+<tr>
+<td>Tools</td>
+<td>Softball, Kickball, Picnic (accept)</td>
+<td>Softball, Kickball, Picnic</td>
+</tr>
+<tr>
+<td>Deep</td>
+<td>Softball, Kickball, Picnic (accept)</td>
+<td>Softball, Kickball, Picnic</td>
+</tr>
+<tr>
+<td>Deep+Tools</td>
+<td>Softball, Kickball, Picnic (accept)</td>
+<td>Softball, Kickball, Picnic</td>
+</tr>
+<tr>
+<td>Vote</td>
+<td>Softball, Kickball, Picnic (accept)</td>
+<td>Softball, Kickball, Picnic</td>
+</tr>
+<tr>
+<td>Vote+Tools</td>
+<td>Softball, Kickball, Picnic (accept)</td>
+<td>Softball, Kickball, Picnic</td>
+</tr>
+</tbody>
+</table>
+<h3>math-train-precalculus-663 · math · gold: \begin{pmatrix} -2/3 \ 2/3 \ 1/3 \end{pmatrix}</h3>
+<details open><summary>Question</summary>
+<pre><code class="language-text">Find a unit vector that is orthogonal to both $\begin{pmatrix} 1 \\ 1 \\ 0 \end{pmatrix}$ and $\begin{pmatrix} 1 \\ 0 \\ 2 \end{pmatrix}.$
+</code></pre>
+</details>
+<p><strong>Diagnosis (grader bug):</strong> Answers (2/3, -2/3, -1/3): a unit vector orthogonal to both, the negative of the gold (-2/3, 2/3, 1/3). Both are correct; the grader accepts only the gold's sign.</p>
+<table>
+<thead>
+<tr>
+<th>Route</th>
+<th>First answer → verdict</th>
+<th>Final answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fast</td>
+<td>\begin{pmatrix} 2/3 \ -2/3 \ -1/3 \end… (accept)</td>
+<td>\begin{pmatrix} 2/3 \ -2/3 \ -1/3 \end{pmatrix}</td>
+</tr>
+<tr>
+<td>Tools</td>
+<td>\begin{pmatrix} 2/3 \ -2/3 \ -1/3 \end… (accept)</td>
+<td>\begin{pmatrix} 2/3 \ -2/3 \ -1/3 \end{pmatrix}</td>
+</tr>
+<tr>
+<td>Deep</td>
+<td>(2/3, -2/3, -1/3) (accept)</td>
+<td>(2/3, -2/3, -1/3)</td>
+</tr>
+<tr>
+<td>Deep+Tools</td>
+<td>\left(\frac{2}{3}, -\frac{2}{3}, -\frac{… (accept)</td>
+<td>\left(\frac{2}{3}, -\frac{2}{3}, -\frac{1}{3}\right)</td>
+</tr>
+<tr>
+<td>Vote</td>
+<td>(2/3, -2/3, -1/3) (accept)</td>
+<td>(2/3, -2/3, -1/3)</td>
+</tr>
+<tr>
+<td>Vote+Tools</td>
+<td>(2/3, -2/3, -1/3) (accept)</td>
+<td>(2/3, -2/3, -1/3)</td>
+</tr>
+</tbody>
+</table>
+<h3>rlvrif-11110 · instruction · gold: no gold answer: graded by the instruction checker</h3>
+<details open><summary>Question</summary>
+<pre><code class="language-text">Do not include keywords laborage, narcomatous, lampful in the response. What is the sentiment of the following movie review sentence?
+to even categorize this as a smutty guilty pleasure
+</code></pre>
+</details>
+<p><strong>Diagnosis (grader bug):</strong> Rule: 'Do not include keywords ...'. The checker reads it as 'include', so every answer fails. No route used a forbidden word: all six pass the real rule.</p>
+<table>
+<thead>
+<tr>
+<th>Route</th>
+<th>First answer → verdict</th>
+<th>Final answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fast</td>
+<td>negative (reject) → negative (reject)</td>
+<td>negative</td>
+</tr>
+<tr>
+<td>Tools</td>
+<td>negative (reject) → positive (reject)</td>
+<td>positive</td>
+</tr>
+<tr>
+<td>Deep</td>
+<td>negative (reject) → negative (reject)</td>
+<td>negative</td>
+</tr>
+<tr>
+<td>Deep+Tools</td>
+<td>positive (reject) → negative (reject)</td>
+<td>negative</td>
+</tr>
+<tr>
+<td>Vote</td>
+<td>negative (reject) → negative (reject)</td>
+<td>negative</td>
+</tr>
+<tr>
+<td>Vote+Tools</td>
+<td>positive (reject) → negative (reject)</td>
+<td>negative</td>
+</tr>
+</tbody>
+</table>
+<h3>rlvrif-12135 · instruction · gold: no gold answer: graded by the instruction checker</h3>
+<details open><summary>Question</summary>
+<pre><code class="language-text">Do not include keywords procrastinatively, parcheesi, pepperproof in the response. Write a response that appropriately completes the request.
+
+### Instruction:
+Use JavaScript to convert 24-hour time format to 12-hour time format.
+
+### Response:
+</code></pre>
+</details>
+<p><strong>Diagnosis (grader bug):</strong> 'Do not include keywords' read as 'include'. All six answers avoid the words.</p>
+<table>
+<thead>
+<tr>
+<th>Route</th>
+<th>First answer → verdict</th>
+<th>Final answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fast</td>
+<td>function convertTo12Hour(time24) { const… (reject) → function convertTo12Hour(time24) { const… (reject)</td>
+<td>function convertTo12Hour(time24) { const [hours, minutes] = time24.split(':').map(Number); const period = hours &lt; 12 ? 'AM' : 'PM'; let hour12 = hours % 12; if …</td>
+</tr>
+<tr>
+<td>Tools</td>
+<td>function convertTo12Hour(time24) { const… (reject) → function convertTo12Hour(time24) { const… (reject)</td>
+<td>function convertTo12Hour(time24) { const [hours, minutes] = time24.split(':').map(Number); const period = hours &gt;= 12 ? 'PM' : 'AM'; let hours12 = hours % 12; i…</td>
+</tr>
+<tr>
+<td>Deep</td>
+<td>function to12Hour(time) { const [h, m] =… (reject) → no answer (reject)</td>
+<td>no answer</td>
+</tr>
+<tr>
+<td>Deep+Tools</td>
+<td>function convertTo12Hour(time24) { const… (reject) → function convertTo12Hour(time24) { const… (reject)</td>
+<td>function convertTo12Hour(time24) { const [hours, minutes] = time24.split(':').map(Number); const period = hours &gt;= 12 ? 'PM' : 'AM'; let hour12 = hours % 12; if…</td>
+</tr>
+<tr>
+<td>Vote</td>
+<td>Here is a JavaScript function that conve… (reject) → function to12Hour(time) { const parts = … (reject)</td>
+<td>function to12Hour(time) { const parts = time.split(':'); const h = Number(parts[0]); const m = Number(parts[1]); const s = parts.length &gt; 2 ? Number(parts[2]) :…</td>
+</tr>
+<tr>
+<td>Vote+Tools</td>
+<td>function convertTo12Hour(time24) { const… (reject) → function convertTo12Hour(time) { const [… (reject)</td>
+<td>function convertTo12Hour(time) { const [h, m] = time.split(':').map(Number); const period = h &gt;= 12 ? 'PM' : 'AM'; const hour = h % 12 // 12; return `${hour}:${…</td>
+</tr>
+</tbody>
+</table>
+<h3>rlvrif-12275 · instruction · gold: no gold answer: graded by the instruction checker</h3>
+<details open><summary>Question</summary>
+<pre><code class="language-text">I'll give you a question, please answer with step-by-step reasoning process. Where is basketball court likely to be outdoors?
+Options:
+- high school gymnasium
+- city
+- park
+- use
+- los angeles
+ Entire output should be wrapped in JSON format.
+</code></pre>
+</details>
+<p><strong>Diagnosis (grader bug):</strong> Rule: wrap the entire output in JSON. The loop's answer is the final_answer field from Qwen's JSON block ('park'), and the checker tests that field, not the whole output, so it can never pass.</p>
+<table>
+<thead>
+<tr>
+<th>Route</th>
+<th>First answer → verdict</th>
+<th>Final answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fast</td>
+<td>park (reject) → park (reject)</td>
+<td>park</td>
+</tr>
+<tr>
+<td>Tools</td>
+<td>park (reject) → city (reject)</td>
+<td>city</td>
+</tr>
+<tr>
+<td>Deep</td>
+<td>park (reject) → park (reject)</td>
+<td>park</td>
+</tr>
+<tr>
+<td>Deep+Tools</td>
+<td>park (reject) → city (reject)</td>
+<td>city</td>
+</tr>
+<tr>
+<td>Vote</td>
+<td>park (reject) → park (reject)</td>
+<td>park</td>
+</tr>
+<tr>
+<td>Vote+Tools</td>
+<td>park (reject) → park (reject)</td>
+<td>park</td>
+</tr>
+</tbody>
+</table>
+<h3>rlvrif-12332 · instruction · gold: no gold answer: graded by the instruction checker</h3>
+<details open><summary>Question</summary>
+<pre><code class="language-text">Do not include keywords dulcet, waterworn, unjudicially in the response. Rewrite the following passage so that it can be used in an advertising banner.
+Millie's Bakery has been serving the residents of our small town for the past 15 years. Our delicious selection of breads, cakes and pies are made from the best locally sourced ingredients.
+
+Response:
+</code></pre>
+</details>
+<p><strong>Diagnosis (grader bug):</strong> 'Do not include keywords' read as 'include'. All six answers avoid the words.</p>
+<table>
+<thead>
+<tr>
+<th>Route</th>
+<th>First answer → verdict</th>
+<th>Final answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fast</td>
+<td>Millie's Bakery – 15 Years of Fresh Bake… (reject) → Millie's Bakery: 15 Years of Fresh, Loca… (reject)</td>
+<td>Millie's Bakery: 15 Years of Fresh, Local Baked Goods! Enjoy our delicious breads, cakes, and pies made with the best local ingredients.</td>
+</tr>
+<tr>
+<td>Tools</td>
+<td>Millie's Bakery: 15 Years of Local Flavo… (reject) → Millie's Bakery - 15 Years of Fresh, Loc… (reject)</td>
+<td>Millie's Bakery - 15 Years of Fresh, Locally Sourced Breads, Cakes &amp; Pies!</td>
+</tr>
+<tr>
+<td>Deep</td>
+<td>Millie's Bakery: 15 Years of Fresh, Loca… (reject) → Millie's Bakery has served our small tow… (reject)</td>
+<td>Millie's Bakery has served our small town residents for 15 years with delicious breads, cakes, and pies made from the best locally sourced ingredients.</td>
+</tr>
+<tr>
+<td>Deep+Tools</td>
+<td>Millie's Bakery: 15 Years of Fresh, Loca… (reject) → Millie's Bakery – 15 Years of Fresh, Loc… (reject)</td>
+<td>Millie's Bakery – 15 Years of Fresh, Local Baked Goods! Breads, Cakes &amp; Pies Made with the Best Local Ingredients.</td>
+</tr>
+<tr>
+<td>Vote</td>
+<td>Millie's Bakery: 15 Years of Fresh Local… (reject) → Millie's Bakery 15 Years Local Breads Ca… (reject)</td>
+<td>Millie's Bakery 15 Years Local Breads Cakes Pies</td>
+</tr>
+<tr>
+<td>Vote+Tools</td>
+<td>Millie's Bakery: 15 Years of Fresh, Loca… (reject) → no answer (reject)</td>
+<td>no answer</td>
+</tr>
+</tbody>
+</table>
+<h3>rlvrif-12433 · instruction · gold: no gold answer: graded by the instruction checker</h3>
+<details open><summary>Question</summary>
+<pre><code class="language-text">Q: I am trying to decide whether it's worth it to invest in this film proposal. Can you help me answer a few questions? If you can't, please say &quot;No I can't&quot;.  Question: At which counter does Crystal Allen work? Movie title: The Women Movie plot: The Women follows the lives of Manhattan women, focusing in particular on Mary Haines (Norma Shearer), the cheerful, contented wife of Stephen and mother of Little Mary (Virginia Weidler). After a bit of gossip flies around the salon these wealthy women visit, Mary's cousin Sylvia Fowler (Rosalind Russell) goes to a salon to get the newest, exclusive nail color: Jungle Red. She learns from a manicurist that Mary's husband has been having an affair with a predatory perfume counter girl named Crystal Allen (Joan Crawford). A notorious gossip, Sylvia delights in sharing the news with Mary's friends; she sets up Mary with an appointment with the same manicurist so that she hears the rumor about Stephen's infidelity. While Mary's mother (Lucile Watson) urges her to ignore the gossip, Mary begins to have her own suspicions about her husband's increasingly frequent claims that he needs to work late. She decides to travel to Bermuda with her mother to think about the situation and hope the rumors will fade. Upon her return, Mary heads to a fashion show and learns that Crystal is in attendance, trying on clothes in a dressing room. Mary, at Sylvia's insistence, confronts her about the affair, but Crystal is completely unapologetic and slyly s
+[… cut at 1,500 characters]
+</code></pre>
+</details>
+<p><strong>Diagnosis (grader bug):</strong> Rule: a postscript starting with 'Before I forget:'. The checker accepts only 'P.S.'. Deep+Tools and Vote end with a 'Before I forget:' postscript.</p>
+<table>
+<thead>
+<tr>
+<th>Route</th>
+<th>First answer → verdict</th>
+<th>Final answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fast</td>
+<td>no answer (reject) → No I can't (reject)</td>
+<td>No I can't</td>
+</tr>
+<tr>
+<td>Tools</td>
+<td>no answer (reject) → 1 million (reject)</td>
+<td>1 million</td>
+</tr>
+<tr>
+<td>Deep</td>
+<td>No I can't Before I forget: The provided… (reject) → Ten million pounds (reject)</td>
+<td>Ten million pounds</td>
+</tr>
+<tr>
+<td>Deep+Tools</td>
+<td>No I can't (reject) → No I can't Before I forget: The provided… (reject)</td>
+<td>No I can't Before I forget: The provided plot summary for Layer Cake is truncated mid-sentence and does not contain any information about how much Jimmy lost fr…</td>
+</tr>
+<tr>
+<td>Vote</td>
+<td>No I can't Before I forget: The provided… (reject) → Two million pounds Before I forget: the … (reject)</td>
+<td>Two million pounds Before I forget: the amount is two million pounds.</td>
+</tr>
+<tr>
+<td>Vote+Tools</td>
+<td>No I can't (reject) → No I can't (reject)</td>
+<td>No I can't</td>
+</tr>
+</tbody>
+</table>
+<h3>rlvrif-13360 · instruction · gold: no gold answer: graded by the instruction checker</h3>
+<details open><summary>Question</summary>
+<pre><code class="language-text">Entire output should be wrapped in JSON format. [QUESTION] Given the sentence &quot;A man wearing a gray coat.&quot; can we conclude that &quot;Black hat and gloves drives a red and white carriage being drawn by two white horses.&quot;?
+Options:
+- yes
+- it is not possible to tell
+- no
+The man wearing clothes is sitting on top of a white horse.
+The answer is no.
+Q: If &quot;A man carrying a giant banana toy walks in street fair with toddler holding his hand.&quot; does that mean that &quot;The man won the giant toy in a game booth.&quot;?
+Options:
+- yes
+- it is not possible to tell
+- no
+A: Just because he's holding a toy doesn't mean he won it or that it was at a game booth.
+The answer is it is not possible to tell.
+QUESTION: Premise: &quot;Baby in a swing on a sunny day with her sip cup.&quot;
+Based on this premise, can we conclude that the hypothesis &quot;There is a baby in a swing.&quot; is true?
+Options:
+- yes
+- it is not possible to tell
+- no
+
+Let's solve it slowly: A baby in a swing is a baby in a swing.
+The answer is yes.
+[QUESTION] Test for natural language inference.
+Premise: &quot;Hockey player in white and a hockey player in red fighting over the puck.&quot;
+Hypothesis: &quot;The hockey players are going to get benched.&quot;
+Is the hypothesis entailed by the premise?
+Options:
+- yes
+- no
+- it is not possible to tell
+Just because the hockey players are fighting over the puck doesn't mean they will get benched.
+The answer is it is not possible to tell.
+Q: Premise: &quot;Four girls eat breakfast at a convention.&quot;
+Hypothesis: &quot;Some girls are eating.&quot;
+D
+[… cut at 1,500 characters]
+</code></pre>
+</details>
+<p><strong>Diagnosis (grader bug):</strong> Wrap the entire output in JSON: the checker tests the final_answer field ('yes'), never the whole output.</p>
+<table>
+<thead>
+<tr>
+<th>Route</th>
+<th>First answer → verdict</th>
+<th>Final answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fast</td>
+<td>yes (reject) → yes (reject)</td>
+<td>yes</td>
+</tr>
+<tr>
+<td>Tools</td>
+<td>yes (reject) → yes (reject)</td>
+<td>yes</td>
+</tr>
+<tr>
+<td>Deep</td>
+<td>yes (reject) → yes (reject)</td>
+<td>yes</td>
+</tr>
+<tr>
+<td>Deep+Tools</td>
+<td>yes (reject) → yes (reject)</td>
+<td>yes</td>
+</tr>
+<tr>
+<td>Vote</td>
+<td>yes (reject) → yes (reject)</td>
+<td>yes</td>
+</tr>
+<tr>
+<td>Vote+Tools</td>
+<td>yes (reject) → yes (reject)</td>
+<td>yes</td>
+</tr>
+</tbody>
+</table>
+<h3>rlvrif-13434 · instruction · gold: no gold answer: graded by the instruction checker</h3>
+<details open><summary>Question</summary>
+<pre><code class="language-text">Do not include keywords reinvent, dooly, chondrocostal in the response. 布偶猫的特点是什么？
+</code></pre>
+</details>
+<p><strong>Diagnosis (grader bug):</strong> 'Do not include keywords' read as 'include'. All six answers avoid the words.</p>
+<table>
+<thead>
+<tr>
+<th>Route</th>
+<th>First answer → verdict</th>
+<th>Final answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fast</td>
+<td>no answer (reject) → no answer (reject)</td>
+<td>no answer</td>
+</tr>
+<tr>
+<td>Tools</td>
+<td>no answer (reject) → 布偶猫特点：体型大、长毛丝滑、蓝眼睛、性格温顺亲人、抱起来身体放松、发育慢需2-… (reject)</td>
+<td>布偶猫特点：体型大、长毛丝滑、蓝眼睛、性格温顺亲人、抱起来身体放松、发育慢需2-3年成熟。</td>
+</tr>
+<tr>
+<td>Deep</td>
+<td>布偶猫通常体型较大，被毛柔软，多为蓝色眼睛，性格温顺、亲人、安静，抱起来身体容易… (reject) → 体型大、蓝眼、长毛、性格温顺。 (reject)</td>
+<td>体型大、蓝眼、长毛、性格温顺。</td>
+</tr>
+<tr>
+<td>Deep+Tools</td>
+<td>布偶猫（Ragdoll）的主要特点： 1. 体型大：属于大型猫，成年体重约5-9… (reject) → 布偶猫的主要特点：1. 体型大，成年体重约5-9公斤；2. 半长毛，毛质柔软丝滑… (reject)</td>
+<td>布偶猫的主要特点：1. 体型大，成年体重约5-9公斤；2. 半长毛，毛质柔软丝滑，常见重点色、双色、手套色等花色；3. 拥有深蓝色眼睛；4. 性格温顺亲人，被抱起时身体放松变软，因此得名；5. 叫声轻柔，安静乖巧；6. 长毛需定期梳理；7. 可能遗传肥厚型心肌病和多囊肾病，建议定期体检。</td>
+</tr>
+<tr>
+<td>Vote</td>
+<td>布偶猫体型较大，长毛柔软，蓝眼睛，常见重点色；性格温顺、亲人、安静，被抱起时身体… (reject) → 布偶猫通常体型较大，被毛长而柔软，眼睛多为蓝色，常见重点色或双色；性格温和、黏人… (reject)</td>
+<td>布偶猫通常体型较大，被毛长而柔软，眼睛多为蓝色，常见重点色或双色；性格温和、黏人、叫声轻，喜欢跟随主人，被抱起时身体容易放松，需要定期梳理毛发。</td>
+</tr>
+<tr>
+<td>Vote+Tools</td>
+<td>布偶猫的主要特点：1. 体型大，属中大型猫，骨骼粗壮，成年后体重较大；2. 眼睛… (reject) → 布偶猫的特点：1. 体型大，属中大型猫，骨骼粗壮，成年体重较大；2. 眼睛呈明亮… (reject)</td>
+<td>布偶猫的特点：1. 体型大，属中大型猫，骨骼粗壮，成年体重较大；2. 眼睛呈明亮蓝色；3. 被毛为半长毛，丝滑柔软、不易打结；4. 毛色多为重点色（色点、手套色、双色），面部、耳朵、四肢和尾巴颜色较深；5. 性格温顺、亲人、黏人，被抱起时身体放松变软，像布偶娃娃，因此得名；6. 叫声轻，与小孩和其他宠物相处融洽；7. …</td>
+</tr>
+</tbody>
+</table>
+<h3>rlvrif-13792 · instruction · gold: no gold answer: graded by the instruction checker</h3>
+<details open><summary>Question</summary>
+<pre><code class="language-text">What is the prime factorization of 96?
+ At the end of your response, please explicitly add a postscript starting with PS:
+</code></pre>
+</details>
+<p><strong>Diagnosis (grader bug):</strong> Postscript starting with 'PS:'; the checker accepts only 'P.S.'. Deep, Vote and Vote+Tools end with 'PS: ...'.</p>
+<table>
+<thead>
+<tr>
+<th>Route</th>
+<th>First answer → verdict</th>
+<th>Final answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fast</td>
+<td>no answer (reject) → 2^5 * 3 (reject)</td>
+<td>2^5 * 3</td>
+</tr>
+<tr>
+<td>Tools</td>
+<td>no answer (reject) → 2^5 * 3 (reject)</td>
+<td>2^5 * 3</td>
+</tr>
+<tr>
+<td>Deep</td>
+<td>96 = 2^5 × 3. PS: The prime factors of 9… (reject) → 96 = 2^5 * 3 PS: The prime factorization… (reject)</td>
+<td>96 = 2^5 * 3 PS: The prime factorization of 96 is 2^5 * 3.</td>
+</tr>
+<tr>
+<td>Deep+Tools</td>
+<td>2^5 × 3 PS: 96 = 2 × 2 × 2 × 2 × 2 × 3. (reject) → 2^5 × 3 (reject)</td>
+<td>2^5 × 3</td>
+</tr>
+<tr>
+<td>Vote</td>
+<td>96 = 2^5 × 3 PS: The prime factors of 96… (reject) → 2^5 * 3 PS: The prime factors of 96 are … (reject)</td>
+<td>2^5 * 3 PS: The prime factors of 96 are 2 and 3.</td>
+</tr>
+<tr>
+<td>Vote+Tools</td>
+<td>2^5 × 3 PS: 96 = 2 × 2 × 2 × 2 × 2 × 3. (reject) → 2^5 * 3 PS: 96 = 2 * 2 * 2 * 2 * 2 * 3 (reject)</td>
+<td>2^5 * 3 PS: 96 = 2 * 2 * 2 * 2 * 2 * 3</td>
+</tr>
+</tbody>
+</table>
+<h3>rlvrif-13923 · instruction · gold: no gold answer: graded by the instruction checker</h3>
+<details open><summary>Question</summary>
+<pre><code class="language-text">Your answer must contain exactly 12 bullet points. Use the markdown bullet points such as: * This is a point. You are a scientific research assistant. You will be shown a passage from a medical clinical trial report. Your task is to extract all the findings from this report into a JSON array. A single finding should contain the following five elements:
+
+- Intervention: The medical intervention being tested. This should be a text span copied from the input passage.
+- Comparator: The baseline against which the intervention is being tested. This should be a text span copied from the input passage. If no comparator is reported, this should be null.
+- Outcome: The medical outcome whose effect is being measured. This should be a text span copied from the input passage.
+- Effect: The effect of the intervention on the outcome, relative to the comparator. The effect should be one of the following three values: (&quot;significantly increased&quot;, &quot;significantly decreased&quot;, &quot;no significant difference&quot;).
+- Evidence: The evidence for the effect. This should be a text span copied from the input passage.
+
+Please format your results as a JSON array. Each entry in the list should be an object reporting a single finding. The keys in each dictionary should be: [&quot;intervention&quot;, &quot;comparator&quot;, &quot;outcome&quot;, &quot;effect&quot;, &quot;evidence&quot;].
+
+Here is the passage:
+
+ABSTRACT.OBJECTIVE: This study is a pharmacogenetic clinical trial designed to clarify whether the N-acetyltransferase 2 gene (NAT2) genotype-guided dosing of
+[… cut at 1,500 characters]
+</code></pre>
+</details>
+<p><strong>Diagnosis (grader bug):</strong> Rule: exactly 12 bullet points. The checker also demands the answer parse as JSON because the task text mentions a JSON array, which no bulleted answer can satisfy. Vote and Vote+Tools have exactly 12 bullets.</p>
+<table>
+<thead>
+<tr>
+<th>Route</th>
+<th>First answer → verdict</th>
+<th>Final answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fast</td>
+<td>no answer (reject) → no answer (reject)</td>
+<td>no answer</td>
+</tr>
+<tr>
+<td>Tools</td>
+<td>[{&quot;intervention&quot;: &quot;NAT2 genotype-guided … (reject) → [{&quot;intervention&quot;: &quot;NAT2 genotype-guided … (reject)</td>
+<td>[{&quot;intervention&quot;: &quot;NAT2 genotype-guided treatment&quot;, &quot;comparator&quot;: &quot;conventional standard treatment&quot;, &quot;outcome&quot;: &quot;isoniazid-related liver injury (INH-DILI)&quot;, &quot;ef…</td>
+</tr>
+<tr>
+<td>Deep</td>
+<td>* {&quot;intervention&quot;: &quot;NAT2 genotype-guided… (reject) → no answer (reject)</td>
+<td>no answer</td>
+</tr>
+<tr>
+<td>Deep+Tools</td>
+<td>[{&quot;intervention&quot;: &quot;NAT2 genotype-guided … (reject) → [{&quot;intervention&quot;: &quot;NAT2 genotype-guided … (reject)</td>
+<td>[{&quot;intervention&quot;: &quot;NAT2 genotype-guided treatment&quot;, &quot;comparator&quot;: &quot;conventional standard treatment&quot;, &quot;outcome&quot;: &quot;isoniazid-related liver injury (INH-DILI)&quot;, &quot;ef…</td>
+</tr>
+<tr>
+<td>Vote</td>
+<td>* [ * { * &quot;intervention&quot;: &quot;PGx-treatment… (reject) → * [ * {&quot;intervention&quot;: &quot;PGx-treatment&quot;, … (reject)</td>
+<td>* [ * {&quot;intervention&quot;: &quot;PGx-treatment&quot;, * &quot;comparator&quot;: &quot;STD-treatment&quot;, * &quot;outcome&quot;: &quot;INH-DILI&quot;, * &quot;effect&quot;: &quot;significantly decreased&quot;, * &quot;evidence&quot;: &quot;INH-DILI…</td>
+</tr>
+<tr>
+<td>Vote+Tools</td>
+<td>[{&quot;intervention&quot;: &quot;PGx-treatment&quot;, &quot;comp… (reject) → * [ * { &quot;intervention&quot;: &quot;PGx-treatment&quot;,… (reject)</td>
+<td>* [ * { &quot;intervention&quot;: &quot;PGx-treatment&quot;, * &quot;comparator&quot;: &quot;STD-treatment&quot;, * &quot;outcome&quot;: &quot;isoniazid-related liver injury (INH-DILI)&quot;, * &quot;effect&quot;: &quot;significantly d…</td>
+</tr>
+</tbody>
+</table>
+<h3>rlvrif-14178 · instruction · gold: no gold answer: graded by the instruction checker</h3>
+<details open><summary>Question</summary>
+<pre><code class="language-text">Entire output should be wrapped in JSON format. Q: Can we conclude from &quot;Guy walking his bicycle through a tunnel.&quot; that &quot;The guy is walking his bike to the grocery store.&quot;?
+Options:
+- yes
+- no
+- it is not possible to tell
+A: it is not possible to tell
+Explain how we arrive at this answer:
+</code></pre>
+</details>
+<p><strong>Diagnosis (grader bug):</strong> Wrap the entire output in JSON: the checker tests the final_answer field, never the whole output.</p>
+<table>
+<thead>
+<tr>
+<th>Route</th>
+<th>First answer → verdict</th>
+<th>Final answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fast</td>
+<td>The premise states that a guy is walking… (reject) → The premise does not mention the destina… (reject)</td>
+<td>The premise does not mention the destination, so we cannot determine if the guy is going to a grocery store.</td>
+</tr>
+<tr>
+<td>Tools</td>
+<td>it is not possible to tell (reject) → The premise states that a guy is walking… (reject)</td>
+<td>The premise states that a guy is walking his bicycle through a tunnel. It does not specify his destination. The hypothesis suggests he is going to a grocery sto…</td>
+</tr>
+<tr>
+<td>Deep</td>
+<td>The premise only says that a guy is walk… (reject) → it is not possible to tell (reject)</td>
+<td>it is not possible to tell</td>
+</tr>
+<tr>
+<td>Deep+Tools</td>
+<td>The premise states only that a guy is wa… (reject) → The premise only tells us that a guy is … (reject)</td>
+<td>The premise only tells us that a guy is walking his bicycle through a tunnel. It gives no information about his destination or purpose. The hypothesis claims he…</td>
+</tr>
+<tr>
+<td>Vote</td>
+<td>The premise only states that a guy is wa… (reject) → it is not possible to tell (reject)</td>
+<td>it is not possible to tell</td>
+</tr>
+<tr>
+<td>Vote+Tools</td>
+<td>The premise states that a guy is walking… (reject) → The premise only states that a guy is wa… (reject)</td>
+<td>The premise only states that a guy is walking his bicycle through a tunnel. It gives no information about where he is going. Walking through a tunnel is consist…</td>
+</tr>
+</tbody>
+</table>
+<h3>rlvrif-14820 · instruction · gold: no gold answer: graded by the instruction checker</h3>
+<details open><summary>Question</summary>
+<pre><code class="language-text">Do not include keywords unhistoric, hypsilophodontidae, extensile in the response. How can I implement a Python script that utilizes the NLTK library to preprocess the given text data and employ a machine learning algorithm to accurately categorize the text into one of the given topics - Sports, Technology, or Politics? The input text to be categorized is &quot;The Indian cricket team is one of the best teams in the world&quot;. Can you provide a step-by-step process that involves multiple steps of reasoning and returns the selected topic as the output? Please include any necessary Latex code in your explanation.
+</code></pre>
+</details>
+<p><strong>Diagnosis (grader bug):</strong> 'Do not include keywords' read as 'include'. All six answers avoid the words.</p>
+<table>
+<thead>
+<tr>
+<th>Route</th>
+<th>First answer → verdict</th>
+<th>Final answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fast</td>
+<td>Sports (reject) → Sports (reject)</td>
+<td>Sports</td>
+</tr>
+<tr>
+<td>Tools</td>
+<td>Sports (reject) → Sports (reject)</td>
+<td>Sports</td>
+</tr>
+<tr>
+<td>Deep</td>
+<td>Step 0: Install dependencies: pip instal… (reject) → Sports (reject)</td>
+<td>Sports</td>
+</tr>
+<tr>
+<td>Deep+Tools</td>
+<td>Step-by-step process: 1. Define the thre… (reject) → Step-by-step process to categorize the t… (reject)</td>
+<td>Step-by-step process to categorize the text: 1. Define the three target topics: Sports, Technology, Politics. 2. Build a small labeled training set with example…</td>
+</tr>
+<tr>
+<td>Vote</td>
+<td>Step-by-step process: 1. Define labels: … (reject) → Sports (reject)</td>
+<td>Sports</td>
+</tr>
+<tr>
+<td>Vote+Tools</td>
+<td>Step-by-step process: 1. Import the need… (reject) → Step 1: Import NLTK and scikit-learn lib… (reject)</td>
+<td>Step 1: Import NLTK and scikit-learn libraries. ```python import nltk from nltk.corpus import stopwords from nltk.tokenize import word_tokenize from sklearn.fea…</td>
+</tr>
+</tbody>
+</table>
+<h3>rlvrif-1747 · instruction · gold: no gold answer: graded by the instruction checker</h3>
+<details open><summary>Question</summary>
+<pre><code class="language-text">Your response should contain 6 paragraphs. You separate paragraphs using the markdown divider: * * * Q: Solve -s = -23 + 24 for s.
+
+A: -1
+
+
+Q: Solve:
+Solve 5 - 9 = -2*r for r.
+
+A: 2
+
+
+Question: What is the solution?
+
+Solve -276*n + 508*n - 277*n = -675 for n.
+
+Answer: 15
+
+
+Problem: Math Problem
+Solve -6532 + 2465 - 4357 = 104*w for w.
+
+A: -81
+
+
+Question:
+Solve 24*f + 430 = -23*f - 39*f for f..
+
+Answer:
+-5
+
+
+Question: What is the solution?
+
+Solve 75*h - 171*h = 79*h + 3500 for h.
+
+Answer:
+</code></pre>
+</details>
+<p><strong>Diagnosis (grader bug):</strong> 6 paragraphs separated by '* * <em>'; the checker splits only on '</em>**' without spaces. Deep and Vote have exactly 6.</p>
+<table>
+<thead>
+<tr>
+<th>Route</th>
+<th>First answer → verdict</th>
+<th>Final answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fast</td>
+<td>-20 (reject) → -20 (reject)</td>
+<td>-20</td>
+</tr>
+<tr>
+<td>Tools</td>
+<td>-20 (reject) → -20 (reject)</td>
+<td>-20</td>
+</tr>
+<tr>
+<td>Deep</td>
+<td>Combine like terms on the left side. * *… (reject) → Combine like terms on the left side. * *… (reject)</td>
+<td>Combine like terms on the left side. * * * 75h - 171h = -96h. * * * The equation becomes -96h = 79h + 3500. * * * Subtract 79h from both sides to get -175h = 35…</td>
+</tr>
+<tr>
+<td>Deep+Tools</td>
+<td>-20 (reject) → -20 (reject)</td>
+<td>-20</td>
+</tr>
+<tr>
+<td>Vote</td>
+<td>The equation is 75h - 171h = 79h + 3500.… (reject) → The equation is 75h - 171h = 79h + 3500.… (reject)</td>
+<td>The equation is 75h - 171h = 79h + 3500. * * * Combine the left side: 75h - 171h = -96h. * * * So the equation becomes -96h = 79h + 3500. * * * Subtract 79h fro…</td>
+</tr>
+<tr>
+<td>Vote+Tools</td>
+<td>-20 (reject) → -20 (reject)</td>
+<td>-20</td>
+</tr>
+</tbody>
+</table>
+<h3>rlvrif-2137 · instruction · gold: no gold answer: graded by the instruction checker</h3>
+<details open><summary>Question</summary>
+<pre><code class="language-text">At the end of your response, please explicitly add a postscript starting with PS: Creatively image a question and justification for this answer: it is not possible to tell
+</code></pre>
+</details>
+<p><strong>Diagnosis (grader bug):</strong> Postscript starting with 'PS:'; the checker accepts only 'P.S.'. Deep and Vote end with a PS: postscript.</p>
+<table>
+<thead>
+<tr>
+<th>Route</th>
+<th>First answer → verdict</th>
+<th>Final answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fast</td>
+<td>no answer (reject) → Question: What will be the weather in Ne… (reject)</td>
+<td>Question: What will be the weather in New York City on December 31, 2030? Justification: Weather forecasts are only reliable for about 10-14 days in advance. Pr…</td>
+</tr>
+<tr>
+<td>Tools</td>
+<td>PS: Question: &quot;If a person dreams they a… (reject) → PS: Question: A sealed envelope contains… (reject)</td>
+<td>PS: Question: A sealed envelope contains either a red card or a blue card. You are told that the card inside matches the color of the envelope, but you are not …</td>
+</tr>
+<tr>
+<td>Deep</td>
+<td>PS: Question: If a sealed envelope conta… (reject) → it is not possible to tell PS: Question:… (reject)</td>
+<td>it is not possible to tell PS: Question: If a sealed box is known to contain either a silver key or a golden key, and the only clue is that it is not a wooden k…</td>
+</tr>
+<tr>
+<td>Deep+Tools</td>
+<td>it is not possible to tell (reject) → PS: Question: &quot;A lighthouse keeper count… (reject)</td>
+<td>PS: Question: &quot;A lighthouse keeper counts 12 gulls on Monday, 12 on Tuesday, and 12 on Wednesday. How many gulls will he count on Thursday?&quot; Justification: The …</td>
+</tr>
+<tr>
+<td>Vote</td>
+<td>Question: A sealed jar has a label that … (reject) → it is not possible to tell. PS: Question… (reject)</td>
+<td>it is not possible to tell. PS: Question: If a sealed letter says only 'I cannot be verified,' can we know its truth? Justification: The statement offers no ind…</td>
+</tr>
+<tr>
+<td>Vote+Tools</td>
+<td>it is not possible to tell (reject) → PS: Question: What did the last lighthou… (reject)</td>
+<td>PS: Question: What did the last lighthouse keeper see before the beam went dark? Justification: The logbook ends mid-sentence, the keeper vanished without a tra…</td>
+</tr>
+</tbody>
+</table>
+<h3>rlvrif-3747 · instruction · gold: no gold answer: graded by the instruction checker</h3>
+<details open><summary>Question</summary>
+<pre><code class="language-text">Answer: Howard Leslie Shore. Now, what could be the question and solution-maybe?
+Ques: Howard Leslie Shore OC (born October 18, 1946) is a Canadian composer who is notable for his film scores. He has composed the scores for over 80 films, most notably the scores for The Lord of the Rings and The Hobbit film trilogies. He won three Academy Awards for his work on the first trilogy, with one being for the original song &quot;Into the West&quot;, an award he shared with Eurythmics lead vocalist Annie Lennox and writer / producer Fran Walsh, who wrote the lyrics. He is also a consistent collaborator with director David Cronenberg, having scored all but one of his films since 1979.
+
+Based on this passage, who wrote the score for lord of the rings?
+CoT: The relevant information to answer the above question is: He has composed the scores for over 80 films, most notably the scores for The Lord of the Rings and The Hobbit film trilogies.
+
+
+Ans: 1975
+Ques: &quot;All by Myself&quot; is a song by American artist Eric Carmen released in 1975. The verse is based on the second movement (Adagio sostenuto) of Sergei Rachmaninoff's Piano Concerto No. 2 in C minor, Opus 18. The chorus is borrowed from the song &quot;Let's Pretend&quot;, which Carmen wrote and recorded with the Raspberries in 1972.
+
+Based on this passage, when did the song all by myself come out?
+CoT: To answer this question, we should know that: &quot;All by Myself&quot; is a song by American artist Eric Carmen released in 1975.
+
+
+Ans: Bharat Ram
+Ques: Context: Bharat
+[… cut at 1,500 characters]
+</code></pre>
+</details>
+<p><strong>Diagnosis (grader bug):</strong> 2 paragraphs separated by '* * *'; the checker does not see the divider. Five routes have exactly 2.</p>
+<table>
+<thead>
+<tr>
+<th>Route</th>
+<th>First answer → verdict</th>
+<th>Final answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fast</td>
+<td>no answer (reject) → Brian Keith Kelly (reject)</td>
+<td>Brian Keith Kelly</td>
+</tr>
+<tr>
+<td>Tools</td>
+<td>Ques: Context: Brian Keith Kelly (born 1… (reject) → Ques: Context: Brian Keith Kelly (born 1… (reject)</td>
+<td>Ques: Context: Brian Keith Kelly (born 1958) is an American film and television producer. He is the founder of the production company 20th Century Fox Televisio…</td>
+</tr>
+<tr>
+<td>Deep</td>
+<td>Ques: Context: Brian Keith Kelly (born 1… (reject) → Ques: Context: Brian Keith Kelly is a Ca… (reject)</td>
+<td>Ques: Context: Brian Keith Kelly is a Canadian author and journalist. He is the author of the novel The Last of the Great. Based on this passage, who is the aut…</td>
+</tr>
+<tr>
+<td>Deep+Tools</td>
+<td>Ques: Brian Keith Kelly (born October 31… (reject) → Ques: Brian Keith Kelly (born August 19,… (reject)</td>
+<td>Ques: Brian Keith Kelly (born August 19, 1969) is a Canadian-American actor, comedian, and producer. He is best known for his role as Joey Tribbiani on the NBC …</td>
+</tr>
+<tr>
+<td>Vote</td>
+<td>Ques: Context: Brian Keith Kelly (born F… (reject) → Ques: Context: Brian Keith Kelly (born F… (reject)</td>
+<td>Ques: Context: Brian Keith Kelly (born February 19, 1970) is an American college football coach and the head coach at the University of Notre Dame. Based on thi…</td>
+</tr>
+<tr>
+<td>Vote+Tools</td>
+<td>Ques: Context: Brian Keith Kelly is a fi… (reject) → Ques: Context: Brian Keith Kelly is a fi… (reject)</td>
+<td>Ques: Context: Brian Keith Kelly is a fictional character in the Showtime television series Dexter, portrayed by James Remar. He is a veteran detective in the S…</td>
+</tr>
+</tbody>
+</table>
+<h3>rlvrif-4247 · instruction · gold: no gold answer: graded by the instruction checker</h3>
+<details open><summary>Question</summary>
+<pre><code class="language-text">Do not include keywords euglenoidina, dulcet, photoengrave in the response. Out of 15 consecutive numbers, 2 are chosen at random. The probability that they are both odds or both primes is
+Options:
+(A) 10/17
+(B) 10/19
+(C) 46/105
+(D) 11/15
+(E) Cannot be determined Think first, then make a decision. Some random thoughts:
+</code></pre>
+</details>
+<p><strong>Diagnosis (grader bug):</strong> 'Do not include keywords' read as 'include'. All six answers avoid the words.</p>
+<table>
+<thead>
+<tr>
+<th>Route</th>
+<th>First answer → verdict</th>
+<th>Final answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fast</td>
+<td>(E) Cannot be determined (reject) → (E) Cannot be determined (reject)</td>
+<td>(E) Cannot be determined</td>
+</tr>
+<tr>
+<td>Tools</td>
+<td>E (reject) → C (reject)</td>
+<td>C</td>
+</tr>
+<tr>
+<td>Deep</td>
+<td>no answer (reject) → no answer (reject)</td>
+<td>no answer</td>
+</tr>
+<tr>
+<td>Deep+Tools</td>
+<td>no answer (reject) → (E) Cannot be determined (reject)</td>
+<td>(E) Cannot be determined</td>
+</tr>
+<tr>
+<td>Vote</td>
+<td>E (reject) → E (reject)</td>
+<td>E</td>
+</tr>
+<tr>
+<td>Vote+Tools</td>
+<td>(E) Cannot be determined (reject) → (C) 46/105 (reject)</td>
+<td>(C) 46/105</td>
+</tr>
+</tbody>
+</table>
+<h3>rlvrif-425 · instruction · gold: no gold answer: graded by the instruction checker</h3>
+<details open><summary>Question</summary>
+<pre><code class="language-text">At the end of your response, please explicitly add a postscript starting with Before I forget: write a poem in french about the fact that wine is beneficial for health
+</code></pre>
+</details>
+<p><strong>Diagnosis (grader bug):</strong> Postscript starting with 'Before I forget:'; the checker accepts only 'P.S.'. Tools ends with the postscript (the other routes put it at the start).</p>
+<table>
+<thead>
+<tr>
+<th>Route</th>
+<th>First answer → verdict</th>
+<th>Final answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fast</td>
+<td>no answer (reject) → Before I forget: Le vin, nectar sacré, P… (reject)</td>
+<td>Before I forget: Le vin, nectar sacré, Pour le cœur, bienfaisant. Il protège le sang, Et rend l'esprit joyeux. Un verre, c'est la vie, La santé, le repos. Le co…</td>
+</tr>
+<tr>
+<td>Tools</td>
+<td>Le vin rouge, boisson du cœur, En petits… (reject) → Le vin rouge, boisson du cœur, En petits… (reject)</td>
+<td>Le vin rouge, boisson du cœur, En petits verres, apaise la douleur. Riche en polyphénols, il protège les veines, Et fait danser la santé sur nos ailes. Un verre…</td>
+</tr>
+<tr>
+<td>Deep</td>
+<td>Before I forget: Le vin, s'il est bu ave… (reject) → Before I forget: Le vin, en modération, … (reject)</td>
+<td>Before I forget: Le vin, en modération, est bon pour la santé; Il réchauffe le cœur et adoucit la vie. Un verre, pris sans excès, peut être un allié discret; Ma…</td>
+</tr>
+<tr>
+<td>Deep+Tools</td>
+<td>Before I forget: Le vin, doux nectar de … (reject) → Before I forget: Le vin est bon pour la … (reject)</td>
+<td>Before I forget: Le vin est bon pour la santé, Un verre par jour, c'est la vérité. Il protège le cœur, c'est prouvé, Et le corps en est bien soulagé.</td>
+</tr>
+<tr>
+<td>Vote</td>
+<td>Before I forget: Le vin, s'il est bu ave… (reject) → Before I forget: Le vin, bu avec modérat… (reject)</td>
+<td>Before I forget: Le vin, bu avec modération, Est bon pour la santé, Il est un allié de raison, Bénéfique pour notre santé.</td>
+</tr>
+<tr>
+<td>Vote+Tools</td>
+<td>Before I forget: Le vin, bu avec mesure,… (reject) → Before I forget: Le vin est bon pour la … (reject)</td>
+<td>Before I forget: Le vin est bon pour la santé, Un verre par jour fait du bien au cœur, Il protège les artères et le corps, Boire avec modération, c'est la meill…</td>
+</tr>
+</tbody>
+</table>
+<h3>rlvrif-4948 · instruction · gold: no gold answer: graded by the instruction checker</h3>
+<details open><summary>Question</summary>
+<pre><code class="language-text">Q: In this task you are given a sentence. You must judge whether there exist two consecutive words within the sentence with flipped orders, that is, whether the sentence will make sense and be correct if the order of two consecutive words changes. Label the instances as &quot;Inversion&quot; or &quot;Original&quot; based on your judgment.
+At any rate, that means David's help for tonight is nil.
+A: Your response should contain 22 paragraphs. You separate paragraphs using the markdown divider: * * *
+</code></pre>
+</details>
+<p><strong>Diagnosis (grader bug):</strong> 22 paragraphs separated by '* * *'; the checker does not see the divider. Vote has exactly 22.</p>
+<table>
+<thead>
+<tr>
+<th>Route</th>
+<th>First answer → verdict</th>
+<th>Final answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fast</td>
+<td>Original (reject) → Original (reject)</td>
+<td>Original</td>
+</tr>
+<tr>
+<td>Tools</td>
+<td>Original (reject) → Original (reject)</td>
+<td>Original</td>
+</tr>
+<tr>
+<td>Deep</td>
+<td>no answer (reject) → Original (reject)</td>
+<td>Original</td>
+</tr>
+<tr>
+<td>Deep+Tools</td>
+<td>Original (reject) → Original (reject)</td>
+<td>Original</td>
+</tr>
+<tr>
+<td>Vote</td>
+<td>Original * * * Original * * * Original *… (reject) → Original * * * Original * * * Original *… (reject)</td>
+<td>Original * * * Original * * * Original * * * Original * * * Original * * * Original * * * Original * * * Original * * * Original * * * Original * * * Original *…</td>
+</tr>
+<tr>
+<td>Vote+Tools</td>
+<td>Original (reject) → Original (reject)</td>
+<td>Original</td>
+</tr>
+</tbody>
+</table>
+<h3>rlvrif-5071 · instruction · gold: no gold answer: graded by the instruction checker</h3>
+<details open><summary>Question</summary>
+<pre><code class="language-text">Suppose a hydropower plant generates electricity using water flow. If the water flow rate is 5m³/s and the water head is 20m, what is the power output in watts? Remember that the efficiency of the turbine is 80% and the acceleration due to gravity is 9.81m/s². Provide your answer to the nearest whole number without units. Your response should contain 12 paragraphs. You separate paragraphs using the markdown divider: * * *
+</code></pre>
+</details>
+<p><strong>Diagnosis (grader bug):</strong> 12 paragraphs separated by '* * *'; the checker does not see the divider. Deep and Vote have exactly 12.</p>
+<table>
+<thead>
+<tr>
+<th>Route</th>
+<th>First answer → verdict</th>
+<th>Final answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fast</td>
+<td>784800 (reject) → 784800 (reject)</td>
+<td>784800</td>
+</tr>
+<tr>
+<td>Tools</td>
+<td>784800 (reject) → 784800 (reject)</td>
+<td>784800</td>
+</tr>
+<tr>
+<td>Deep</td>
+<td>The power calculation uses the standard … (reject) → The calculation uses the standard hydrop… (reject)</td>
+<td>The calculation uses the standard hydropower formula. * * * It multiplies efficiency, density, gravity, flow, and head. * * * The efficiency is 0.80. * * * The …</td>
+</tr>
+<tr>
+<td>Deep+Tools</td>
+<td>784800 (reject) → 784800 (reject)</td>
+<td>784800</td>
+</tr>
+<tr>
+<td>Vote</td>
+<td>The calculation assumes the standard den… (reject) → The density used is 1000. * * * The flow… (reject)</td>
+<td>The density used is 1000. * * * The flow rate is 5. * * * The head is 20. * * * The gravity value is 9.81. * * * The efficiency is 0.8. * * * The formula is den…</td>
+</tr>
+<tr>
+<td>Vote+Tools</td>
+<td>784800 (reject) → 784800 (reject)</td>
+<td>784800</td>
+</tr>
+</tbody>
+</table>
+<h3>rlvrif-5850 · instruction · gold: no gold answer: graded by the instruction checker</h3>
+<details open><summary>Question</summary>
+<pre><code class="language-text">Do not include keywords tubicolar, recuperance, enchasten in the response. How can you use an AJAX callback to retrieve data from a web page?
+
+Answer:
+</code></pre>
+</details>
+<p><strong>Diagnosis (grader bug):</strong> 'Do not include keywords' read as 'include'. All six answers avoid the words.</p>
+<table>
+<thead>
+<tr>
+<th>Route</th>
+<th>First answer → verdict</th>
+<th>Final answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fast</td>
+<td>no answer (reject) → Use the XMLHttpRequest object's onload p… (reject)</td>
+<td>Use the XMLHttpRequest object's onload property or the fetch API's .then() method to define a callback function that processes the response data once the reques…</td>
+</tr>
+<tr>
+<td>Tools</td>
+<td>no answer (reject) → Use an AJAX callback by making an asynch… (reject)</td>
+<td>Use an AJAX callback by making an asynchronous request (e.g., with fetch or XMLHttpRequest) and passing a callback function that runs when the response arrives.…</td>
+</tr>
+<tr>
+<td>Deep</td>
+<td>Define a callback function and pass it t… (reject) → Use an AJAX callback to run code after t… (reject)</td>
+<td>Use an AJAX callback to run code after the request finishes and read the returned data.</td>
+</tr>
+<tr>
+<td>Deep+Tools</td>
+<td>Pass a callback function to the AJAX req… (reject) → Pass a callback function to the AJAX req… (reject)</td>
+<td>Pass a callback function to the AJAX request. When the server responds, the callback is invoked with the response data as its argument. Example with jQuery: $.a…</td>
+</tr>
+<tr>
+<td>Vote</td>
+<td>Pass a callback function to an AJAX requ… (reject) → no answer (reject)</td>
+<td>no answer</td>
+</tr>
+<tr>
+<td>Vote+Tools</td>
+<td>Pass a callback function to the AJAX req… (reject) → Pass a callback function to the AJAX req… (reject)</td>
+<td>Pass a callback function to the AJAX request. When the server responds, the callback is invoked with the returned data, allowing you to process it and update th…</td>
+</tr>
+</tbody>
+</table>
+<h3>rlvrif-7128 · instruction · gold: no gold answer: graded by the instruction checker</h3>
+<details open><summary>Question</summary>
+<pre><code class="language-text">You will be shown sections from a scientific research paper, together with a question about the paper. Please print out a collection of quotations from the research paper which answer the question. Each quotation should be a contiguous span of text from the paper. Separate the quotations with newlines. If the question is unanswerable given the provided excerpts, respond with the word &quot;unanswerable&quot;.
+
+Paper: CommonGen: A Constrained Text Generation Dataset Towards Generative Commonsense Reasoning
+
+Rational humans can generate sentences that cover a certain set of concepts while describing natural and common scenes. For example, given {apple(noun), tree(noun), pick(verb)}, humans can easily come up with scenes like &quot;a boy is picking an apple from a tree&quot; via their generative commonsense reasoning ability. However, we find this capacity has not been well learned by machines. Most prior works in machine commonsense focus on discriminative reasoning tasks with a multi-choice question answering setting. Herein, we present CommonGen: a challenging dataset for testing generative commonsense reasoning with a constrained text generation task. We collect 37k concept-sets as inputs and 90k human-written sentences as associated outputs. Additionally, we also provide high-quality rationales behind the reasoning process for the development and test sets from the human annotators. We demonstrate the difficulty of the task by examining a wide range of sequence generation methods with both aut
+[… cut at 1,500 characters]
+</code></pre>
+</details>
+<p><strong>Diagnosis (grader bug):</strong> Postscript starting with 'Addendum:'; the checker accepts only 'P.S.'. Five routes end with an 'Addendum:' postscript.</p>
+<table>
+<thead>
+<tr>
+<th>Route</th>
+<th>First answer → verdict</th>
+<th>Final answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fast</td>
+<td>no answer (reject) → Therefore, we choose BLEU-3/4 BIBREF28, … (reject)</td>
+<td>Therefore, we choose BLEU-3/4 BIBREF28, ROUGE-2/L BIBREF29, CIDEr BIBREF30, and SPICE BIBREF31 as the main metrics. Apart from these classic metrics, we also in…</td>
+</tr>
+<tr>
+<td>Tools</td>
+<td>no answer (reject) → Therefore, we choose BLEU-3/4 BIBREF28, … (reject)</td>
+<td>Therefore, we choose BLEU-3/4 BIBREF28, ROUGE-2/L BIBREF29, CIDEr BIBREF30, and SPICE BIBREF31 as the main metrics. Apart from these classic metrics, we also in…</td>
+</tr>
+<tr>
+<td>Deep</td>
+<td>Therefore, we choose BLEU-3/4 BIBREF28, … (reject) → Therefore, we choose BLEU-3/4 BIBREF28, … (reject)</td>
+<td>Therefore, we choose BLEU-3/4 BIBREF28, ROUGE-2/L BIBREF29, CIDEr BIBREF30, and SPICE BIBREF31 as the main metrics. Apart from these classic metrics, we also in…</td>
+</tr>
+<tr>
+<td>Deep+Tools</td>
+<td>Therefore, we choose BLEU-3/4 BIBREF28, … (reject) → Therefore, we choose BLEU-3/4 BIBREF28, … (reject)</td>
+<td>Therefore, we choose BLEU-3/4 BIBREF28, ROUGE-2/L BIBREF29, CIDEr BIBREF30, and SPICE BIBREF31 as the main metrics. Apart from these classic metrics, we also in…</td>
+</tr>
+<tr>
+<td>Vote</td>
+<td>Therefore, we choose BLEU-3/4 BIBREF28, … (reject) → Therefore, we choose BLEU-3/4 BIBREF28, … (reject)</td>
+<td>Therefore, we choose BLEU-3/4 BIBREF28, ROUGE-2/L BIBREF29, CIDEr BIBREF30, and SPICE BIBREF31 as the main metrics. Apart from these classic metrics, we also in…</td>
+</tr>
+<tr>
+<td>Vote+Tools</td>
+<td>Therefore, we choose BLEU-3/4 BIBREF28, … (reject) → Therefore, we choose BLEU-3/4 BIBREF28, … (reject)</td>
+<td>Therefore, we choose BLEU-3/4 BIBREF28, ROUGE-2/L BIBREF29, CIDEr BIBREF30, and SPICE BIBREF31 as the main metrics. Apart from these classic metrics, we also in…</td>
+</tr>
+</tbody>
+</table>
+<h3>rlvrif-7293 · instruction · gold: no gold answer: graded by the instruction checker</h3>
+<details open><summary>Question</summary>
+<pre><code class="language-text">Entire output should be wrapped in JSON format. Question 1: Why is Saltwater taffy candy imported in Switzerland?
+Question 2: Why are saltwater taffy imported in Japan?
+OPTIONS:
+- no
+- yes
+A: yes
+Question 1: Can I put my own car seat in an Uber vehicle?
+Question 2: Does Uber own any limos?
+OPTIONS:
+- no
+- yes
+A: no
+Question 1: How do I recover permanetly deleted emails in Gmail?
+Question 2: How can I recover my emails from my Gmail account?
+OPTIONS:
+- no
+- yes
+A:
+</code></pre>
+</details>
+<p><strong>Diagnosis (grader bug):</strong> Wrap the entire output in JSON: the checker tests the final_answer field ('no'), never the whole output.</p>
+<table>
+<thead>
+<tr>
+<th>Route</th>
+<th>First answer → verdict</th>
+<th>Final answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fast</td>
+<td>yes (reject) → no (reject)</td>
+<td>no</td>
+</tr>
+<tr>
+<td>Tools</td>
+<td>yes (reject) → no (reject)</td>
+<td>no</td>
+</tr>
+<tr>
+<td>Deep</td>
+<td>yes (reject) → no (reject)</td>
+<td>no</td>
+</tr>
+<tr>
+<td>Deep+Tools</td>
+<td>yes (reject) → no (reject)</td>
+<td>no</td>
+</tr>
+<tr>
+<td>Vote</td>
+<td>yes (reject) → no (reject)</td>
+<td>no</td>
+</tr>
+<tr>
+<td>Vote+Tools</td>
+<td>yes (reject) → yes (reject)</td>
+<td>yes</td>
+</tr>
+</tbody>
+</table>
+<h3>rlvrif-7736 · instruction · gold: no gold answer: graded by the instruction checker</h3>
+<details open><summary>Question</summary>
+<pre><code class="language-text">In your response, words with all capital letters should appear at most 39 times. Imagine a question and stream-of-consciousness explanation for which this is the answer: Sentence B
+</code></pre>
+</details>
+<p><strong>Diagnosis (grader bug):</strong> Rule: words in all capitals at most 39 times. The checker reads it as 'write everything in capitals'. All six answers are under the limit.</p>
+<table>
+<thead>
+<tr>
+<th>Route</th>
+<th>First answer → verdict</th>
+<th>Final answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fast</td>
+<td>Sentence B (reject) → Sentence B (reject)</td>
+<td>Sentence B</td>
+</tr>
+<tr>
+<td>Tools</td>
+<td>Sentence B (reject) → Sentence B (reject)</td>
+<td>Sentence B</td>
+</tr>
+<tr>
+<td>Deep</td>
+<td>Question: Which sentence is the answer? … (reject) → Question: Which sentence is the answer? … (reject)</td>
+<td>Question: Which sentence is the answer? Stream: one reads the first sentence, then the second, and the second feels right, so the answer is Sentence B</td>
+</tr>
+<tr>
+<td>Deep+Tools</td>
+<td>no answer (reject) → Sentence B (reject)</td>
+<td>Sentence B</td>
+</tr>
+<tr>
+<td>Vote</td>
+<td>Question: Which sentence uses the correc… (reject) → Question: Which sentence is correct? a. … (reject)</td>
+<td>Question: Which sentence is correct? a. The dog runned home. b. The dog ran home. Stream: the first verb form feels off, the second one is the normal past tense…</td>
+</tr>
+<tr>
+<td>Vote+Tools</td>
+<td>Question: Which of the following is a co… (reject) → Question: Which sentence below is compou… (reject)</td>
+<td>Question: Which sentence below is compound? one: The dog barked loudly. two: The cat purred, and the dog barked. three: The bird flew south. Stream of conscious…</td>
+</tr>
+</tbody>
+</table>
+<h3>rlvrif-9019 · instruction · gold: no gold answer: graded by the instruction checker</h3>
+<details open><summary>Question</summary>
+<pre><code class="language-text">In your response, words with all capital letters should appear at most 9 times. Given the following reasoning and answer, what was the question? Just because there men and woman with instruments doesn't mean they about to play a concert.
+ The answer: it is not possible to tell
+</code></pre>
+</details>
+<p><strong>Diagnosis (grader bug):</strong> Capital words at most 9 times, read as 'all capitals'. All six answers are under the limit.</p>
+<table>
+<thead>
+<tr>
+<th>Route</th>
+<th>First answer → verdict</th>
+<th>Final answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fast</td>
+<td>Premise: Men and women with instruments.… (reject) → Given the premise that men and women are… (reject)</td>
+<td>Given the premise that men and women are with instruments, is it true that they are about to play a concert?</td>
+</tr>
+<tr>
+<td>Tools</td>
+<td>Given the premise 'Men and women are hol… (reject) → Premise: A group of men and women are ho… (reject)</td>
+<td>Premise: A group of men and women are holding instruments. Hypothesis: They are about to play a concert. Is the hypothesis entailed by the premise?</td>
+</tr>
+<tr>
+<td>Deep</td>
+<td>Can we conclude from 'There are men and … (reject) → can we conclude from 'there are men and … (reject)</td>
+<td>can we conclude from 'there are men and women with instruments' that 'they are about to play a concert'?</td>
+</tr>
+<tr>
+<td>Deep+Tools</td>
+<td>Premise: A man and a woman with instrume… (reject) → no answer (reject)</td>
+<td>no answer</td>
+</tr>
+<tr>
+<td>Vote</td>
+<td>can we conclude from 'there are men and … (reject) → given the sentence 'there are men and wo… (reject)</td>
+<td>given the sentence 'there are men and women with instruments', is it true that 'they are about to play a concert'?</td>
+</tr>
+<tr>
+<td>Vote+Tools</td>
+<td>Premise: A man and a woman with instrume… (reject) → premise: a man and a woman with instrume… (reject)</td>
+<td>premise: a man and a woman with instruments. hypothesis: they are about to play a concert. is the hypothesis true?</td>
+</tr>
+</tbody>
+</table>
+<h3>rlvrif-9366 · instruction · gold: no gold answer: graded by the instruction checker</h3>
+<details open><summary>Question</summary>
+<pre><code class="language-text">In your response, words with all capital letters should appear at most 4 times. Please provide detailed specifications for the name field in the database, including the maximum and minimum lengths. To test the database, please write an SQL query that retrieves all individuals with a rating of 8 or higher and an age between 25 and 40. Additionally, develop a deep learning model that predicts the honesty of individuals based on their age, occupation, and education level, and explain any potential legal implications of such a system, including potential biases that may arise due to demographic factors or training data. Please also propose strategies to mitigate any biases and ensure ethical use of the system.
+</code></pre>
+</details>
+<p><strong>Diagnosis (grader bug):</strong> Capital words at most a set number of times, read as 'all capitals'. All six answers are under the limit.</p>
+<table>
+<thead>
+<tr>
+<th>Route</th>
+<th>First answer → verdict</th>
+<th>Final answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fast</td>
+<td><strong>Database Specification</strong> The name fiel… (reject) → <strong>Database Specifications</strong> The name fie… (reject)</td>
+<td><strong>Database Specifications</strong> The name field is defined as a variable-length string. The minimum length is 2 characters. The maximum length is 100 characters. **D…</td>
+</tr>
+<tr>
+<td>Tools</td>
+<td>no answer (reject) → Name field: varchar(100), max 100 chars,… (reject)</td>
+<td>Name field: varchar(100), max 100 chars, min 2 chars, not null, unique. SQL: select name, age, occupation, education, rating from people where rating &gt;= 8 and a…</td>
+</tr>
+<tr>
+<td>Deep</td>
+<td>no answer (reject) → name field: use varchar(100) for 'name',… (reject)</td>
+<td>name field: use varchar(100) for 'name', required, trimmed, normalized, min length 2, max length 100, utf8mb4, check(char_length(name) between 2 and 100), not n…</td>
+</tr>
+<tr>
+<td>Deep+Tools</td>
+<td><strong>name field specifications</strong> The name f… (reject) → <strong>name field specifications</strong> the name f… (reject)</td>
+<td><strong>name field specifications</strong> the name field stores a person's full name. - data type: variable-length string, varchar(100) - maximum length: 100 characters - m…</td>
+</tr>
+<tr>
+<td>Vote</td>
+<td>Below are the specifications, query, mod… (reject) → name field: varchar(100), min length 2, … (reject)</td>
+<td>name field: varchar(100), min length 2, max length 100, not null, check char_length(name) between 2 and 100, trim input, reject empty or single character values…</td>
+</tr>
+<tr>
+<td>Vote+Tools</td>
+<td>Name field specifications - Field name: … (reject) → name field specifications data type: var… (reject)</td>
+<td>name field specifications data type: variable length string maximum length: 100 characters minimum length: 2 characters constraint: not null allowed characters:…</td>
+</tr>
+</tbody>
+</table>
+<h2>Wrong gold (6)</h2>
+<h3>gsm8k-train-1464 · math · gold: 868000</h3>
+<details open><summary>Question</summary>
+<pre><code class="language-text">During the outbreak of the coronavirus, a company had to ramp up its toilet paper production three times more to cover the increased demand. If the company was producing 7000 toilet paper per day, calculate its total toilet paper production during March of 2020 after increasing its production.
+</code></pre>
+</details>
+<p><strong>Diagnosis (wrong gold):</strong> 'Three times more' read as 3 x 7000 x 31 = 651,000 by every route; the gold 868,000 uses 4 x 7000 x 31. The wording is ambiguous; Qwen's reading is the common one.</p>
+<table>
+<thead>
+<tr>
+<th>Route</th>
+<th>First answer → verdict</th>
+<th>Final answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fast</td>
+<td>651000 (accept)</td>
+<td>651000</td>
+</tr>
+<tr>
+<td>Tools</td>
+<td>651000 (accept)</td>
+<td>651000</td>
+</tr>
+<tr>
+<td>Deep</td>
+<td>651000 (accept)</td>
+<td>651000</td>
+</tr>
+<tr>
+<td>Deep+Tools</td>
+<td>651000 (accept)</td>
+<td>651000</td>
+</tr>
+<tr>
+<td>Vote</td>
+<td>651000 (accept)</td>
+<td>651000</td>
+</tr>
+<tr>
+<td>Vote+Tools</td>
+<td>651000 (accept)</td>
+<td>651000</td>
+</tr>
+</tbody>
+</table>
+<h3>gsm8k-train-2338 · math · gold: 30</h3>
+<details open><summary>Question</summary>
+<pre><code class="language-text">A bottle can hold 2 cups of water. How many cups of water are needed to fill up 10 whole bottles and 5 half-capacity bottles?
+</code></pre>
+</details>
+<p><strong>Diagnosis (wrong gold):</strong> 10 bottles x 2 cups + 5 half bottles x 1 cup = 25 cups. Every route answered 25; the gold says 30.</p>
+<table>
+<thead>
+<tr>
+<th>Route</th>
+<th>First answer → verdict</th>
+<th>Final answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fast</td>
+<td>25 (accept)</td>
+<td>25</td>
+</tr>
+<tr>
+<td>Tools</td>
+<td>25 (accept)</td>
+<td>25</td>
+</tr>
+<tr>
+<td>Deep</td>
+<td>25 (accept)</td>
+<td>25</td>
+</tr>
+<tr>
+<td>Deep+Tools</td>
+<td>25 (accept)</td>
+<td>25</td>
+</tr>
+<tr>
+<td>Vote</td>
+<td>25 (accept)</td>
+<td>25</td>
+</tr>
+<tr>
+<td>Vote+Tools</td>
+<td>25 (accept)</td>
+<td>25</td>
+</tr>
+</tbody>
+</table>
+<h3>gsm8k-train-2882 · math · gold: 4</h3>
+<details open><summary>Question</summary>
+<pre><code class="language-text">Dexter and Jay are using a gallon of white paint to paint the walls. Dexter used 3/8 of the gallon of paint while Jay used 5/8 of a gallon of paint. If a gallon is equal to 4 liters, how many liters of paint were left from Dexter and Jay combined?
+</code></pre>
+</details>
+<p><strong>Diagnosis (wrong gold):</strong> Dexter used 3/8 and Jay 5/8 of one gallon, so nothing is left: every route answered 0. The gold 4 (litres) assumes each had a gallon, which the question does not say.</p>
+<table>
+<thead>
+<tr>
+<th>Route</th>
+<th>First answer → verdict</th>
+<th>Final answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fast</td>
+<td>0 (accept)</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Tools</td>
+<td>0 (accept)</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Deep</td>
+<td>0 (accept)</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Deep+Tools</td>
+<td>0 (accept)</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Vote</td>
+<td>0 (accept)</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Vote+Tools</td>
+<td>0 (accept)</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+<h3>gsm8k-train-3588 · math · gold: 30</h3>
+<details open><summary>Question</summary>
+<pre><code class="language-text">A group of bedbugs infested an old mattress. Every day, the number of bedbugs would triple. After four days, there were 810 bedbugs burrowing into the mattress. How many bedbugs did the group start with?
+</code></pre>
+</details>
+<p><strong>Diagnosis (wrong gold):</strong> Tripling each day for four days: start x 3^4 = 810, start = 10 (every route). The gold 30 uses three triplings.</p>
+<table>
+<thead>
+<tr>
+<th>Route</th>
+<th>First answer → verdict</th>
+<th>Final answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fast</td>
+<td>10 (accept)</td>
+<td>10</td>
+</tr>
+<tr>
+<td>Tools</td>
+<td>10 (accept)</td>
+<td>10</td>
+</tr>
+<tr>
+<td>Deep</td>
+<td>10 (accept)</td>
+<td>10</td>
+</tr>
+<tr>
+<td>Deep+Tools</td>
+<td>10 (accept)</td>
+<td>10</td>
+</tr>
+<tr>
+<td>Vote</td>
+<td>10 (accept)</td>
+<td>10</td>
+</tr>
+<tr>
+<td>Vote+Tools</td>
+<td>10 (accept)</td>
+<td>10</td>
+</tr>
+</tbody>
+</table>
+<h3>gsm8k-train-5436 · math · gold: 55</h3>
+<details open><summary>Question</summary>
+<pre><code class="language-text">Wendy has 5 facial products she puts on in the morning and she waits 5 minutes between each product.  She also spends an additional 30 minutes putting on her make-up.  How much time does it take her to put on her &quot;full face?&quot;
+</code></pre>
+</details>
+<p><strong>Diagnosis (wrong gold):</strong> 5 products with 5 minutes between each: 4 waits = 20 minutes + 30 = 50 (every route). The gold 55 counts 5 waits; ambiguous at best.</p>
+<table>
+<thead>
+<tr>
+<th>Route</th>
+<th>First answer → verdict</th>
+<th>Final answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fast</td>
+<td>50 (accept)</td>
+<td>50</td>
+</tr>
+<tr>
+<td>Tools</td>
+<td>50 (accept)</td>
+<td>50</td>
+</tr>
+<tr>
+<td>Deep</td>
+<td>50 minutes (accept)</td>
+<td>50 minutes</td>
+</tr>
+<tr>
+<td>Deep+Tools</td>
+<td>50 (accept)</td>
+<td>50</td>
+</tr>
+<tr>
+<td>Vote</td>
+<td>50 minutes (accept)</td>
+<td>50 minutes</td>
+</tr>
+<tr>
+<td>Vote+Tools</td>
+<td>50 (accept)</td>
+<td>50</td>
+</tr>
+</tbody>
+</table>
+<h3>lcb-abc337_e · code · gold: the task's stdin/stdout tests</h3>
+<details open><summary>Question</summary>
+<pre><code class="language-text">This is an interactive problem (a type of problem where your program interacts with the judge program through Standard Input and Output).
+There are N bottles of juice, numbered 1 to N. It has been discovered that exactly one of these bottles has gone bad. Even a small sip of the spoiled juice will cause stomach upset the next day.
+Takahashi must identify the spoiled juice by the next day. To do this, he decides to call the minimum necessary number of friends and serve them some of the N bottles of juice. He can give any number of bottles to each friend, and each bottle of juice can be given to any number of friends.
+Print the number of friends to call and how to distribute the juice, then receive information on whether each friend has an upset stomach the next day, and print the spoiled bottle's number.
+
+Input/Output
+
+This is an interactive problem (a type of problem where your program interacts with the judge program through Standard Input and Output).
+Before the interaction, the judge secretly selects an integer X between 1 and N as the spoiled bottle's number. The value of X is not given to you. Also, the value of X may change during the interaction as long as it is consistent with the constraints and previous outputs.
+First, the judge will give you N as input.
+N
+
+You should print the number of friends to call, M, followed by a newline.
+M
+
+Next, you should perform the following procedure to print M outputs.
+For i = 1, 2, \ldots, M, the i-th output should contain the num
+[… cut at 1,500 characters]
+</code></pre>
+</details>
+<p><strong>Diagnosis (wrong gold):</strong> An interactive problem (the program must talk to a judge). The stored stdin/stdout tests cannot judge it, so no answer can pass; Qwen's programs answered with fixed outputs.</p>
+<table>
+<thead>
+<tr>
+<th>Route</th>
+<th>First answer → verdict</th>
+<th>Final answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fast</td>
+<td>no answer (reject) → import sys def main(): n = int(sys.stdin… (accept)</td>
+<td>import sys def main(): n = int(sys.stdin.readline().strip()) # Find minimum M such that 2^M &gt;= n m = 0 while (1 &lt;&lt; m) &lt; n: m += 1 # Print M print(m) sys.stdout.…</td>
+</tr>
+<tr>
+<td>Tools</td>
+<td>import sys import math def solve(): n = … (accept)</td>
+<td>import sys import math def solve(): n = int(sys.stdin.readline().strip()) # Minimum number of friends: ceil(log2(n)) if n == 1: m = 0 else: m = math.ceil(math.l…</td>
+</tr>
+<tr>
+<td>Deep</td>
+<td>no answer (reject) → import sys try: import select except Exc… (accept)</td>
+<td>import sys try: import select except Exception: select = None def bottles_for(n, m, i): bit = m - 1 - i if n == 2: if bit == 0: return [1] return [] return [b f…</td>
+</tr>
+<tr>
+<td>Deep+Tools</td>
+<td>import sys def main(): def tokens(): for… (accept)</td>
+<td>import sys def main(): def tokens(): for line in sys.stdin: for tok in line.split(): yield tok it = tokens() try: n_tok = next(it) except StopIteration: return …</td>
+</tr>
+<tr>
+<td>Vote</td>
+<td>import sys def main(): line = sys.stdin.… (accept)</td>
+<td>import sys def main(): line = sys.stdin.readline() if not line: return parts = line.strip().split() if not parts: return n = int(parts[0]) extra = parts[1:] m =…</td>
+</tr>
+<tr>
+<td>Vote+Tools</td>
+<td>import sys def main(): line = sys.stdin.… (accept)</td>
+<td>import sys def main(): line = sys.stdin.readline() if not line: return parts = line.split() if not parts: return N = int(parts[0]) pending = parts[1:] if N &lt;= 1…</td>
+</tr>
+</tbody>
+</table>
+<h2>Model wrong (7)</h2>
+<h3>aime-2002-II-4 · math · gold: 803</h3>
+<details open><summary>Question</summary>
+<pre><code class="language-text">Patio blocks that are hexagons $1$ unit on a side are used to outline a garden by placing the blocks edge to edge with $n$ on each side. The diagram indicates the path of blocks around the garden when $n=5$ . AIME 2002 II Problem 4.gif If $n=202$ , then the area of the garden enclosed by the path, not including the path itself, is $m\left(\sqrt3/2\right)$ square units, where $m$ is a positive integer. Find the remainder when $m$ is divided by $1000$ .
+</code></pre>
+</details>
+<p><strong>Diagnosis (model wrong):</strong> Answers 627, 412, 601, 421 and 203 (Deep and Vote hit the 32,768-token cap); gold 803. Deep+Tools even claimed 601 is the official answer. Qwen is wrong.</p>
+<table>
+<thead>
+<tr>
+<th>Route</th>
+<th>First answer → verdict</th>
+<th>Final answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fast</td>
+<td>627 (accept)</td>
+<td>627</td>
+</tr>
+<tr>
+<td>Tools</td>
+<td>no answer (reject) → 412 (accept)</td>
+<td>412</td>
+</tr>
+<tr>
+<td>Deep</td>
+<td>no answer (reject) → no answer (reject)</td>
+<td>no answer</td>
+</tr>
+<tr>
+<td>Deep+Tools</td>
+<td>601 (accept)</td>
+<td>601</td>
+</tr>
+<tr>
+<td>Vote</td>
+<td>203 (accept)</td>
+<td>203</td>
+</tr>
+<tr>
+<td>Vote+Tools</td>
+<td>421 (accept)</td>
+<td>421</td>
+</tr>
+</tbody>
+</table>
+<h3>gsm8k-train-5520 · math · gold: 2100</h3>
+<details open><summary>Question</summary>
+<pre><code class="language-text">John's new computer cost $1500.  He needs to get a monitor and other peripherals that cost 1/5 that much.  He also wants to upgrade the $300 video card in the base computer with one that costs twice as much.  How much did he spend?
+</code></pre>
+</details>
+<p><strong>Diagnosis (model wrong):</strong> All routes answered 2400 = 1500 + 300 + 600, counting the old $300 card as a purchase. Gold 2100 = 1500 + 300 + (600 - 300): the upgrade costs the difference. Qwen is wrong.</p>
+<table>
+<thead>
+<tr>
+<th>Route</th>
+<th>First answer → verdict</th>
+<th>Final answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fast</td>
+<td>2400 (accept)</td>
+<td>2400</td>
+</tr>
+<tr>
+<td>Tools</td>
+<td>2400 (accept)</td>
+<td>2400</td>
+</tr>
+<tr>
+<td>Deep</td>
+<td>2400 (accept)</td>
+<td>2400</td>
+</tr>
+<tr>
+<td>Deep+Tools</td>
+<td>2400 (accept)</td>
+<td>2400</td>
+</tr>
+<tr>
+<td>Vote</td>
+<td>2400 (accept)</td>
+<td>2400</td>
+</tr>
+<tr>
+<td>Vote+Tools</td>
+<td>2400 (accept)</td>
+<td>2400</td>
+</tr>
+</tbody>
+</table>
+<h3>mmlupro-3035 · science_mc · gold: F</h3>
+<details open><summary>Question</summary>
+<pre><code class="language-text">A biology student from Nebraska, vacationing at a Virginia beach, observes that the level of activity of a fiddler crab changes with the cycle of the tides. When he brings some crabs back with him to Nebraska, he notices that a similar activity cycle is shown, yet there are no ocean beaches for miles. Explain.
+
+A. The level of activity is influenced by the ocean tides only
+B. The activity cycle is a genetic trait that persists regardless of the crabs' habitat
+C. The crabs' internal biological clocks are set to the tidal patterns they experienced in Virginia and continue on the same cycle
+D. Changes in barometric pressure in Nebraska are influencing the crabs' activity levels
+E. The level of activity is regulated by the crab's diet
+F. The crucial determinant of the level of activity of the crab is not the presence of the tides, but the gravitational pull of the moon
+G. The crabs are responding to the light cycles of day and night rather than the tides
+H. The crabs have adapted to a freshwater rhythmic cycle that mimics ocean tides
+I. The crabs are maintaining their Virginia activity schedule out of habit
+J. The level of activity is being influenced by the temperature fluctuations in their new environment
+</code></pre>
+</details>
+<p><strong>Diagnosis (model wrong):</strong> Every route answered C on the first try and the verifier accepted it; gold is F. Qwen is wrong.</p>
+<table>
+<thead>
+<tr>
+<th>Route</th>
+<th>First answer → verdict</th>
+<th>Final answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fast</td>
+<td>C (accept)</td>
+<td>C</td>
+</tr>
+<tr>
+<td>Tools</td>
+<td>C (accept)</td>
+<td>C</td>
+</tr>
+<tr>
+<td>Deep</td>
+<td>C (accept)</td>
+<td>C</td>
+</tr>
+<tr>
+<td>Deep+Tools</td>
+<td>C (accept)</td>
+<td>C</td>
+</tr>
+<tr>
+<td>Vote</td>
+<td>C (accept)</td>
+<td>C</td>
+</tr>
+<tr>
+<td>Vote+Tools</td>
+<td>C (accept)</td>
+<td>C</td>
+</tr>
+</tbody>
+</table>
+<h3>mmlupro-7767 · science_mc · gold: F</h3>
+<details open><summary>Question</summary>
+<pre><code class="language-text">Does the following series $\sum_{i=0}^{\infty} \frac{n^2 ln(n)}{n!}$ converge?
+
+A. It oscillates between values and does not settle
+B. 2.0
+C. -0.5
+D. It converges to e (Euler's number)
+E. -1.0
+F. 1.0
+G. It diverges to infinity
+H. 0.0
+I. It does not converge
+J. It converges conditionally, not absolutely
+</code></pre>
+</details>
+<p><strong>Diagnosis (model wrong):</strong> Tools, Deep, Vote and Vote+Tools answered D, Fast answered I, gold is F. Qwen is wrong; Deep+Tools and Vote+Tools also hit the token cap once.</p>
+<table>
+<thead>
+<tr>
+<th>Route</th>
+<th>First answer → verdict</th>
+<th>Final answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fast</td>
+<td>I (reject) → D (accept)</td>
+<td>D</td>
+</tr>
+<tr>
+<td>Tools</td>
+<td>D (accept)</td>
+<td>D</td>
+</tr>
+<tr>
+<td>Deep</td>
+<td>D (accept)</td>
+<td>D</td>
+</tr>
+<tr>
+<td>Deep+Tools</td>
+<td>no answer (reject) → D (accept)</td>
+<td>D</td>
+</tr>
+<tr>
+<td>Vote</td>
+<td>D (accept)</td>
+<td>D</td>
+</tr>
+<tr>
+<td>Vote+Tools</td>
+<td>D (accept)</td>
+<td>D</td>
+</tr>
+</tbody>
+</table>
+<h3>rlvrif-10521 · instruction · gold: no gold answer: graded by the instruction checker</h3>
+<details open><summary>Question</summary>
+<pre><code class="language-text">Your response should contain 10 paragraphs. You separate paragraphs using the markdown divider: * * * Two cousins lived 10,000 miles away from each other but often talked about visiting the Hawaiian islands together. Lilly lived in Maine, while Heather lived in Hawaii.  Which cousin lived farther from Kahoolawe?
+----
+Answer: Lilly
+
+
+Q: Keith is a doctor at the city hospital. Today, he is seeing six patients, patient A, patient B, patient C, patient D, patient E, and patient F. Patient A is a smoker, but patient B is not a smoker. Patient C uses sunscreen, but patient D does not use any sunscreen. Patient E tans with tanning lamps, but patient F tans in the sun.  Which patient would be more susceptible to skin cancer, patient E or patient C?
+A: patient E
+
+
+Question: Mike was reading about an instrument that could measure gravity, gravimeter. He then found how gravimeter was used to measure the gravitational field of the Moon. He read about two distinct cases where the Moon's gravitational field was measured on earth, side A and side B. In side A the Moon's gravity was measured from the side where the Earth was facing the Moon. And in side B the Moon's gravitational field was measured from the opposite side of the Earth. He found these two locations showed very different consequences of Moon's gravitational field.  On which side the Moon's gravitational field would exert weaker force, side A side B?
+Answer: side B
+
+
+[Q]: James is sick with strep throat, a bacterial infection. A
+[… cut at 1,500 characters]
+</code></pre>
+</details>
+<p><strong>Diagnosis (model wrong):</strong> The instruction asks for 10 paragraphs separated by * * *; every route answered 'group V' in one paragraph (even with a corrected divider count). Qwen ignored the format rule.</p>
+<table>
+<thead>
+<tr>
+<th>Route</th>
+<th>First answer → verdict</th>
+<th>Final answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fast</td>
+<td>Group V (reject) → Group V (reject)</td>
+<td>Group V</td>
+</tr>
+<tr>
+<td>Tools</td>
+<td>Group V (reject) → Group V (reject)</td>
+<td>Group V</td>
+</tr>
+<tr>
+<td>Deep</td>
+<td>group V * * * group V * * * group V * * … (reject) → group V (reject)</td>
+<td>group V</td>
+</tr>
+<tr>
+<td>Deep+Tools</td>
+<td>group V (reject) → group V (reject)</td>
+<td>group V</td>
+</tr>
+<tr>
+<td>Vote</td>
+<td>group V * * * group V * * * group V * * … (reject) → group V * * * group V * * * group V * * … (reject)</td>
+<td>group V * * * group V * * * group V * * * group V * * * group V * * * group V * * * group V * * * group V * * * group V</td>
+</tr>
+<tr>
+<td>Vote+Tools</td>
+<td>group V (reject) → group V (reject)</td>
+<td>group V</td>
+</tr>
+</tbody>
+</table>
+<h3>rlvrif-5343 · instruction · gold: no gold answer: graded by the instruction checker</h3>
+<details open><summary>Question</summary>
+<pre><code class="language-text">At the end of your response, please explicitly add a postscript starting with Before I forget: Calculate the sum of the first 100 positive integers and explain the process in 4 sentences
+</code></pre>
+</details>
+<p><strong>Diagnosis (model wrong):</strong> Asks for a postscript starting with 'Before I forget:' at the end. Deep and Vote put 'Before I forget:' at the very start, the others left it out. Qwen did not follow the rule (the checker's P.S.-only bug also applies, but no answer would pass a correct check).</p>
+<table>
+<thead>
+<tr>
+<th>Route</th>
+<th>First answer → verdict</th>
+<th>Final answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fast</td>
+<td>no answer (reject) → 5050 (reject)</td>
+<td>5050</td>
+</tr>
+<tr>
+<td>Tools</td>
+<td>5050 (reject) → 5050 (reject)</td>
+<td>5050</td>
+</tr>
+<tr>
+<td>Deep</td>
+<td>5050 (reject) → Before I forget: We identify the first 1… (reject)</td>
+<td>Before I forget: We identify the first 100 positive integers as 1 through 100. We use the formula n(n+1)/2 for the sum of the first n positive integers. Substit…</td>
+</tr>
+<tr>
+<td>Deep+Tools</td>
+<td>5050 (reject) → 5050 (reject)</td>
+<td>5050</td>
+</tr>
+<tr>
+<td>Vote</td>
+<td>Before I forget: The sum of the first 10… (reject) → Before I forget: Calculate the sum of th… (reject)</td>
+<td>Before I forget: Calculate the sum of the first 100 positive integers by pairing 1 with 100, 2 with 99, and so on. Each pair adds to 101, and there are 50 pairs…</td>
+</tr>
+<tr>
+<td>Vote+Tools</td>
+<td>5050 (reject) → 5050 (reject)</td>
+<td>5050</td>
+</tr>
+</tbody>
+</table>
+<h3>rlvrif-74 · instruction · gold: no gold answer: graded by the instruction checker</h3>
+<details open><summary>Question</summary>
+<pre><code class="language-text">At the end of your response, please explicitly add a postscript starting with Before I forget: For this chain-of-thought reasoning and answer, what was the question?
+The fact that a band is performing does not imply that the band has four people.
+ A: it is not possible to tell
+</code></pre>
+</details>
+<p><strong>Diagnosis (model wrong):</strong> Asks for a postscript starting with 'Before I forget:'. Deep+Tools and Vote put it at the very start, the others left it out. Qwen did not follow the rule.</p>
+<table>
+<thead>
+<tr>
+<th>Route</th>
+<th>First answer → verdict</th>
+<th>Final answer</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fast</td>
+<td>it is not possible to tell (reject) → it is not possible to tell (reject)</td>
+<td>it is not possible to tell</td>
+</tr>
+<tr>
+<td>Tools</td>
+<td>A: it is not possible to tell (reject) → it is not possible to tell (reject)</td>
+<td>it is not possible to tell</td>
+</tr>
+<tr>
+<td>Deep</td>
+<td>The question was: Given that a band is p… (reject) → Given that a band is performing, can we … (reject)</td>
+<td>Given that a band is performing, can we conclude that the band has four people?</td>
+</tr>
+<tr>
+<td>Deep+Tools</td>
+<td>it is not possible to tell (reject) → Before I forget: The question was: Given… (reject)</td>
+<td>Before I forget: The question was: Given that a band is performing, can we conclude that the band has four people?</td>
+</tr>
+<tr>
+<td>Vote</td>
+<td>Given the premise &quot;A band is performing,… (reject) → Before I forget: For this chain-of-thoug… (reject)</td>
+<td>Before I forget: For this chain-of-thought reasoning and answer, what was the question?</td>
+</tr>
+<tr>
+<td>Vote+Tools</td>
+<td>A: it is not possible to tell (reject) → Premise: A band is performing. Hypothesi… (reject)</td>
+<td>Premise: A band is performing. Hypothesis: The band has four people. Is the hypothesis entailed by the premise?</td>
+</tr>
+</tbody>
+</table>
+</main>

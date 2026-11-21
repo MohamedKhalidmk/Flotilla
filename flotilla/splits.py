@@ -124,6 +124,8 @@ def main() -> None:
     ap.add_argument("--splits-dir", required=True)
     ap.add_argument("--export-dir", required=True)
     ap.add_argument("--only", nargs="*")
+    ap.add_argument("--all-items", action="store_true",
+                    help="full runs: export every item (dev and test); the split files are checked, never rewritten")
     a = ap.parse_args()
     sd, ed = Path(a.splits_dir), Path(a.export_dir)
     sd.mkdir(parents=True, exist_ok=True)
@@ -135,6 +137,15 @@ def main() -> None:
         ids = [it["item_id"] for it in items]
         assert len(ids) == len(set(ids)), f"{name}: duplicate ids"
         dev = set(random.Random(f"{SEED}-{name}").sample(ids, n_dev(len(ids))))
+        if a.all_items:  # the frozen split must reproduce exactly
+            frozen = json.loads((sd / f"{name}.json").read_text())
+            assert set(frozen["dev"]) == dev and frozen["n_total"] == len(ids), f"{name}: split does not reproduce"
+            with open(ed / f"{name}.jsonl", "w") as f:
+                for it in items:
+                    f.write(json.dumps({"bench": name, **it, "split": "dev" if it["item_id"] in dev else "test"},
+                                       ensure_ascii=False) + "\n")
+            print(f"{name}: all {len(ids)} items (dev {len(dev)})", flush=True)
+            continue
         (sd / f"{name}.json").write_text(json.dumps({
             "bench": name, "seed": SEED, "n_total": len(ids), "n_dev": len(dev),
             "dev": [i for i in ids if i in dev], "test": [i for i in ids if i not in dev], "created": "2026-11-19"}, indent=1))

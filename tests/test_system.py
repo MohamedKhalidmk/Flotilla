@@ -37,3 +37,14 @@ def test_retry_message_says_wrong_and_gives_reason():
 def test_solver_messages_include_task_type_addition():
     m = system.solver_messages("What is 2+2?", "math", "v1")
     assert m[0]["role"] == "system" and "sympy" in m[0]["content"] and m[1]["content"] == "What is 2+2?"
+
+
+def test_valid_option_counts_options_in_the_question():
+    from flotilla.system import n_options, verify
+    task = "Which?\n\nA. one\nB. two\nC. three\nD. four\nE. five\nF. six\nG. seven\nH. eight\nI. nine\nJ. ten"
+    assert n_options(task, None) == 10
+    assert verify(task, "science_mc", "I")["verdict"] == "accept"
+    assert verify(task, "science_mc", "K")["verdict"] == "reject"
+    assert n_options("Pick one.\n(A) x\n(B) y\n(C) z", None) == 3
+    assert n_options("no lettered lines", None) == 4
+    assert n_options(task, ["a", "b"]) == 2

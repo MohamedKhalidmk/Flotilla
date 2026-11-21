@@ -1,0 +1,63 @@
+{
+ "questions": 1450,
+ "oracle": 0.9883,
+ "routes": {
+  "fast": {
+   "correct": 1310,
+   "only_this_route_right": 5,
+   "only_ids": [
+    "math-train-prealgebra-113",
+    "math-train-precalculus-686",
+    "mmlupro-11905",
+    "mmlupro-11952",
+    "mmlupro-9970"
+   ],
+   "cheapest_correct": 1310,
+   "oracle_without_it": 0.9848
+  },
+  "tools": {
+   "correct": 1342,
+   "only_this_route_right": 2,
+   "only_ids": [
+    "gsm8k-train-1512",
+    "rlvrif-4948"
+   ],
+   "cheapest_correct": 75,
+   "oracle_without_it": 0.9869
+  },
+  "deep": {
+   "correct": 1381,
+   "only_this_route_right": 1,
+   "only_ids": [
+    "mmlupro-11751"
+   ],
+   "cheapest_correct": 42,
+   "oracle_without_it": 0.9876
+  },
+  "deep_tools": {
+   "correct": 1367,
+   "only_this_route_right": 1,
+   "only_ids": [
+    "mmlupro-9499"
+   ],
+   "cheapest_correct": 5,
+   "oracle_without_it": 0.9876
+  },
+  "vote": {
+   "correct": 1402,
+   "only_this_route_right": 0,
+   "only_ids": [],
+   "cheapest_correct": 0,
+   "oracle_without_it": 0.9883
+  },
+  "vote_tools": {
+   "correct": 1396,
+   "only_this_route_right": 1,
+   "only_ids": [
+    "aime-2022-II-14"
+   ],
+   "cheapest_correct": 1,
+   "oracle_without_it": 0.9876
+  }
+ }
+}

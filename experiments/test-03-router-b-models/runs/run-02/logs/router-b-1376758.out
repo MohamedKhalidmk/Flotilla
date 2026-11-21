@@ -1,0 +1,59 @@
+{"model": "qwen", "n": 4760, "correct": 4217}
+{"model": "gptoss", "n": 4760, "correct": 3933}
+Loading weights:   0%|          | 0/134 [00:00<?, ?it/s]Loading weights: 100%|██████████| 134/134 [00:00<00:00, 1606.93it/s]
+[transformers] [1mModernBertModel LOAD REPORT[0m from: answerdotai/ModernBERT-base
+Key               | Status     |  | 
+------------------+------------+--+-
+head.dense.weight | UNEXPECTED |  | 
+decoder.bias      | UNEXPECTED |  | 
+head.norm.weight  | UNEXPECTED |  | 
+
+Notes:
+- UNEXPECTED:	can be ignored when loading from different task/architecture; not ok if you expect identical arch.
+{"epoch": 1, "type_acc": 0.9958, "routed_acc": 0.9055, "oracle_acc": 0.9412, "qwen_alone_acc": 0.895, "gptoss_alone_acc": 0.8529}
+{"epoch": 2, "type_acc": 1.0, "routed_acc": 0.8992, "oracle_acc": 0.9412, "qwen_alone_acc": 0.895, "gptoss_alone_acc": 0.8529}
+{"epoch": 3, "type_acc": 0.9979, "routed_acc": 0.8992, "oracle_acc": 0.9412, "qwen_alone_acc": 0.895, "gptoss_alone_acc": 0.8529}
+{"base": "answerdotai/ModernBERT-base", "models": ["qwen", "gptoss"], "types": ["math", "code", "science_mc", "instruction", "legal", "general"], "margin": 0.1, "train_items": 4284, "val_items": 476, "epochs": 3, "lr": 3e-05, "max_len": 1024, "seconds": 207.7}
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights:  97%|█████████▋| 194/199 [00:00<00:00, 1937.78it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 1979.80it/s]
+Loading weights:   0%|          | 0/199 [00:00<?, ?it/s]Loading weights: 100%|██████████| 199/199 [00:00<00:00, 10905.11it/s]
+{"embedder": "BAAI/bge-small-en-v1.5", "models": ["qwen", "gptoss"], "train_items": 4284, "val_items": 476, "C": 1.0, "seconds": 24.9, "val": {"type_acc": 0.9517, "routed_acc": 0.8866, "oracle_acc": 0.9412, "qwen_alone_acc": 0.895, "gptoss_alone_acc": 0.8529, "picked": {"qwen": 265, "gptoss": 211}}}
+
+scontrol show job 1376758
+JobId=1376758 JobName=router-b
+   UserId=khaledmk(3165701) GroupId=khaledmk(3165701) MCS_label=N/A
+   Priority=784212 Nice=0 Account=def-sylu QOS=normal
+   JobState=COMPLETING Reason=None Dependency=(null)
+   Requeue=0 Restarts=0 BatchFlag=1 Reboot=0 ExitCode=0:0
+   RunTime=00:40:31 TimeLimit=02:30:00 TimeMin=N/A
+   SubmitTime=2026-11-20T07:19:40 EligibleTime=2026-11-20T07:19:40
+   AccrueTime=2026-11-20T07:19:40
+   StartTime=2026-11-20T07:20:05 EndTime=2026-11-20T08:00:36 Deadline=N/A
+   SuspendTime=None SecsPreSuspend=0 LastSchedEval=2026-11-20T07:20:05 Scheduler=Backfill
+   Partition=compute AllocNode:Sid=trig-login01:1003543
+   ReqNodeList=(null) ExcNodeList=(null)
+   NodeList=trig0050
+   BatchHost=trig0050
+   NumNodes=1 NumCPUs=24 NumTasks=1 CPUs/Task=1 ReqB:S:C:T=0:0:*:*
+   ReqTRES=cpu=1,mem=187.50G,node=1,billing=1,gres/gpu=1
+   AllocTRES=cpu=24,mem=187.50G,node=1,billing=1,gres/gpu=1
+   Socks/Node=* NtasksPerN:B:S:C=0:0:*:* CoreSpec=*
+   MinCPUsNode=1 MinMemoryNode=187.50G MinTmpDiskNode=0
+   Features=(null) DelayBoot=00:00:00
+   OverSubscribe=OK Contiguous=0 Licenses=(null) LicensesAlloc=(null) Network=(null)
+   Command=(null)
+   SubmitLine=SBATCH --comment /opt/slurm/bin/sbatch --export=NONE --get-user-env --parsable --export=NONE --gpus-per-node=h100:1 --time=2:30:00 --job-name=router-b --chdir=/scratch/khaledmk/flotilla/logs --output=%x-%j.out --wrap source /project/def-sylu/khaledmk/flotilla/scripts/trillium/modules.sh; export HF_HOME=/scratch/khaledmk/flotilla/hf HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 TRANSFORMERS_OFFLINE=1 PYTHONPATH=/project/def-sylu/khaledmk/flotilla PYTHONUNBUFFERED=1 XDG_CACHE_HOME=/scratch/khaledmk/flotilla/cache; bash /scratch/khaledmk/flotilla/router_job.sh --export=NONE --get-user-env --parsable --export=NONE --gpus-per-node=h100:1 --time=2:30:00 --job-name=router-b --chdir=/scratch/khaledmk/flotilla/logs --output=%x-%j.out --wrap source /project/def-sylu/khaledmk/flotilla/scripts/trillium/modules.sh; export HF_HOME=/scratch/khaledmk/flotilla/hf HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 TRANSFORMERS_OFFLINE=1 PYTHONPATH=/project/def-sylu/khaledmk/flotilla PYTHONUNBUFFERED=1 XDG_CACHE_HOME=/scratch/khaledmk/flotilla/cache; bash /scratch/khaledmk/flotilla/router_job.sh
+   WorkDir=/scratch/khaledmk/flotilla/logs
+   Comment=/opt/slurm/bin/sbatch --export=NONE --get-user-env --parsable --export=NONE --gpus-per-node=h100:1 --time=2:30:00 --job-name=router-b --chdir=/scratch/khaledmk/flotilla/logs --output=%x-%j.out --wrap source /project/def-sylu/khaledmk/flotilla/scripts/trillium/modules.sh; export HF_HOME=/scratch/khaledmk/flotilla/hf HF_HUB_OFFLINE=1 HF_DATASETS_OFFLINE=1 TRANSFORMERS_OFFLINE=1 PYTHONPATH=/project/def-sylu/khaledmk/flotilla PYTHONUNBUFFERED=1 XDG_CACHE_HOME=/scratch/khaledmk/flotilla/cache; bash /scratch/khaledmk/flotilla/router_job.sh
+   StdErr=
+   StdIn=/dev/null
+   StdOut=/scratch/khaledmk/flotilla/logs/router-b-1376758.out
+   CpusPerTres=gpu:24
+   TresPerNode=gres/gpu:h100:1
+
+sacct -j 1376758
+JobID           JobName    Account    Elapsed  MaxVMSize     MaxRSS  SystemCPU    UserCPU ExitCode 
+------------ ---------- ---------- ---------- ---------- ---------- ---------- ---------- -------- 
+1376758        router-b   def-sylu   00:40:31                         00:00:00   00:00:00      0:0 
+1376758.bat+      batch   def-sylu   00:40:31                         00:00:00   00:00:00      0:0 
+1376758.ext+     extern   def-sylu   00:40:31                         00:00:00   00:00:00      0:0 
+

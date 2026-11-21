@@ -1,0 +1,10 @@
+test: 05
+repo: github.com/MohamedKhalidmk/GRAFT, branch graft-linking-hybrid
+benchmark: MemoryAgentBench FactConsolidation multi-hop 262K (100 questions)
+retrieval: ppr_goat_ppr (mode C), GNN gnn_bge_400w, explainer eig or goat, max_facts 50
+answer_model: claude-haiku-5-5
+base_graphs:
+  rog: my_method/base_graph.py --source rog --max-facts 20000
+  trex_full: my_method/base_graph.py --source trex --top-relations 45
+linking: writer_linking llm (top 10 base entities by bge name embedding, Haiku picks or says new)
+configs: configs/runs/exp/lh/ in the GRAFT repo
