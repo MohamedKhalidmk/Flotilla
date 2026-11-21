@@ -20,7 +20,10 @@ if [[ "${GRAFT:-0}" == 1 ]]; then
   # GRAFT's module environment, captured in a subshell (readonly variables left out)
   ( module --force purge >/dev/null 2>&1 || true
     module load StdEnv/2023 gcc python/3.12 arrow/25.0.0
-    export -p | grep -v -E '^declare -[a-zA-Z]*r' > "$SLURM_TMPDIR/graft.env" )
+    export -p | grep -v -E '^declare -[a-zA-Z]*r' > "$SLURM_TMPDIR/graft.env"
+    # GRAFT's gateway needs openai for its local vLLM backend; the packed venv lacks it (Qwen job 28252727 failed on it)
+    "$L/.venv/bin/python" -c "import openai" 2>/dev/null || "$L/.venv/bin/python" -m pip install -q --no-index openai \
+      || echo "WARNING: openai not installable into GRAFT's venv; GRAFT on Qwen will fail" )
   cat > "$SLURM_TMPDIR/graft_python" <<WRAP
 #!/bin/bash
 P="\${PYTHONPATH:-}"; source "$SLURM_TMPDIR/graft.env"; export PYTHONPATH="\$P"
