@@ -1,6 +1,6 @@
 # Flotilla evaluation protocol
 
-Status: **FROZEN as protocol-v8 (2026-11-19).** Each version is a git tag (`protocol-v1` to `protocol-v8`); any change is a new version with a dated changelog entry, and results say which version they ran under. No scored run used protocol-v1.
+Status: **FROZEN as protocol-v10 (2026-11-20; addendum 2026-11-21).** Each version is a git tag (`protocol-v1` to `protocol-v10`); any change is a new version with a dated changelog entry, and results say which version they ran under. No scored run used protocol-v1.
 
 Flotilla is a compound system of quantized open models served with vLLM. This protocol fixes, before any scored run, what we measure, how, and how we decide between components, so that no choice is made after seeing test results.
 
@@ -117,6 +117,7 @@ Rule: **use the router with higher routing accuracy on the dev subsets**; ties g
 - Small tests: Claude checks every output (correct or not, and the failing stage).
 - Final run: official graders decide correctness; Claude only assigns error stages to wrong answers and answers a fixed subset as a reference row.
 - API spend is estimated and approved before each Claude run.
+- Route labels on LongMemEval (test 04, protocol-v10 addendum): Claude Haiku 5.5 is the judge, with LongMemEval's official judge prompts (one per question type), the same judge as the other Haiku-graded labels. Every judge batch starts with the fixed Haiku check (the replay of the 2026-11-13 run's facts) and logs each call's request ID; Qwen never grades its own answers.
 
 ## 7. Traces (every question, every run)
 
@@ -155,3 +156,4 @@ When the verifier rejects the voted answer, the system retries once (`prompts/ve
 - 2026-11-20: rule 4.1 applied to Qwen3.8-27B. MATH-500 (all 500, 131,072-token budget, greedy): BF16 0.978, FP8 (ours) 0.984, W4A16 (ours, GPTQ, ultrachat_200k calibration) 0.984 (2 of 500 at the cap, 2,136 s on one H100), RedHat INT4 0.988 (reference). Our W4A16 is 0.0 points below our FP8, inside the 1.0-point margin, so Qwen is served as W4A16 (`quant/qwen3.8-27b-w4a16`). Calibration leakage check (`flotilla/calib_pool.py` + `flotilla/leakage.py`): the 512 calibration conversations (3,132 messages) share no 13-gram with any test set and none has embedding cosine >= 0.95 to a test item (0 flagged; 0 also without the template filter).
 - 2026-11-20: smoke-check clarification (before any small-test result was scored). An item whose forced last call ends normally (finish reason "stop") with no answer text also counts as allowed and is reported: gpt-oss-20b did this on a LiveCodeBench smoke item after three tool rounds (reasoning ending "Let's implement in python.", no final text, same on the retry). Such items score as wrong for every model; the loop is unchanged.
 - 2026-11-20: protocol-v10 (decided by the user's rule, set before the result). gpt-oss-20b is dropped and Flotilla runs Qwen3.8-27B (W4A16) alone: the trained router B (ModernBERT-base fine-tune on 4,284 loop-labelled pool questions) gains +0.4 points over Qwen alone on the 476 held-out pool questions (0.899 vs 0.895), under the 1-point bar; a bge-small + logistic-regression router gains -0.8. Command A+ was dropped earlier under rule 4.2 (Command A+ minus Qwen = -0.104, 95% CI [-0.143, -0.066]). Routers A and B are then not used; vision stays with Qwen3.8. Open: whether long inputs (RULER) get a fixed rule to gpt-oss, which the pool cannot test (no long-context questions).
+- 2026-11-21: protocol-v10 addendum (decided by the user before any LongMemEval answer was graded). LongMemEval route labels are graded by Claude Haiku 5.5 with LongMemEval's official LLM-judge prompts, not by Qwen: an independent judge, the same as the other Haiku-graded labels (an earlier run-log decision, reaffirmed). Each judge batch starts with the fixed Haiku check (GRAFT `configs/runs/exp/canary/haiku_replay38.yaml`, about $0.027) and logs request IDs; spend is estimated and approved first (about $0.25 per route for 500 questions). The status line now names protocol-v10, the last tagged version (it still said v8).
