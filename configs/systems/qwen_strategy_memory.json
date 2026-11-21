@@ -27,7 +27,7 @@
  "extra": {
   "memory": {
    "base_route": "fast",
-   "graft_preset": "plain_c",
+   "graft_preset": "guide_b",
    "graft": {
     "llm_mode": "local"
    }

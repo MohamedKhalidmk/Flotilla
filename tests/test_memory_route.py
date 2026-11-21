@@ -12,6 +12,14 @@ from flotilla import memory_route as mr
 from flotilla import system
 from flotilla.trace import Trace
 
+@pytest.fixture(autouse=True)
+def _offline_preset(monkeypatch, request):
+    """The route configs use guide_b (GRAFT's default since test 06); its T-REx guide file lives on the clusters, so
+    offline tests build with plain_c unless a test checks presets itself."""
+    if request.node.name != "test_graft_config_is_a_named_preset":
+        monkeypatch.setenv("FLOTILLA_GRAFT_PRESET", "plain_c")
+
+
 KU = mr.SAMPLE_ITEMS[0]  # sessions given out of date order; France (May) is replaced by Canada (September)
 POOL = mr.POOL_SAMPLE
 
@@ -75,9 +83,10 @@ def test_graft_config_is_a_named_preset(monkeypatch):
     monkeypatch.setenv("FLOTILLA_GRAFT_PRESET", "nope")
     with pytest.raises(ValueError):
         mr.graft_config({})
-    for route in mr.MEMORY_ROUTES:  # every Memory config names its base route and the default preset
+    monkeypatch.delenv("FLOTILLA_GRAFT_PRESET")
+    for route in mr.MEMORY_ROUTES:  # every Memory config names its base route and the guide preset (GRAFT's default)
         mem = json.loads(mr.ROUTE_CONFIG[route].read_text())["extra"]["memory"]
-        assert mem["base_route"] == mr.MEMORY_ROUTES[route] and mem["graft_preset"] == "plain_c"
+        assert mem["base_route"] == mr.MEMORY_ROUTES[route] and mem["graft_preset"] == "guide_b"
         base = json.loads(mr.ROUTE_CONFIG[mr.MEMORY_ROUTES[route]].read_text())
         conf = json.loads(mr.ROUTE_CONFIG[route].read_text())
         assert {k: conf[k] for k in base if k not in ("name", "notes")} == {k: base[k] for k in base if k not in ("name", "notes")}
