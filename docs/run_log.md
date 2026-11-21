@@ -108,6 +108,8 @@ One line per decision, with its reason. Times are America/Vancouver unless marke
 
 - **2026-11-20, GRAFT jobs stuck at start: slow imports on Fir's project filesystem.** EiG 4751802 (GPU) ended after 34 min with "gateway did not start within 30 minutes", $0 spent; the earlier 5-question test (4737248) and the cancelled EiG (4742452) sat at $0 the same way. Cause: `import sentence_transformers` from the venv under ~/projects took 450 s on the login node and over 30 min on compute nodes, and every repeat starts two Python processes (gateway, method). Fix (GRAFT scripts/fir/common.sh, read by every job when it starts, so queued jobs get it too): inside a job, copy the code to the node's local disk and unpack the venv from one archive on scratch (packed once by scripts/fir/pack_venv.sh, job 4760964). GOAt twins (4742453 GPU, 4751804 CPU) wait on the pack, then run as the first check pass; question layer and Qwen stay held until GOAt shows facts reaching Haiku. The Haiku EiG pass has no job left (both cancelled) and needs the API key again: waits for the user.
 
+- **2026-11-20, key entered (user "go"):** Haiku EiG on full T-REx, GPU/CPU twins 4762063/4762064 (cap $1); working-memory test (GRAFT test 05) on the empty-start graph, arms A mode C 4762065, B question layer 4762066, C working memory in the graph 4762067, C- prompt only 4762068 (3 repeats each, CPU, cap $1 per arm, est. about $1 total), held until the free fake-mode check 4761462 shows the plumbing works. All wait on the venv pack 4760964.
+
 ### API spend (Anthropic)
 | When | What | Runs | Cost |
 |---|---|---|---|
