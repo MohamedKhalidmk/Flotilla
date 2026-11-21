@@ -1,0 +1,19 @@
+{
+ "per_bench": {
+  "ruler_32k": {
+   "n": 33,
+   "accuracy": 0.7879,
+   "mean_score": 0.8667,
+   "tokens_total": 2296612,
+   "calls": 70
+  },
+  "ruler_64k": {
+   "n": 33,
+   "accuracy": 0.697,
+   "mean_score": 0.7596,
+   "tokens_total": 4103692,
+   "calls": 62
+  }
+ },
+ "mean_over_benches": 0.8132
+}

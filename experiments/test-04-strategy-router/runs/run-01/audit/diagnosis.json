@@ -1,0 +1,8 @@
+{
+ "_note": "Hand diagnosis of the 5 pilot questions all six routes got wrong (2026-11-20).",
+ "mmlupro-2907": ["verifier bug", "All six routes answered E, the gold. The verifier's option check accepted only A to D (the item has no options list) and rejected E; every retry ended on A."],
+ "mmlupro-3042": ["verifier bug", "All six routes answered H, the gold. The verifier rejected H; the retry gave G, also rejected, and G was kept."],
+ "mmlupro-4099": ["verifier bug", "All six routes answered G (65 kg x 9.8 m/s^2 x 4.0 m = 2.5 x 10^3 J, closest option G = 2.6 x 10^3 J), the gold. The verifier rejected G and every retry moved to D."],
+ "mmlupro-3393": ["verifier bug", "Deep, Deep+Tools, Vote and Vote+Tools answered G, the gold, and the verifier rejected it; their retries moved to D. Fast and Tools (thinking off) answered D on the first try, which is Qwen being wrong on those two routes."],
+ "mmlupro-10772": ["model wrong", "Five routes answered C on the first try and kept it; gold is I. Only Tools first answered I, which the verifier rejected (same bug), and one Vote+Tools sample said I but lost the vote. Mostly Qwen is wrong."]
+}

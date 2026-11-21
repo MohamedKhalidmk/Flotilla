@@ -1,0 +1,14 @@
+{
+  "name": "math500-qwen-fp8-ours",
+  "model": "/scratch/khaledmk/flotilla/quant/qwen3.8-27b-fp8",
+  "n": 500,
+  "accuracy": 0.984,
+  "correct": 492,
+  "truncated": 0,
+  "tokens_in": 70152,
+  "tokens_out": 926002,
+  "wall_seconds": 906.6,
+  "tp": 1,
+  "max_tokens": 131072,
+  "gen_tokens_per_s": 1021.4
+}

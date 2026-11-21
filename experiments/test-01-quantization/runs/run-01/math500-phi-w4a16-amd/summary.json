@@ -1,0 +1,14 @@
+{
+  "name": "math500-phi-w4a16-amd",
+  "model": "amd/Phi-4-reasoning-plus-w4a16-llmcompressor",
+  "n": 500,
+  "accuracy": 0.776,
+  "correct": 388,
+  "truncated": 386,
+  "tokens_in": 155302,
+  "tokens_out": 12342755,
+  "wall_seconds": 16686.8,
+  "tp": 1,
+  "max_tokens": 30000,
+  "gen_tokens_per_s": 739.7
+}

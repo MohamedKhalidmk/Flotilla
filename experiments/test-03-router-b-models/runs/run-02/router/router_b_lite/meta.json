@@ -1,0 +1,22 @@
+{
+ "embedder": "BAAI/bge-small-en-v1.5",
+ "models": [
+  "qwen",
+  "gptoss"
+ ],
+ "train_items": 4284,
+ "val_items": 476,
+ "C": 1.0,
+ "seconds": 24.9,
+ "val": {
+  "type_acc": 0.9517,
+  "routed_acc": 0.8866,
+  "oracle_acc": 0.9412,
+  "qwen_alone_acc": 0.895,
+  "gptoss_alone_acc": 0.8529,
+  "picked": {
+   "qwen": 265,
+   "gptoss": 211
+  }
+ }
+}

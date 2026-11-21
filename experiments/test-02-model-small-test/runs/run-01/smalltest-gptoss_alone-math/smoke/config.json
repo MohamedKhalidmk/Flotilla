@@ -1,0 +1,23 @@
+{
+ "name": "gptoss_alone",
+ "notes": "gpt-oss-20b alone at medium reasoning effort, native MXFP4 (protocol-v9). Text only: no MMMU or OCRBench. Tools through native function calling (harmony), like Command A+: with text tool lines it returned empty answers when it tried to call a tool.",
+ "servers": {
+  "gptoss": {
+   "url": "http://127.0.0.1:36825/v1",
+   "model": "gptoss",
+   "quant": "mxfp4-native",
+   "request": {
+    "reasoning_effort": "medium"
+   },
+   "native_tools": true
+  }
+ },
+ "solvers": [
+  "gptoss"
+ ],
+ "n_samples": 1,
+ "max_tokens": 32768,
+ "protocol_version": "protocol-v9",
+ "rpm": 0,
+ "max_calls": 1000000000
+}

@@ -1,0 +1,95 @@
+{"item_id": "ocrbench/273", "id": "ocrbench/273", "bench": "ocrbench", "task_type": "vision", "tokens_total": 436, "calls": 1, "correct": true}
+{"item_id": "ocrbench/35", "id": "ocrbench/35", "bench": "ocrbench", "task_type": "vision", "tokens_total": 445, "calls": 1, "correct": true}
+{"item_id": "ocrbench/105", "id": "ocrbench/105", "bench": "ocrbench", "task_type": "vision", "tokens_total": 475, "calls": 1, "correct": true}
+{"item_id": "ocrbench/118", "id": "ocrbench/118", "bench": "ocrbench", "task_type": "vision", "tokens_total": 466, "calls": 1, "correct": true}
+{"item_id": "ocrbench/70", "id": "ocrbench/70", "bench": "ocrbench", "task_type": "vision", "tokens_total": 467, "calls": 1, "correct": true}
+{"item_id": "ocrbench/195", "id": "ocrbench/195", "bench": "ocrbench", "task_type": "vision", "tokens_total": 481, "calls": 1, "correct": true}
+{"item_id": "ocrbench/30", "id": "ocrbench/30", "bench": "ocrbench", "task_type": "vision", "tokens_total": 915, "calls": 2, "correct": true}
+{"item_id": "mmmu/validation_Literature_12", "id": "mmmu/validation_Literature_12", "bench": "mmmu", "task_type": "vision", "tokens_total": 733, "calls": 1, "correct": true, "parsed": "A"}
+{"item_id": "ocrbench/237", "id": "ocrbench/237", "bench": "ocrbench", "task_type": "vision", "tokens_total": 956, "calls": 2, "correct": true}
+{"item_id": "mmmu/validation_Public_Health_19", "id": "mmmu/validation_Public_Health_19", "bench": "mmmu", "task_type": "vision", "tokens_total": 748, "calls": 1, "correct": true, "parsed": "B"}
+{"item_id": "ocrbench/127", "id": "ocrbench/127", "bench": "ocrbench", "task_type": "vision", "tokens_total": 952, "calls": 2, "correct": true}
+{"item_id": "ocrbench/179", "id": "ocrbench/179", "bench": "ocrbench", "task_type": "vision", "tokens_total": 968, "calls": 2, "correct": true}
+{"item_id": "ocrbench/302", "id": "ocrbench/302", "bench": "ocrbench", "task_type": "vision", "tokens_total": 1164, "calls": 2, "correct": false}
+{"item_id": "mmmu/validation_Design_29", "id": "mmmu/validation_Design_29", "bench": "mmmu", "task_type": "vision", "tokens_total": 1139, "calls": 1, "correct": true, "parsed": "D"}
+{"item_id": "mmmu/validation_Art_Theory_30", "id": "mmmu/validation_Art_Theory_30", "bench": "mmmu", "task_type": "vision", "tokens_total": 1366, "calls": 1, "correct": true, "parsed": "D"}
+{"item_id": "ocrbench/248", "id": "ocrbench/248", "bench": "ocrbench", "task_type": "vision", "tokens_total": 990, "calls": 2, "correct": true}
+{"item_id": "ocrbench/351", "id": "ocrbench/351", "bench": "ocrbench", "task_type": "vision", "tokens_total": 1190, "calls": 1, "correct": true}
+{"item_id": "ocrbench/354", "id": "ocrbench/354", "bench": "ocrbench", "task_type": "vision", "tokens_total": 1407, "calls": 1, "correct": true}
+{"item_id": "mmmu/validation_Sociology_21", "id": "mmmu/validation_Sociology_21", "bench": "mmmu", "task_type": "vision", "tokens_total": 2293, "calls": 1, "correct": false, "parsed": "B"}
+{"item_id": "ocrbench/391", "id": "ocrbench/391", "bench": "ocrbench", "task_type": "vision", "tokens_total": 1091, "calls": 1, "correct": true}
+{"item_id": "ocrbench/423", "id": "ocrbench/423", "bench": "ocrbench", "task_type": "vision", "tokens_total": 588, "calls": 1, "correct": true}
+{"item_id": "mmmu/validation_Accounting_14", "id": "mmmu/validation_Accounting_14", "bench": "mmmu", "task_type": "vision", "tokens_total": 1010, "calls": 1, "correct": true, "parsed": "B"}
+{"item_id": "ocrbench/376", "id": "ocrbench/376", "bench": "ocrbench", "task_type": "vision", "tokens_total": 1232, "calls": 1, "correct": true}
+{"item_id": "mmmu/validation_Sociology_7", "id": "mmmu/validation_Sociology_7", "bench": "mmmu", "task_type": "vision", "tokens_total": 1619, "calls": 1, "correct": true, "parsed": "D"}
+{"item_id": "mmmu/validation_Literature_13", "id": "mmmu/validation_Literature_13", "bench": "mmmu", "task_type": "vision", "tokens_total": 899, "calls": 1, "correct": true, "parsed": "D"}
+{"item_id": "ocrbench/308", "id": "ocrbench/308", "bench": "ocrbench", "task_type": "vision", "tokens_total": 919, "calls": 2, "correct": false}
+{"item_id": "ocrbench/226", "id": "ocrbench/226", "bench": "ocrbench", "task_type": "vision", "tokens_total": 1060, "calls": 2, "correct": true}
+{"item_id": "mmmu/validation_Economics_18", "id": "mmmu/validation_Economics_18", "bench": "mmmu", "task_type": "vision", "tokens_total": 780, "calls": 1, "correct": true, "parsed": "A"}
+{"item_id": "mmmu/validation_Economics_13", "id": "mmmu/validation_Economics_13", "bench": "mmmu", "task_type": "vision", "tokens_total": 838, "calls": 1, "correct": true, "parsed": "A"}
+{"item_id": "ocrbench/521", "id": "ocrbench/521", "bench": "ocrbench", "task_type": "vision", "tokens_total": 4212, "calls": 1, "correct": true}
+{"item_id": "mmmu/validation_Agriculture_25", "id": "mmmu/validation_Agriculture_25", "bench": "mmmu", "task_type": "vision", "tokens_total": 1641, "calls": 1, "correct": true, "parsed": "E"}
+{"item_id": "mmmu/validation_Sociology_2", "id": "mmmu/validation_Sociology_2", "bench": "mmmu", "task_type": "vision", "tokens_total": 1002, "calls": 1, "correct": true, "parsed": "D"}
+{"item_id": "ocrbench/201", "id": "ocrbench/201", "bench": "ocrbench", "task_type": "vision", "tokens_total": 1112, "calls": 2, "correct": true}
+{"item_id": "ocrbench/231", "id": "ocrbench/231", "bench": "ocrbench", "task_type": "vision", "tokens_total": 1132, "calls": 2, "correct": true}
+{"item_id": "mmmu/validation_Marketing_4", "id": "mmmu/validation_Marketing_4", "bench": "mmmu", "task_type": "vision", "tokens_total": 950, "calls": 1, "correct": true, "parsed": "A"}
+{"item_id": "ocrbench/721", "id": "ocrbench/721", "bench": "ocrbench", "task_type": "vision", "tokens_total": 4167, "calls": 1, "correct": true}
+{"item_id": "ocrbench/425", "id": "ocrbench/425", "bench": "ocrbench", "task_type": "vision", "tokens_total": 793, "calls": 1, "correct": true}
+{"item_id": "ocrbench/774", "id": "ocrbench/774", "bench": "ocrbench", "task_type": "vision", "tokens_total": 1116, "calls": 1, "correct": true}
+{"item_id": "ocrbench/409", "id": "ocrbench/409", "bench": "ocrbench", "task_type": "vision", "tokens_total": 731, "calls": 1, "correct": true}
+{"item_id": "ocrbench/859", "id": "ocrbench/859", "bench": "ocrbench", "task_type": "vision", "tokens_total": 636, "calls": 1, "correct": true}
+{"item_id": "ocrbench/303", "id": "ocrbench/303", "bench": "ocrbench", "task_type": "vision", "tokens_total": 1448, "calls": 2, "correct": true}
+{"item_id": "ocrbench/500", "id": "ocrbench/500", "bench": "ocrbench", "task_type": "vision", "tokens_total": 4183, "calls": 1, "correct": true}
+{"item_id": "ocrbench/817", "id": "ocrbench/817", "bench": "ocrbench", "task_type": "vision", "tokens_total": 1213, "calls": 1, "correct": true}
+{"item_id": "ocrbench/718", "id": "ocrbench/718", "bench": "ocrbench", "task_type": "vision", "tokens_total": 1689, "calls": 1, "correct": true}
+{"item_id": "mmmu/validation_Design_4", "id": "mmmu/validation_Design_4", "bench": "mmmu", "task_type": "vision", "tokens_total": 2179, "calls": 1, "correct": true, "parsed": "A"}
+{"item_id": "ocrbench/590", "id": "ocrbench/590", "bench": "ocrbench", "task_type": "vision", "tokens_total": 991, "calls": 1, "correct": true}
+{"item_id": "ocrbench/446", "id": "ocrbench/446", "bench": "ocrbench", "task_type": "vision", "tokens_total": 796, "calls": 1, "correct": true}
+{"item_id": "mmmu/validation_Pharmacy_30", "id": "mmmu/validation_Pharmacy_30", "bench": "mmmu", "task_type": "vision", "tokens_total": 1273, "calls": 1, "correct": true, "parsed": "D"}
+{"item_id": "ocrbench/300", "id": "ocrbench/300", "bench": "ocrbench", "task_type": "vision", "tokens_total": 1514, "calls": 2, "correct": false}
+{"item_id": "mmmu/validation_Public_Health_9", "id": "mmmu/validation_Public_Health_9", "bench": "mmmu", "task_type": "vision", "tokens_total": 1199, "calls": 1, "correct": true, "parsed": "A"}
+{"item_id": "ocrbench/133", "id": "ocrbench/133", "bench": "ocrbench", "task_type": "vision", "tokens_total": 2174, "calls": 2, "correct": true}
+{"item_id": "ocrbench/934", "id": "ocrbench/934", "bench": "ocrbench", "task_type": "vision", "tokens_total": 615, "calls": 1, "correct": true}
+{"item_id": "ocrbench/868", "id": "ocrbench/868", "bench": "ocrbench", "task_type": "vision", "tokens_total": 652, "calls": 1, "correct": true}
+{"item_id": "ocrbench/624", "id": "ocrbench/624", "bench": "ocrbench", "task_type": "vision", "tokens_total": 1283, "calls": 1, "correct": true}
+{"item_id": "mmmu/validation_Psychology_23", "id": "mmmu/validation_Psychology_23", "bench": "mmmu", "task_type": "vision", "tokens_total": 1916, "calls": 1, "correct": true, "parsed": "A"}
+{"item_id": "ocrbench/632", "id": "ocrbench/632", "bench": "ocrbench", "task_type": "vision", "tokens_total": 833, "calls": 1, "correct": true}
+{"item_id": "mmmu/validation_Sociology_19", "id": "mmmu/validation_Sociology_19", "bench": "mmmu", "task_type": "vision", "tokens_total": 1281, "calls": 1, "correct": true, "parsed": "A"}
+{"item_id": "ocrbench/313", "id": "ocrbench/313", "bench": "ocrbench", "task_type": "vision", "tokens_total": 1494, "calls": 2, "correct": false}
+{"item_id": "mmmu/validation_Art_Theory_27", "id": "mmmu/validation_Art_Theory_27", "bench": "mmmu", "task_type": "vision", "tokens_total": 2050, "calls": 1, "correct": true, "parsed": "B"}
+{"item_id": "mmmu/validation_Physics_28", "id": "mmmu/validation_Physics_28", "bench": "mmmu", "task_type": "vision", "tokens_total": 1187, "calls": 1, "correct": true, "parsed": "D"}
+{"item_id": "ocrbench/501", "id": "ocrbench/501", "bench": "ocrbench", "task_type": "vision", "tokens_total": 4386, "calls": 1, "correct": true}
+{"item_id": "mmmu/validation_Agriculture_5", "id": "mmmu/validation_Agriculture_5", "bench": "mmmu", "task_type": "vision", "tokens_total": 1499, "calls": 1, "correct": false, "parsed": "D"}
+{"item_id": "ocrbench/860", "id": "ocrbench/860", "bench": "ocrbench", "task_type": "vision", "tokens_total": 782, "calls": 1, "correct": true}
+{"item_id": "mmmu/validation_Math_4", "id": "mmmu/validation_Math_4", "bench": "mmmu", "task_type": "vision", "tokens_total": 1296, "calls": 1, "correct": true, "parsed": "A"}
+{"item_id": "ocrbench/564", "id": "ocrbench/564", "bench": "ocrbench", "task_type": "vision", "tokens_total": 1261, "calls": 1, "correct": true}
+{"item_id": "ocrbench/912", "id": "ocrbench/912", "bench": "ocrbench", "task_type": "vision", "tokens_total": 1267, "calls": 2, "correct": true}
+{"item_id": "mmmu/validation_Sociology_22", "id": "mmmu/validation_Sociology_22", "bench": "mmmu", "task_type": "vision", "tokens_total": 2389, "calls": 2, "correct": true, "parsed": "D"}
+{"item_id": "mmmu/validation_History_12", "id": "mmmu/validation_History_12", "bench": "mmmu", "task_type": "vision", "tokens_total": 3038, "calls": 1, "correct": true, "parsed": "A"}
+{"item_id": "ocrbench/498", "id": "ocrbench/498", "bench": "ocrbench", "task_type": "vision", "tokens_total": 1464, "calls": 1, "correct": true}
+{"item_id": "ocrbench/931", "id": "ocrbench/931", "bench": "ocrbench", "task_type": "vision", "tokens_total": 1664, "calls": 2, "correct": true}
+{"item_id": "ocrbench/949", "id": "ocrbench/949", "bench": "ocrbench", "task_type": "vision", "tokens_total": 1989, "calls": 2, "correct": false}
+{"item_id": "mmmu/validation_Sociology_12", "id": "mmmu/validation_Sociology_12", "bench": "mmmu", "task_type": "vision", "tokens_total": 2757, "calls": 1, "correct": false, "parsed": "D"}
+{"item_id": "mmmu/validation_Biology_14", "id": "mmmu/validation_Biology_14", "bench": "mmmu", "task_type": "vision", "tokens_total": 2611, "calls": 1, "correct": true, "parsed": "E"}
+{"item_id": "mmmu/validation_Physics_18", "id": "mmmu/validation_Physics_18", "bench": "mmmu", "task_type": "vision", "tokens_total": 3494, "calls": 2, "correct": true, "parsed": "A"}
+{"item_id": "mmmu/validation_Manage_24", "id": "mmmu/validation_Manage_24", "bench": "mmmu", "task_type": "vision", "tokens_total": 3730, "calls": 1, "correct": false, "parsed": "B"}
+{"item_id": "mmmu/validation_Energy_and_Power_4", "id": "mmmu/validation_Energy_and_Power_4", "bench": "mmmu", "task_type": "vision", "tokens_total": 3192, "calls": 1, "correct": false, "parsed": "A"}
+{"item_id": "mmmu/validation_Materials_30", "id": "mmmu/validation_Materials_30", "bench": "mmmu", "task_type": "vision", "tokens_total": 4397, "calls": 1, "correct": true, "parsed": "A"}
+{"item_id": "mmmu/validation_Art_Theory_2", "id": "mmmu/validation_Art_Theory_2", "bench": "mmmu", "task_type": "vision", "tokens_total": 5772, "calls": 2, "correct": true, "parsed": "C"}
+{"item_id": "ocrbench/907", "id": "ocrbench/907", "bench": "ocrbench", "task_type": "vision", "tokens_total": 4261, "calls": 2, "correct": true}
+{"item_id": "ocrbench/938", "id": "ocrbench/938", "bench": "ocrbench", "task_type": "vision", "tokens_total": 4359, "calls": 2, "correct": false}
+{"item_id": "mmmu/validation_Economics_24", "id": "mmmu/validation_Economics_24", "bench": "mmmu", "task_type": "vision", "tokens_total": 5204, "calls": 1, "correct": false, "parsed": "B"}
+{"item_id": "mmmu/validation_Biology_21", "id": "mmmu/validation_Biology_21", "bench": "mmmu", "task_type": "vision", "tokens_total": 5651, "calls": 1, "correct": true, "parsed": "C"}
+{"item_id": "mmmu/validation_Finance_30", "id": "mmmu/validation_Finance_30", "bench": "mmmu", "task_type": "vision", "tokens_total": 6466, "calls": 3, "correct": true, "parsed": "[1249.0, 249.24, '$1,249.24']"}
+{"item_id": "mmmu/validation_Economics_1", "id": "mmmu/validation_Economics_1", "bench": "mmmu", "task_type": "vision", "tokens_total": 6396, "calls": 1, "correct": false, "parsed": "D"}
+{"item_id": "mmmu/validation_Computer_Science_20", "id": "mmmu/validation_Computer_Science_20", "bench": "mmmu", "task_type": "vision", "tokens_total": 8315, "calls": 1, "correct": true, "parsed": "A"}
+{"item_id": "mmmu/validation_Architecture_and_Engineering_16", "id": "mmmu/validation_Architecture_and_Engineering_16", "bench": "mmmu", "task_type": "vision", "tokens_total": 8998, "calls": 4, "correct": false, "parsed": "A"}
+{"item_id": "mmmu/validation_Clinical_Medicine_20", "id": "mmmu/validation_Clinical_Medicine_20", "bench": "mmmu", "task_type": "vision", "tokens_total": 11076, "calls": 1, "correct": false, "parsed": "B"}
+{"item_id": "mmmu/validation_Biology_2", "id": "mmmu/validation_Biology_2", "bench": "mmmu", "task_type": "vision", "tokens_total": 12098, "calls": 2, "correct": true, "parsed": "D"}
+{"item_id": "mmmu/validation_Diagnostics_and_Laboratory_Medicine_14", "id": "mmmu/validation_Diagnostics_and_Laboratory_Medicine_14", "bench": "mmmu", "task_type": "vision", "tokens_total": 14758, "calls": 1, "correct": true, "parsed": "A"}
+{"item_id": "mmmu/validation_Mechanical_Engineering_11", "id": "mmmu/validation_Mechanical_Engineering_11", "bench": "mmmu", "task_type": "vision", "tokens_total": 22505, "calls": 3, "correct": true, "parsed": "A"}
+{"item_id": "ocrbench/244", "id": "ocrbench/244", "bench": "ocrbench", "task_type": "vision", "tokens_total": 22235, "calls": 2, "correct": true}
+{"item_id": "mmmu/validation_Electronics_7", "id": "mmmu/validation_Electronics_7", "bench": "mmmu", "task_type": "vision", "tokens_total": 23391, "calls": 2, "correct": true, "parsed": "C"}
+{"item_id": "mmmu/validation_Music_8", "id": "mmmu/validation_Music_8", "bench": "mmmu", "task_type": "vision", "tokens_total": 23993, "calls": 2, "correct": false, "parsed": "A"}
+{"item_id": "mmmu/validation_Mechanical_Engineering_15", "id": "mmmu/validation_Mechanical_Engineering_15", "bench": "mmmu", "task_type": "vision", "tokens_total": 25718, "calls": 1, "correct": false, "parsed": "C"}
+{"item_id": "mmmu/validation_Energy_and_Power_17", "id": "mmmu/validation_Energy_and_Power_17", "bench": "mmmu", "task_type": "vision", "tokens_total": 27691, "calls": 2, "correct": true, "parsed": "A"}

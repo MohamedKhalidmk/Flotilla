@@ -1,0 +1,9 @@
+GRAFT on FactConsolidation MH 262K (100 questions), mode C, Haiku 5.5 answers. Overlap = share of the documents' entities that already exist in the base graph by exact name.
+
+| variant | base_source | base_facts | doc_entities_exact_overlap | haiku_link_share | gold_in_final_facts_free | gold_in_final_facts_real | accuracy_real | status |
+|---|---|---|---|---|---|---|---|---|
+| Mode C, empty start (baseline; gold: EiG free check, accuracy: GOAt real run) | none | 0 |  |  | 0.51 |  | 0.38 | done |
+| Experiment D, synthetic start (Nov 13) | made-up world | 400 |  |  |  | 0.44 | 0.37 | done |
+| RoG base (Freebase, SubgraphRAG sets) | RoG-WebQSP/CWQ | 20000 | 0.133 | 0.219 | 0.42 | 0.41 | 0.21 | done (run-02): not adopted |
+| T-REx core (most-linked entities) | Wikidata via T-REx | 100000 | 0.116 |  |  |  |  | not built further (overlap too low) |
+| T-REx full (45 common properties) | Wikidata via T-REx | 1215416 | 0.558 |  |  |  |  | base built (run-02); Haiku-linking build + 3 repeats running |

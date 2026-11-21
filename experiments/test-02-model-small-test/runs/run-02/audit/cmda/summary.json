@@ -1,0 +1,50 @@
+{
+ "model": "cmda",
+ "source": "smalltest",
+ "wrong": 82,
+ "causes": {
+  "model wrong": 77,
+  "grader bug": 2,
+  "verifier bug": 3
+ },
+ "wrong_gold_candidates": 1,
+ "by_bench": {
+  "aime2025": {
+   "model wrong": 2
+  },
+  "aime2026": {
+   "model wrong": 2
+  },
+  "gpqa": {
+   "model wrong": 4
+  },
+  "gsm8k": {
+   "model wrong": 3
+  },
+  "ifeval": {
+   "model wrong": 2,
+   "verifier bug": 1
+  },
+  "lcb": {
+   "model wrong": 11,
+   "verifier bug": 2,
+   "grader bug": 1
+  },
+  "math500": {
+   "grader bug": 1,
+   "model wrong": 1
+  },
+  "mmmu": {
+   "model wrong": 15
+  },
+  "ocrbench": {
+   "model wrong": 13
+  },
+  "ruler_32k": {
+   "model wrong": 12
+  },
+  "ruler_64k": {
+   "model wrong": 12
+  }
+ }
+}

@@ -1,0 +1,76 @@
+{
+ "per_bench": {
+  "aime2025": {
+   "n": 20,
+   "accuracy": 0.9,
+   "tokens_total": 646159,
+   "calls": 59
+  },
+  "aime2026": {
+   "n": 20,
+   "accuracy": 0.9,
+   "tokens_total": 585085,
+   "calls": 63
+  },
+  "gpqa": {
+   "n": 20,
+   "accuracy": 0.8,
+   "tokens_total": 339732,
+   "calls": 34
+  },
+  "gsm8k": {
+   "n": 66,
+   "accuracy": 0.9545,
+   "tokens_total": 337738,
+   "calls": 253
+  },
+  "ifeval": {
+   "n": 27,
+   "accuracy": 0.8889,
+   "prompt_strict": 0.8889,
+   "inst_strict": 0.878,
+   "tokens_total": 282731,
+   "calls": 75
+  },
+  "lcb": {
+   "n": 23,
+   "accuracy": 0.3913,
+   "tokens_total": 827949,
+   "calls": 74
+  },
+  "math500": {
+   "n": 25,
+   "accuracy": 0.92,
+   "tokens_total": 246364,
+   "calls": 82
+  },
+  "mmmu": {
+   "n": 45,
+   "accuracy": 0.6667,
+   "tokens_total": 680888,
+   "calls": 64
+  },
+  "ocrbench": {
+   "n": 50,
+   "accuracy": 0.74,
+   "score_per_1000": 740.0,
+   "tokens_total": 184470,
+   "calls": 69
+  },
+  "ruler_32k": {
+   "n": 33,
+   "accuracy": 0.6364,
+   "mean_score": 0.6955,
+   "tokens_total": 3020899,
+   "calls": 65
+  },
+  "ruler_64k": {
+   "n": 33,
+   "accuracy": 0.6364,
+   "mean_score": 0.6465,
+   "tokens_total": 3809260,
+   "calls": 53
+  }
+ },
+ "mean_over_benches": 0.773
+}

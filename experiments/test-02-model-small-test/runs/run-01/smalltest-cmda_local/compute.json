@@ -1,0 +1,10 @@
+{
+ "run_seconds": 6456.2,
+ "servers": {
+  "cmda": {
+   "gpus": 4,
+   "gpu_seconds_run": 25824.9,
+   "gpu_seconds_incl_startup": 28948.0
+  }
+ }
+}

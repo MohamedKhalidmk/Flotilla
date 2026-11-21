@@ -1,0 +1,8 @@
+{
+  "name": "qwen",
+  "model": "Qwen/Qwen3.8-27B",
+  "n": 4856,
+  "correct": 2805,
+  "tokens_out": 11135136,
+  "wall_seconds": 8882.5
+}

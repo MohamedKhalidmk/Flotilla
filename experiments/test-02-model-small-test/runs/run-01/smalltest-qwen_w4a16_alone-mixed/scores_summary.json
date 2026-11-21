@@ -1,0 +1,25 @@
+{
+ "per_bench": {
+  "gpqa": {
+   "n": 20,
+   "accuracy": 0.85,
+   "tokens_total": 373815,
+   "calls": 62
+  },
+  "ifeval": {
+   "n": 27,
+   "accuracy": 0.963,
+   "prompt_strict": 0.963,
+   "inst_strict": 0.9756,
+   "tokens_total": 287331,
+   "calls": 100
+  },
+  "lcb": {
+   "n": 23,
+   "accuracy": 0.7391,
+   "tokens_total": 697544,
+   "calls": 83
+  }
+ },
+ "mean_over_benches": 0.8507
+}

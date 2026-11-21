@@ -1,0 +1,8 @@
+test: 03
+pool: router pool, leakage-checked (4,760 questions)
+labels: flotilla/label_loop.py through the real loop, Qwen W4A16 and gpt-oss-20b
+split: 10% held-out by question id (476), train 4,284 (flotilla/router_b.py split)
+routers:
+  router_b: ModernBERT-base fine-tune (flotilla/router_b.py)
+  baseline: bge-small + logistic regression (flotilla/router_b_lite.py)
+rule: "keep gpt-oss only if the router adds about 1 point or more over Qwen alone on held-out"

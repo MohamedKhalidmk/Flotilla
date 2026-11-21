@@ -1,0 +1,29 @@
+{
+ "per_bench": {
+  "aime2025": {
+   "n": 20,
+   "accuracy": 1.0,
+   "tokens_total": 375269,
+   "calls": 72
+  },
+  "aime2026": {
+   "n": 20,
+   "accuracy": 1.0,
+   "tokens_total": 305887,
+   "calls": 65
+  },
+  "gsm8k": {
+   "n": 66,
+   "accuracy": 1.0,
+   "tokens_total": 221631,
+   "calls": 216
+  },
+  "math500": {
+   "n": 25,
+   "accuracy": 0.96,
+   "tokens_total": 129900,
+   "calls": 80
+  }
+ },
+ "mean_over_benches": 0.99
+}

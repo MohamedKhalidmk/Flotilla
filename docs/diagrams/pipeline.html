@@ -1,0 +1,87 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<style>
+@font-face{font-family:Nun;src:url(Nunito-700.ttf);font-weight:700}
+@font-face{font-family:Nun;src:url(Nunito-800.ttf);font-weight:800}
+@font-face{font-family:Nun;src:url(Nunito-600.ttf);font-weight:600}
+body{margin:0}
+svg text{font-family:Nun}
+</style></head><body>
+<svg id="art" width="1240" height="530" viewBox="0 0 1240 530"></svg>
+<script>
+const O='#2A2723', NAVY='#22344A', IV='#F3EFE6', CARD='#FFFDF8', LINE='#E2DCCF', INK='#2A2723', INK2='#5F5A52', YEL='#F2C230', RED='#C8362E';
+let h=`<defs>
+<radialGradient id="gHead" cx="35%" cy="30%" r="80%"><stop offset="0" stop-color="#FFE98A"/><stop offset=".55" stop-color="#F8D24A"/><stop offset="1" stop-color="#E9AE22"/></radialGradient>
+<linearGradient id="gBill" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFAD5C"/><stop offset="1" stop-color="#EE7E32"/></linearGradient>
+<linearGradient id="gCap" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#E2DED4"/></linearGradient>
+<marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 1 L9 5 L0 9 Z" fill="${NAVY}"/></marker>
+<marker id="arR" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 1 L9 5 L0 9 Z" fill="${RED}"/></marker>
+<filter id="sh" x="-10%" y="-10%" width="120%" height="140%"><feDropShadow dx="0" dy="3" stdDeviation="3" flood-color="#2A2723" flood-opacity=".10"/></filter>
+</defs>`;
+h+=`<rect width="1240" height="530" rx="28" fill="${IV}"/>`;
+function head(x,y,s,hat){
+  let g=`<g transform="translate(${x} ${y}) scale(${s})">`;
+  const HD="M-54 -28 C-56 -66 -28 -86 0 -86 C28 -86 56 -66 54 -28 C52 4 28 22 0 22 C-28 22 -52 4 -54 -28 Z";
+  g+=`<path d="${HD}" fill="url(#gHead)" stroke="${O}" stroke-width="5" stroke-linejoin="round"/>`;
+  g+=`<ellipse cx="-30" cy="-58" rx="12" ry="6.5" transform="rotate(-30 -30 -58)" fill="#fff" opacity=".7"/>`;
+  if(hat==='captain'){
+    g+=`<path d="M-50 -44 L50 -44" stroke="${O}" stroke-width="4.5" stroke-linecap="round"/>`;
+    g+=`<path d="M-42 -46 L-8 -46 C-8 -34 -14 -26 -26 -26 C-38 -26 -42 -34 -42 -46 Z M8 -46 L42 -46 C42 -34 38 -26 26 -26 C14 -26 8 -34 8 -46 Z" fill="#1d1d1f" stroke="${O}" stroke-width="3.5" stroke-linejoin="round"/>`;
+  } else {
+    g+=`<circle cx="-20" cy="-38" r="7" fill="${O}"/><circle cx="-18" cy="-40" r="2.4" fill="#fff"/><circle cx="20" cy="-38" r="7" fill="${O}"/><circle cx="22" cy="-40" r="2.4" fill="#fff"/>`;
+  }
+  g+=`<path d="M-30 -14 C-30 -24 30 -26 34 -16 C36 -8 20 -4 0 -4 C-18 -4 -30 -6 -30 -14 Z" fill="url(#gBill)" stroke="${O}" stroke-width="4" stroke-linejoin="round"/>`;
+  if(hat==='captain'){
+    g+=`<path d="M-46 -70 C-62 -96 -40 -118 0 -118 C40 -118 62 -96 46 -70 Z" fill="url(#gCap)" stroke="${O}" stroke-width="5" stroke-linejoin="round"/>`;
+    g+=`<path d="M-46 -80 C-16 -86 16 -86 46 -80 L46 -68 C16 -74 -16 -74 -46 -68 Z" fill="${NAVY}" stroke="${O}" stroke-width="3.5" stroke-linejoin="round"/>`;
+    g+=`<path d="M-44 -68 C-20 -72 20 -72 44 -68 C48 -58 30 -52 0 -52 C-30 -52 -48 -58 -44 -68 Z" fill="#1d1d1f" stroke="${O}" stroke-width="3.5"/>`;
+    g+=`<circle cx="0" cy="-94" r="11" fill="#D4AE62" stroke="${O}" stroke-width="3"/>`;
+  } else {
+    g+=`<path d="M-34 -78 C-34 -100 34 -100 34 -78 Z" fill="url(#gCap)" stroke="${O}" stroke-width="5" stroke-linejoin="round"/>`;
+    g+=`<path d="M-48 -82 C-50 -70 -36 -66 0 -66 C36 -66 50 -70 48 -82 C30 -76 -30 -76 -48 -82 Z" fill="url(#gCap)" stroke="${O}" stroke-width="5" stroke-linejoin="round"/>`;
+  }
+  return g+`</g>`;
+}
+function card(x,y,w,ht,title,sub,{accent=NAVY,icon=null,tag=null}={}){
+  let g=`<g filter="url(#sh)"><rect x="${x}" y="${y}" width="${w}" height="${ht}" rx="18" fill="${CARD}" stroke="${LINE}" stroke-width="1.5"/></g>`;
+  g+=`<rect x="${x}" y="${y+16}" width="5" height="${ht-32}" rx="2.5" fill="${accent}"/>`;
+  const tx = icon ? x+74 : x+22;
+  if(icon) g+=icon;
+  g+=`<text x="${tx}" y="${y+ (sub?36:ht/2+6)}" font-size="17" font-weight="800" fill="${INK}">${title}</text>`;
+  if(sub) sub.forEach((l,i)=> g+=`<text x="${tx}" y="${y+58+i*19}" font-size="13" font-weight="600" fill="${INK2}">${l}</text>`);
+  if(tag) g+=`<rect x="${x+w-tag.length*7.6-26}" y="${y+14}" width="${tag.length*7.6+14}" height="22" rx="11" fill="${accent}"/><text x="${x+w-19}" y="${y+29.5}" font-size="11.5" font-weight="800" fill="#fff" text-anchor="end">${tag}</text>`;
+  return g;
+}
+function arrow(d,col=NAVY,dash=false){return `<path d="${d}" stroke="${col}" stroke-width="2.6" fill="none" ${dash?'stroke-dasharray="6 6"':''} marker-end="url(#${col===RED?'arR':'ar'})"/>`;}
+function scard(x,y,w,ht,title,line,{accent=NAVY,icon=null}={}){
+  let g=`<g filter="url(#sh)"><rect x="${x}" y="${y}" width="${w}" height="${ht}" rx="16" fill="${CARD}" stroke="${LINE}" stroke-width="1.5"/></g>`;
+  g+=`<rect x="${x}" y="${y+12}" width="5" height="${ht-24}" rx="2.5" fill="${accent}"/>`;
+  if(icon) g+=icon;
+  g+=`<text x="${x+64}" y="${y+27}" font-size="16" font-weight="800" fill="${INK}">${title}</text>`;
+  g+=`<text x="${x+64}" y="${y+47}" font-size="12.5" font-weight="600" fill="${INK2}">${line}</text>`;
+  return g;
+}
+// cards
+h+=card(30,255,140,70,'Question',null,{accent:'#8E887D'});
+h+=card(205,215,225,150,'Router',['the captain: Qwen','picks a route or','a combo per question'],{icon:head(245,281,.42,'captain')});
+const S=[['Fast','thinking off, one answer',NAVY],['Deep','full thinking',NAVY],
+         ['Tools','sympy, Python, constraint checks',NAVY],['Vote','five samples, majority wins',NAVY],
+         ['Memory','GRAFT facts from a T-REx graph',YEL]];
+const SX=480, SW=300, SH=62, SY0=118, SG=78;
+S.forEach(([t,l,c],i)=>{ const y=SY0+i*SG; h+=scard(SX,y,SW,SH,t,l,{accent:c,icon:head(SX+33,y+44,.25,'crew')}); });
+h+=card(850,215,170,150,'Verifier',['exact checks first,','then an LLM','if none exists']);
+h+=card(1070,255,140,70,'Answer',null,{accent:'#2E7D4F'});
+// arrows
+h+=arrow('M170 290 L201 290');
+S.forEach((_,i)=>{ const y=SY0+i*SG+SH/2; h+=arrow(`M430 290 C455 290 452 ${y} ${SX-4} ${y}`); h+=arrow(`M${SX+SW} ${y} C${SX+SW+28} ${y} ${818} 290 ${846} 290`); });
+h+=arrow('M1020 290 L1066 290');
+// retry loop
+h+=arrow('M935 215 C935 70 760 66 700 112', RED, true);
+h+=`<text x="958" y="132" font-size="13" font-weight="800" fill="${RED}">rejected:</text><text x="958" y="150" font-size="13" font-weight="800" fill="${RED}">one retry, told why</text>`;
+// title
+h+=`<text x="30" y="44" font-size="24" font-weight="800" fill="${INK}">How a question sails through</text>`;
+h+=`<text x="30" y="70" font-size="14" font-weight="600" fill="${INK2}">One model, five routes, combined when it helps. Every step is logged</text>`;
+h+=`<text x="30" y="88" font-size="14" font-weight="600" fill="${INK2}">per question (tokens, GPU time, which route answered and why).</text>`;
+document.getElementById('art').innerHTML=h;
+</script>
+</body></html>

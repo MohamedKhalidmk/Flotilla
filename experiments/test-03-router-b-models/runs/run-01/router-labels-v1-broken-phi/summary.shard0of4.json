@@ -1,0 +1,10 @@
+{
+  "shard": 0,
+  "num_shards": 4,
+  "name": "phi",
+  "model": "microsoft/Phi-4-reasoning-plus",
+  "n": 1214,
+  "correct": 0,
+  "tokens_out": 18330954,
+  "wall_seconds": 18589.1
+}

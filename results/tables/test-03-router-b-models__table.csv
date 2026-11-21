@@ -1,0 +1,6 @@
+system,held_out_accuracy,gain_over_qwen,held_out_questions,source
+Qwen alone,0.895,0.0,476,run-02/router/router_b_modernbert/router_b.json
+gpt-oss alone,0.8529,-0.0421,476,run-02/router/router_b_modernbert/router_b.json
+"Router B: ModernBERT-base fine-tune (final epoch, saved)",0.8992,0.0042,476,run-02/router/router_b_modernbert/router_b.json
+Baseline: bge-small + logistic regression,0.8866,-0.0084,476,run-02/router/router_b_lite/meta.json
+Perfect router,0.9412,0.0462,476,run-02/router/router_b_modernbert/router_b.json

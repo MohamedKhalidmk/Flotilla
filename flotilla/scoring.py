@@ -22,7 +22,9 @@ def strip_fence(code: str) -> str:
 
 
 def math_verify(pred, item):
-    return {"correct": bool(pred) and tools.sympy_check(pred, item["gold"])["ok"]}
+    from flotilla.label_loop import math_format_match  # 2026-11-20: dollar, \\text{} and option-letter answers
+    return {"correct": bool(pred) and (tools.sympy_check(pred, item["gold"])["ok"]
+                                       or math_format_match(item.get("task", ""), pred, str(item["gold"])))}
 
 
 def mc_letter(pred, item):
@@ -98,7 +100,7 @@ def lcb(pred, item, timeout_s: float = 6.0):
                 ok = False
         else:
             r = tools.python_exec(code, t["input"], timeout_s)
-            ok = r["ok"] and (r["output"] or "").strip().split() == str(t["output"]).strip().split()
+            ok = r["ok"] and tools.same_tokens((r["output"] or "").strip().split(), str(t["output"]).strip().split())
         if not ok:
             break
         n_ok += 1

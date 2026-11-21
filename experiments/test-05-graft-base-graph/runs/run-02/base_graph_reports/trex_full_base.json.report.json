@@ -1,0 +1,13 @@
+{
+ "outside": 1217443,
+ "dropped_same_as_document_fact": 974,
+ "dropped_question_topic_entity": 1053,
+ "dropped_embedding_cosine_0.95": 0,
+ "kept": 1215416,
+ "relations": 45,
+ "graph_entities": 344996,
+ "graph_facts": 1215416,
+ "graph_supersedes_edges": 0,
+ "graph_current_facts": 1215416,
+ "question_topic_entities": 114
+}

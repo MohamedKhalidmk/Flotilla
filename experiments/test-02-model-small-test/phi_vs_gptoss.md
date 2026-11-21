@@ -1,0 +1,8 @@
+MATH-500 small set (25 dev items). Qwen FP8 got all 25 right.
+
+| model | n | correct | mean_output_tokens | hit_token_cap | right_where_qwen_wrong |
+|---|---|---|---|---|---|
+| Phi-4-reasoning-plus FP8 (ours), cap 30,000 | 25 | 21 | 24354 | 18 | 0 |
+| gpt-oss-20b, effort low, cap 32,768 | 25 | 23 | 701 | 0 | 0 |
+| gpt-oss-20b, effort medium, cap 32,768 | 25 | 24 | 2480 | 0 | 0 |
+| gpt-oss-20b, effort high, cap 32,768 | 25 | 21 | 7232 | 4 | 0 |

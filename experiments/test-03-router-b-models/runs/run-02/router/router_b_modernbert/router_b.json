@@ -1,0 +1,48 @@
+{
+  "base": "answerdotai/ModernBERT-base",
+  "models": [
+    "qwen",
+    "gptoss"
+  ],
+  "types": [
+    "math",
+    "code",
+    "science_mc",
+    "instruction",
+    "legal",
+    "general"
+  ],
+  "margin": 0.1,
+  "train_items": 4284,
+  "val_items": 476,
+  "epochs": 3,
+  "lr": 3e-05,
+  "max_len": 1024,
+  "seconds": 207.7,
+  "val_log": [
+    {
+      "epoch": 1,
+      "type_acc": 0.9958,
+      "routed_acc": 0.9055,
+      "oracle_acc": 0.9412,
+      "qwen_alone_acc": 0.895,
+      "gptoss_alone_acc": 0.8529
+    },
+    {
+      "epoch": 2,
+      "type_acc": 1.0,
+      "routed_acc": 0.8992,
+      "oracle_acc": 0.9412,
+      "qwen_alone_acc": 0.895,
+      "gptoss_alone_acc": 0.8529
+    },
+    {
+      "epoch": 3,
+      "type_acc": 0.9979,
+      "routed_acc": 0.8992,
+      "oracle_acc": 0.9412,
+      "qwen_alone_acc": 0.895,
+      "gptoss_alone_acc": 0.8529
+    }
+  ]
+}

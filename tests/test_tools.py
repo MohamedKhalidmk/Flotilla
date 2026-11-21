@@ -28,3 +28,76 @@ def test_constraint_check_json_and_ending():
     task = 'Wrap your entire output in JSON format. End your response with the exact phrase "Is there anything else?"'
     assert not tools.constraint_check(task, '{"a": 1}')["ok"]          # json ok, ending missing
     assert tools.constraint_check("Wrap your entire output in JSON format.", '```json\n{"a": 1}\n```')["ok"]
+
+
+# 2026-11-20 hand check of test-04 failures: each case below was a correct answer the checks failed.
+
+def test_forbidden_keywords_are_not_required():
+    from flotilla.tools import constraint_check
+    task = "Do not include keywords laborage, narcomatous, lampful in the response. What is the sentiment?"
+    assert constraint_check(task, "negative")["ok"]
+    assert not constraint_check(task, "negative, a lampful of it")["ok"]
+
+
+def test_postscript_uses_the_asked_phrase_after_the_main_text():
+    from flotilla.tools import constraint_check
+    task = "At the end of your response, please explicitly add a postscript starting with Addendum:\nQuestion?"
+    assert constraint_check(task, "BLEU and ROUGE. Addendum: also BERTScore.")["ok"]
+    assert not constraint_check(task, "Addendum: BLEU and ROUGE.")["ok"]
+    task2 = "At the end of your response, please explicitly add a postscript starting with PS: Creatively image a question"
+    assert constraint_check(task2, "it is not possible to tell\nPS: Question: ...")["ok"]
+
+
+def test_markdown_divider_paragraphs():
+    from flotilla.tools import constraint_check
+    task = "Your response should contain 2 paragraphs. You separate paragraphs using the markdown divider: * * *"
+    assert constraint_check(task, "First part.\n\n* * *\n\nSecond part.")["ok"]
+    assert not constraint_check(task, "Only one part.")["ok"]
+
+
+def test_capital_word_limit_is_a_count():
+    from flotilla.tools import constraint_check
+    task = "In your response, words with all capital letters should appear at most 2 times. Explain."
+    assert constraint_check(task, "This is NOT shouting.")["ok"]
+    assert not constraint_check(task, "THIS IS ALL SHOUTING")["ok"]
+
+
+def test_whole_output_json_is_met_by_the_loop():
+    from flotilla.tools import constraint_check
+    task = "Entire output should be wrapped in JSON format. Where is a basketball court likely to be outdoors?"
+    assert constraint_check(task, "park", loop_wrapped=True)["ok"]
+    assert not constraint_check(task, "park")["ok"]
+    bullets = ("Your answer must contain exactly 2 bullet points. Please format your results as a JSON array.")
+    assert constraint_check(bullets, "* a\n* b")["ok"]
+
+
+def test_float_outputs_within_tolerance():
+    from flotilla.tools import same_tokens
+    assert same_tokens(["215.913355350494385"], ["215.913355350494384765625"])
+    assert same_tokens(["0.749999999999999"], ["0.7500000000000000"])
+    assert not same_tokens(["0.74"], ["0.75"])
+    assert not same_tokens(["12"], ["13"])
+
+
+def test_math_format_matches():
+    from flotilla.label_loop import grade
+    assert grade({"task_type": "math", "task": "price?", "gold": "\\$3.50"}, "3.50")
+    assert grade({"task_type": "math", "task": "list", "gold": "\\text{Softball, Kickball, Picnic}"}, "Softball, Kickball, Picnic")
+    mc = "Which is closest?\n\nA. 0.10\n\nB. 0.15\n\nC. 0.20\n\nD. 0.25\n\n(Type the letter that corresponds to your answer.)"
+    assert grade({"task_type": "math", "task": mc, "gold": "0.20"}, "C")
+    assert not grade({"task_type": "math", "task": mc, "gold": "0.20"}, "B")
+    geo = "The area is:\n$\\textbf{(A)}\\ \\frac{bx}{h}(h-x)\\qquad \\textbf{(B)}\\ \\frac{hx}{b}(b-x)$"
+    assert grade({"task_type": "math", "task": geo, "gold": "\\frac{bx}{h}(h-x)"}, "A")
+
+
+def test_math_unicode_units_and_thousands():
+    from flotilla.label_loop import grade
+    g = lambda gold, ans: grade({"task_type": "math", "task": "q", "gold": gold}, ans)
+    assert g("(-\\infty,-2)\\cup(-2, 2)\\cup(2,\\infty)", "(-∞, -2) ∪ (-2, 2) ∪ (2, ∞)")
+    assert g("(-\\sqrt{2}, 0, \\sqrt{2})", "(-√2, 0, √2)")
+    assert g("\\$23{,}000", "23000")
+    assert g("\\$3.50", "3.5")
+    assert g("852", "852 BC")
+    assert g("4", "Brad, by 4 books")
+    assert not g("4", "Brad, by 4 books out of 26")
+    assert not g("670", "650")

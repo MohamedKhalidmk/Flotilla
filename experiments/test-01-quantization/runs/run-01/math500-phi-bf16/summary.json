@@ -1,0 +1,14 @@
+{
+  "name": "math500-phi-bf16",
+  "model": "microsoft/Phi-4-reasoning-plus",
+  "n": 500,
+  "accuracy": 0.824,
+  "correct": 412,
+  "truncated": 379,
+  "tokens_in": 155302,
+  "tokens_out": 12030474,
+  "wall_seconds": 21996.3,
+  "tp": 1,
+  "max_tokens": 30000,
+  "gen_tokens_per_s": 546.9
+}

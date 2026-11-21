@@ -52,12 +52,18 @@ def load_rows(pool: str, labels: dict[str, str]) -> tuple[list[dict], list[str]]
     return rows, models
 
 
+def split(rows: list[dict]) -> tuple[list[dict], list[dict]]:
+    """Held-out 10% chosen by question id (seeded), so every router variant is compared on the same questions."""
+    rows = sorted(rows, key=lambda r: r["id"])
+    random.Random(SEED).shuffle(rows)
+    n_val = max(50, len(rows) // 10)
+    return rows[:n_val], rows[n_val:]
+
+
 def train(a) -> None:
     labels = dict(kv.split("=", 1) for kv in a.labels)
     rows, models = load_rows(a.pool, labels)
-    random.Random(SEED).shuffle(rows)
-    n_val = max(50, len(rows) // 10)
-    val, tr = rows[:n_val], rows[n_val:]
+    val, tr = split(rows)
     dev = "cuda" if torch.cuda.is_available() else "cpu"
     tok = AutoTokenizer.from_pretrained(BASE)
     net = Net(BASE, len(models)).to(dev)

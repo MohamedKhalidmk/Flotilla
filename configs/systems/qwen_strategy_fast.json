@@ -1,0 +1,27 @@
+{
+ "servers": {
+  "qwen_w4a16": {
+   "url": "set-by-serve",
+   "model": "qwen_w4a16",
+   "quant": "w4a16-ours",
+   "native_tools": true,
+   "request": {
+    "extra_body": {
+     "chat_template_kwargs": {
+      "enable_thinking": false
+     }
+    }
+   }
+  }
+ },
+ "solvers": [
+  "qwen_w4a16"
+ ],
+ "max_tokens": 32768,
+ "protocol_version": "protocol-v10",
+ "name": "qwen_strategy_fast",
+ "notes": "Fast: no thinking, no tools, one answer.",
+ "tools": false,
+ "n_samples": 1,
+ "temperature": 0.6
+}

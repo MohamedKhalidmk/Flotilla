@@ -1,0 +1,14 @@
+{
+  "name": "math500-phi-fp8-ours",
+  "model": "/scratch/khaledmk/flotilla/quant/phi4-reasoning-plus-fp8",
+  "n": 500,
+  "accuracy": 0.82,
+  "correct": 410,
+  "truncated": 377,
+  "tokens_in": 155302,
+  "tokens_out": 12043088,
+  "wall_seconds": 17120.4,
+  "tp": 1,
+  "max_tokens": 30000,
+  "gen_tokens_per_s": 703.4
+}

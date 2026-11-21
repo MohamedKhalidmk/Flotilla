@@ -1,0 +1,2 @@
+T-REx triples 1,592,830 (on the 45 common properties: 1,235,996) | entities 360,511 (on those properties: 345,118)
+document entities 10,839 | exact overlap, all of T-REx: 6,396 (59.0%) | 45 properties only: 6,044 (55.8%)
