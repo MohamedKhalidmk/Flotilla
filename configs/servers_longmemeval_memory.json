@@ -1,5 +1,5 @@
 {
- "_note": "LongMemEval only (test 04, 2026-11-21): GRAFT graph builds (memory_route prepare), the four Memory routes and the judge. Same --max-model-len 163840 as the base routes; their prompts are short (a session chunk, a memory block or a judge prompt), so more sequences run at once. Memory 0.85 leaves room for GRAFT's embedder and GNN on the same GPU (as GRAFT's own Qwen jobs).",
+ "_note": "LongMemEval only (test 04, 2026-11-21): GRAFT graph builds (memory_route prepare) and the four Memory routes. The judge does not use this server: since the protocol-v10 addendum (2026-11-21) Claude Haiku 5.5 grades every route (memory_route judge --backend haiku, a CPU job); the Qwen judge stays behind --backend qwen only. Same --max-model-len 163840 as the base routes; their prompts are short (a session chunk or a memory block), so more sequences run at once. Memory 0.85 leaves room for GRAFT's embedder and GNN on the same GPU (as GRAFT's own Qwen jobs).",
  "qwen_w4a16": {"model": "/scratch/khaledmk/flotilla/quant/qwen3.8-27b-w4a16", "gpus": 1,
           "args": ["--max-model-len", "163840", "--gpu-memory-utilization", "0.85", "--max-num-seqs", "64", "--reasoning-parser", "qwen3",
                    "--enable-auto-tool-choice", "--tool-call-parser", "qwen3_coder"]}
