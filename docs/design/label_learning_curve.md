@@ -31,10 +31,10 @@ seed.
 Training measured in the dry run: about 4 minutes for the two ModernBERT routers on one H100, about 1 minute for bge +
 LR and kNN on CPU, about 10 minutes to evaluate. Seven training runs (2 fractions x 3 draws, plus 100%), all free.
 
-## Reading the result (proposed, to confirm with the user before it runs)
+## Reading the result (set by the user 2026-11-21, before any result)
 
-"Still climbing" = the best router's dev accuracy at 100% is above 75% by more than the 75% draws' spread and by at
-least 0.5 points (the tuning margin). Then the next step below; otherwise no new labels.
+"Still climbing" = the best router's dev accuracy at 100% beats its mean at 75% by more than the spread (max minus min)
+between the three 75% draws. Only then the next step below; otherwise no new labels.
 
 ## If still climbing: about 1,000 harder pool questions
 
