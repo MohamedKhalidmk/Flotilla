@@ -178,6 +178,8 @@ One line per decision, with its reason. Times are America/Vancouver unless marke
 - **2026-11-22, reasoning-graph route designed (user's idea):** F35, `docs/design/reasoning_graph_route_design.md`. Qwen plans up to 6 steps and writes question, steps, results and notes into an empty GRAFT graph (C v2's work layer), thinking off. Free pilot: 100 pool train questions (50 maths, 50 MMLU-Pro science), F35 against Deep and Fast the same day, all three arms on one GPU per job, 3 repeats. Keep rule (user, before any result): add it as a route only if it beats Deep by more than 1 point at similar compute, or matches Deep for clearly less. Compute definitions proposed, waiting on the user. Never ahead of the Memory work.
 - **2026-11-22, long-history design and truncation rule (user):** GRAFT `docs/design/graft_long_history_design.md`: FactConsolidation at 6k, 32k, 64k, 262k (G35 against full reading on Qwen), then 40 LongMemEval M dev histories (GRAFT against full reading, with S as reference). Starts after the writer v2 decision. Protocol-v10 addendum 2 (section 11), set before any run past the window: a route reading the whole history keeps the most recent sessions or chunks that fit; traces record what was kept.
 
+- **2026-11-22, F35 keep rule completed (user, before any run):** "similar compute" = within 25% of Deep's GPU-seconds; "clearly less" = at most 75% of Deep's; "matches" = within 1 point of Deep. Full results reported either way (accuracy with spread, GPU-seconds, per type).
+
 ### API spend (Anthropic)
 | When | What | Runs | Cost |
 |---|---|---|---|

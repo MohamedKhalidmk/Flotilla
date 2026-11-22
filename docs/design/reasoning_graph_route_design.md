@@ -65,9 +65,12 @@ is for questions about stored facts; maths needs Qwen's own plan), called from F
 Add F35 as a route only if it beats Deep by more than 1 point at similar compute, or matches Deep for clearly less
 compute.
 
-**Proposed definitions (for the user to confirm before any run):** "similar compute" = F35's GPU-seconds within 25%
+**Definitions (confirmed by the user, 2026-11-22, before any run):** "similar compute" = F35's GPU-seconds within 25%
 of Deep's on the same jobs; "clearly less" = at most 75% of Deep's; "matches" = within 1 point of Deep. On 100
 questions one question is 1 point, so the repeat spread is reported next to every difference.
+
+Whatever the outcome, the full results are reported: accuracy with the spread, GPU-seconds, and the per-type
+breakdown (user).
 
 If it passes, the next question is a prompt-only control (the same steps with no graph, as C- was for C), so the
 graph's own share is known before F35 joins the router's routes.
