@@ -211,6 +211,8 @@ One line per decision, with its reason. Times are America/Vancouver unless marke
 
 - **2026-11-22, F36 USC tie rule (user):** when no two of a free-text vote's answers match, one Qwen call (thinking off, temperature 0, `prompts/vote_usc.v1.md`, question only) picks the answer the others agree with most. First a replay on the 9 run-04 Vote+Tools losses where all five answers differed (S168, Fir 5208816), judged per sample with Haiku; the cost of any wider run goes to the user first.
 
+- **2026-11-22, majority of 3 Haiku verdicts (user):** two more verdicts per LongMemEval answer (`judge --repeats 2`, folder haiku-v10-r2, canary first, cap $1), combined with haiku-v10's verdict by `combine-verdicts` (majority per (item, route, answer); an answer in two folders takes the majority of all six, a tie going to its first three). New labels go to run-04-lme-maj3; run-04-lme stays; routers are not retrained yet.
+
 ### API spend (Anthropic)
 | When | What | Runs | Cost |
 |---|---|---|---|
