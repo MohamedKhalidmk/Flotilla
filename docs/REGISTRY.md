@@ -177,6 +177,13 @@ is the row above that names it. After approval each test's table gains a setup c
 ## 6. Conventions and open item
 
 - Next free IDs: F33, S159 (S shared with GRAFT).
+- F06 checked against the saved runs (2026-11-22): test 02's small test (`qwen_w4a16_alone`, Fir and Nibi), test 03's labels
+  (Trillium `labels-qwen_w4a16_alone`) and the Deep+Tools route (`strategy-labels/deep_tools`) served the same build
+  (`quant/qwen3.8-27b-w4a16`) with the same vLLM settings (qwen3_coder tool parser, qwen3 reasoning parser, seed 20261119,
+  131,072 context) and native tools. Temperature is the same too: one sample always runs at 0.0 (`flotilla/system.py`, since
+  09d3c93 of 2026-11-19, before test 02); Deep+Tools' `temperature: 0.6` applies only to several samples, and `qwen_w4a16_alone`
+  leaves it at the default, also 0.6, also unused. Test 02's RULER and vision groups ran without the tool parser, but those
+  groups offer no tools in either configuration. Only the protocol label differs (v9 vs v10). F06 stays one candidate.
 - Phi and Qwen FP8 "in the loop" (F05, F10): confirmed never run on Fir and Nibi; Trillium not checked.
 - Outside bare runs (S104, S105, S108-S114, S121, S122) have setups but no candidate ID.
 - Test 02 run-01 and test 03 run-02 are marked "scored before the grader fixes, audited" (user, 2026-11-21).
