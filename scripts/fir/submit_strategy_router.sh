@@ -21,15 +21,16 @@ GPU_TIME=${GPU_TIME:-0:10:00}; CPU_TIME=${CPU_TIME:-0:05:00}; EVAL_TIME=${EVAL_T
 mkdir -p "$OUT" "$SCRATCH/flotilla/logs"
 read -ra ITEM_GLOBS <<< "$ITEMS"  # several globs, space-separated (pool shards and LongMemEval items for run-04-lme)
 ARGS=(--labels "$LABELS" --items "${ITEM_GLOBS[@]}" --out "$OUT")
+read -ra TRAIN_ARGS <<< "${TRAIN_ARGS:-}"  # training only, e.g. TRAIN_ARGS="--train-frac 0.5 --frac-seed 20261121" (learning curve)
 JOB="$CODE/scripts/trillium/job.sbatch"
 G=$(sbatch --parsable --account=def-sylu_gpu --gpus-per-node=h100:1 --cpus-per-task=8 --mem=64G --time="$GPU_TIME" \
-  --job-name="sr-$MODE-mb" --chdir="$SCRATCH/flotilla/logs" "$JOB" python -m flotilla.strategy_router "$MODE" "${ARGS[@]}" \
+  --job-name="sr-$MODE-mb" --chdir="$SCRATCH/flotilla/logs" "$JOB" python -m flotilla.strategy_router "$MODE" "${ARGS[@]}" ${TRAIN_ARGS[@]+"${TRAIN_ARGS[@]}"} \
   --routers label success)
 C=$(sbatch --parsable --account=def-sylu_cpu --cpus-per-task=8 --mem=32G --time="$CPU_TIME" \
-  --job-name="sr-$MODE-emb" --chdir="$SCRATCH/flotilla/logs" "$JOB" python -m flotilla.strategy_router "$MODE" "${ARGS[@]}" \
+  --job-name="sr-$MODE-emb" --chdir="$SCRATCH/flotilla/logs" "$JOB" python -m flotilla.strategy_router "$MODE" "${ARGS[@]}" ${TRAIN_ARGS[@]+"${TRAIN_ARGS[@]}"} \
   --routers bge_lr knn --device cpu)
 # evaluate on a GPU: ModernBERT inference over 217 dev questions took over 10 min on 8 CPUs (dry run job 4864962)
 E=$(sbatch --parsable --account=def-sylu_gpu --gpus-per-node=h100:1 --cpus-per-task=8 --mem=64G --time="$EVAL_TIME" \
   --dependency="afterok:$G:$C" --job-name="sr-$MODE-eval" --chdir="$SCRATCH/flotilla/logs" "$JOB" \
-  python -m flotilla.strategy_router evaluate "${ARGS[@]}")
+  python -m flotilla.strategy_router evaluate "${ARGS[@]}" ${TRAIN_ARGS[@]+"${TRAIN_ARGS[@]}"})
 echo "gpu $G  cpu $C  eval $E  -> $OUT"

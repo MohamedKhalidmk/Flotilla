@@ -212,3 +212,16 @@ def test_item_text_longmemeval_reads_the_question(tmp_path):
     f = tmp_path / "items.jsonl"
     f.write_text(json.dumps(lme) + "\n" + json.dumps(pool) + "\n")
     assert read_texts([str(f)], {"lme-1", "p-1"}) == {"lme-1": t, "p-1": "What is 2 + 2?"}
+
+
+def test_train_subset_nested_stratified_and_seeded():
+    from flotilla.strategy_router import train_subset
+    rows = {f"m{i}": {"source": "math", "task_type": "math"} for i in range(40)}
+    rows.update({f"l{i}": {"source": "longmemeval", "task_type": "memory"} for i in range(20)})
+    ids = sorted(rows)
+    half, three = train_subset(ids, rows, 0.5, 7), train_subset(ids, rows, 0.75, 7)
+    assert set(half) <= set(three) and train_subset(ids, rows, 1.0, 7) == ids
+    assert sum(i.startswith("m") for i in half) == 20 and sum(i.startswith("l") for i in half) == 10
+    assert sum(i.startswith("l") for i in three) == 15
+    assert train_subset(ids, rows, 0.5, 7) == half and train_subset(ids, rows, 0.5, 8) != half
+    assert half == [i for i in ids if i in set(half)]

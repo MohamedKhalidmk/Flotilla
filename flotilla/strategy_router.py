@@ -53,6 +53,7 @@ import csv
 import glob
 import hashlib
 import json
+import math
 import pickle
 import platform
 import random
@@ -177,12 +178,37 @@ def row_routes(row: dict) -> list[str]:
     return [k for k, v in row.items() if isinstance(v, dict) and "correct" in v]
 
 
-def load(labels: str, items: list[str], names: list[str], held_out_ok: bool = False) -> tuple[dict, dict]:
-    """Splits by name plus info {routes, cost, rate, hashes}. Routes = every route seen in the loaded rows."""
+def train_subset(train_ids: list, rows: dict, frac: float, seed: int) -> list:
+    """A fraction of the train ids for the label learning curve (docs/design/label_learning_curve.md): stratified by
+    (source, task_type) and nested, so for one seed the 50% set lies inside the 75% set. Each stratum's ids are sorted,
+    shuffled once with the seed, and the first ceil(frac * n) kept; the order of train_ids is preserved."""
+    if not 0 < frac <= 1:
+        raise SystemExit(f"--train-frac must be in (0, 1], got {frac}")
+    if frac == 1:
+        return list(train_ids)
+    strata = defaultdict(list)
+    for i in sorted(train_ids):
+        strata[(rows[i].get("source"), rows[i].get("task_type"))].append(i)
+    rng = random.Random(seed)
+    keep = set()
+    for k in sorted(strata, key=str):
+        s = strata[k]
+        rng.shuffle(s)
+        keep.update(s[:math.ceil(frac * len(s))])
+    return [i for i in train_ids if i in keep]
+
+
+def load(labels: str, items: list[str], names: list[str], held_out_ok: bool = False,
+         train_frac: float = 1.0, frac_seed: int = 0) -> tuple[dict, dict]:
+    """Splits by name plus info {routes, cost, rate, hashes}. Routes = every route seen in the loaded rows.
+    train_frac < 1 keeps a nested stratified fraction of train (train_subset); dev and held-out are unchanged."""
     lab = Path(labels)
     ids = read_split_ids(lab, names, held_out_ok)
     wanted = {i for v in ids.values() for i in v}
     rows = read_rows(lab, wanted)
+    if "train" in ids and train_frac != 1:
+        ids["train"] = train_subset(ids["train"], {i: rows[i] for i in ids["train"] if i in rows}, train_frac, frac_seed)
+        wanted = {i for v in ids.values() for i in v}
     texts = {i: rows[i]["task"] for i in rows if "task" in rows[i]}
     need = wanted - set(texts)
     if need:
@@ -542,7 +568,8 @@ def _env() -> dict:
 def train_routers(a, log=print) -> dict:
     """Fit on train, tune on dev; save each router under out/<router>/ with meta.json. Never loads held-out."""
     set_seed(a.seed)
-    sp, info = load(a.labels, a.items, ["train", "dev"])
+    sp, info = load(a.labels, a.items, ["train", "dev"], train_frac=getattr(a, "train_frac", 1.0),
+                    frac_seed=getattr(a, "frac_seed", 0))
     train, dev_sp = sp["train"], sp["dev"]
     out = Path(a.out)
     out.mkdir(parents=True, exist_ok=True)
@@ -553,7 +580,8 @@ def train_routers(a, log=print) -> dict:
         f"GPU-s {ref['gpu_seconds']:.2f})")
     common = {"seed": a.seed, "routes": info["routes"], "cost_gpu_s": info["cost_gpu_s"], "label_hashes": info["label_hashes"],
               "labels_dir": info["labels_dir"], "train_items": len(train), "dev_items": len(dev_sp), "tune": a.tune,
-              "margin": a.margin, "best_fixed_route": train.routes[bf], "env": _env(), "dry_run": bool(a.dry_run),
+              "margin": a.margin, "best_fixed_route": train.routes[bf],
+              "train_frac": getattr(a, "train_frac", 1.0), "frac_seed": getattr(a, "frac_seed", 0), "env": _env(), "dry_run": bool(a.dry_run),
               "args": {k: v for k, v in vars(a).items() if k != "func"}}
     done = {}
     x_tr = x_dev = None
@@ -662,7 +690,7 @@ def write_table(out: Path, stem: str, rows: list[dict], note: str) -> None:
 
 def evaluate_routers(a, log=print) -> list[dict]:
     split = "held_out" if a.held_out else "dev"
-    sp, info = load(a.labels, a.items, ["train", split], held_out_ok=a.held_out)
+    sp, info = load(a.labels, a.items, ["train", split], held_out_ok=a.held_out, train_frac=a.train_frac, frac_seed=a.frac_seed)
     train, ev = sp["train"], sp[split]
     out = Path(a.out)
     bf = best_fixed(train, info["summary_accuracy"], a.best_fixed)
@@ -727,6 +755,9 @@ def main(argv=None) -> None:
         p.add_argument("--seed", type=int, default=SEED)
         p.add_argument("--device", default=None)
         p.add_argument("--best-fixed", default=None, help="keep-rule reference route (default: best in summary.json)")
+        p.add_argument("--train-frac", type=float, default=1.0,
+                       help="learning curve: keep this nested stratified fraction of train (evaluate with the same value: kNN reads train)")
+        p.add_argument("--frac-seed", type=int, default=0, help="learning curve: seed of the --train-frac draw")
         if c == "evaluate":
             p.add_argument("--held-out", action="store_true", help="evaluate on held-out (once, at the end); dev otherwise")
             continue
