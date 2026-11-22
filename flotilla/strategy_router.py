@@ -416,6 +416,11 @@ class LRRouter:
 
 
 LRRouter.__module__ = "flotilla.strategy_router"  # pickles load from any module, also when run with -m
+if __name__ == "__main__":
+    # run with -m, this module is __main__: register it under its import name too, so pickle finds the very class it
+    # saves (renaming the class alone failed: "not the same object", Fir job 5124549)
+    import sys as _sys
+    _sys.modules.setdefault("flotilla.strategy_router", _sys.modules[__name__])
 
 
 def knn_proba(x: np.ndarray, xt: np.ndarray, train: Split, k: int) -> np.ndarray:
@@ -746,6 +751,7 @@ def evaluate_routers(a, log=print) -> list[dict]:
 def main(argv=None) -> None:
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     sub = ap.add_subparsers(dest="cmd", required=True)
+    sub.add_parser("pickle-check", help="save and load an LRRouter the way train does (tests)")
     for c in ("train", "evaluate", "dry-run"):
         p = sub.add_parser(c)
         p.add_argument("--labels", required=True, help="graded folder: per_question.jsonl, split.json, summary.json")
@@ -772,6 +778,12 @@ def main(argv=None) -> None:
         p.add_argument("--max-steps", type=int, default=0 if c == "train" else 6, help="ModernBERT: cap optimiser steps (0 = none)")
         p.add_argument("--balanced", action="store_true", help="label router: class-balanced cross-entropy")
     a = ap.parse_args(argv)
+    if a.cmd == "pickle-check":
+        import io
+        buf = io.BytesIO()
+        pickle.dump(LRRouter(1.0, 0), buf)
+        print("pickle ok", type(pickle.loads(buf.getvalue())).__module__)
+        return
     t0 = time.time()
     if a.cmd in ("train", "dry-run"):
         a.dry_run = a.cmd == "dry-run"

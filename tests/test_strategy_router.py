@@ -225,3 +225,14 @@ def test_train_subset_nested_stratified_and_seeded():
     assert sum(i.startswith("l") for i in three) == 15
     assert train_subset(ids, rows, 0.5, 7) == half and train_subset(ids, rows, 0.5, 8) != half
     assert half == [i for i in ids if i in set(half)]
+
+
+def test_lr_router_pickles_when_run_with_dash_m():
+    """Fir job 5124549 failed to pickle LRRouter when the module ran as __main__ (python -m)."""
+    import subprocess, sys
+    from pathlib import Path
+    root = Path(__file__).resolve().parent.parent
+    r = subprocess.run([sys.executable, "-m", "flotilla.strategy_router", "pickle-check"], cwd=root,
+                       capture_output=True, text=True, env={**__import__("os").environ, "PYTHONPATH": str(root)})
+    assert r.returncode == 0, r.stderr[-2000:]
+    assert "pickle ok flotilla.strategy_router" in r.stdout
