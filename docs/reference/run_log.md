@@ -171,6 +171,9 @@ One line per decision, with its reason. Times are America/Vancouver unless marke
 
 - **2026-11-22, LLM verifier (user):** verifier v2's LLM check was in `prompts/verifier.v2.md` but never ran, so free-text task types were accepted with no check. Built (`flotilla/system.py`, `llm_check`, 4 tests) as new candidates F33 (Fast + check) and F34 (Deep + check); F15 and F17 stay the baselines. Checker: Qwen on the solver's server, thinking off, temperature 0, 1,024 tokens, full task text; a reject gets the existing one retry; a reply with no verdict accepts. Test 06: LongMemEval dev only (76), 4 arms x 3 repeats, same day, free (Fir 5143762-5143791 twinned with Nibi 28424070-28424093). **Keep rule (user, set before any result):** keep the check only if it beats its baseline by more than the repeat spread without turning more right answers wrong than it fixes; otherwise drop it and log why. Labels untouched until the user decides.
 
+- **2026-11-22, Open experiments table (user):** `docs/session/STATUS.md` (both repos) holds the Open experiments table: experiment, IDs, state (queued, running, waiting on me, done, parked, dropped), one-line result, next step, last changed. Updated with every report; rows are never deleted; every report starts with "Status changes"; dropping, parking or reverting anything needs the user's yes and a run-log line. `tests/test_session_docs.py` checks the columns, states and that row numbers have no gap.
+- **2026-11-22, chat guide (G44) inputs done:** Dialogue NLI leakage check (Fir 5133851, 13-gram and embedding against LongMemEval and every test set): 106 of 98,229 units flagged and dropped (train 99, dev 4, test 3). Chat guide built (Fir 5133880, `$HOME/scratch/sgar/results/checkpoints/chat_guide.json`): 7,081 triples, 59 relations, 657 triples dropped by the leakage filter. The comparison waits for the writer-v2 graphs.
+
 ### API spend (Anthropic)
 | When | What | Runs | Cost |
 |---|---|---|---|

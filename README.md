@@ -133,7 +133,7 @@ Index and rules for adding a test: [`experiments/INDEX.md`](experiments/INDEX.md
 | `experiments/` | Numbered tests: README, config, runs, table, figure; `legacy/` for results no decision rests on |
 | `results/` | `tables/` (copies of every test table) and `figures/` (charts drawn from them) |
 | `reports/` | Leakage checks (`leakage/`: the router pool and LongMemEval, which the labels rest on) |
-| `docs/` | `reference/` (PROTOCOL, REGISTRY, run log, PROMPTS), `session/` (handoff, working setup, project history; the same in GRAFT), `design/` (designs, theme, chart script), `diagrams/` |
+| `docs/` | `reference/` (PROTOCOL, REGISTRY, run log, PROMPTS), `session/` (handoff, status, working setup, project history; the same in GRAFT), `design/` (designs, theme, chart script), `diagrams/` |
 | `scripts/` | Cluster setup and job scripts: `trillium/`, `nibi/`, `fir/`, `mac/` |
 | `notes/` | Research behind the protocol |
 | `tests/` | Unit tests for tools and the system loop |
