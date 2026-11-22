@@ -19,7 +19,8 @@ OUT=$SCRATCH/flotilla/runs/strategy-router/$NAME
 # Real training: 2 routers x 3 epochs x 64 steps ~ 1.5-2.5 min of steps + loading, about 4 min; +50% and startup.
 GPU_TIME=${GPU_TIME:-0:10:00}; CPU_TIME=${CPU_TIME:-0:05:00}; EVAL_TIME=${EVAL_TIME:-0:10:00}
 mkdir -p "$OUT" "$SCRATCH/flotilla/logs"
-ARGS=(--labels "$LABELS" --items "$ITEMS" --out "$OUT")
+read -ra ITEM_GLOBS <<< "$ITEMS"  # several globs, space-separated (pool shards and LongMemEval items for run-04-lme)
+ARGS=(--labels "$LABELS" --items "${ITEM_GLOBS[@]}" --out "$OUT")
 JOB="$CODE/scripts/trillium/job.sbatch"
 G=$(sbatch --parsable --account=def-sylu_gpu --gpus-per-node=h100:1 --cpus-per-task=8 --mem=64G --time="$GPU_TIME" \
   --job-name="sr-$MODE-mb" --chdir="$SCRATCH/flotilla/logs" "$JOB" python -m flotilla.strategy_router "$MODE" "${ARGS[@]}" \
