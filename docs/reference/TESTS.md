@@ -1,6 +1,6 @@
 # Tests (Flotilla)
 
-121 tests in 16 files, in plain words. Generated from each test's docstring by `scripts/make_tests_doc.py`; to change a line, edit the docstring and rerun the script. `tests/test_tests_doc.py` fails if a test is missing here or a line is out of date. The Gaps section at the end is written by hand.
+122 tests in 16 files, in plain words. Generated from each test's docstring by `scripts/make_tests_doc.py`; to change a line, edit the docstring and rerun the script. `tests/test_tests_doc.py` fails if a test is missing here or a line is out of date. The Gaps section at the end is written by hand.
 
 ## [tests/test_error_stages.py](../../tests/test_error_stages.py)
 
@@ -100,6 +100,7 @@ Memory routes (flotilla/memory_route.py): availability, GRAFT documents, cache k
 | `test_majority_of_three_verdicts` | Checks that combine takes the majority of three verdicts per (item, route, answer), of all six when one answer sits in two folders (a tie going to the first three), keeps a missing answer wrong, and reports other counts. | one noisy Haiku verdict deciding a label (identical prompts got both yes and no), or a missing repeat passing silently. |
 | `test_judge_repeats_write_one_row_per_repeat` | Checks that judge with --repeats 2 judges every answer twice, tags rows with repeat 0 and 1, and a rerun skips rows already written. | a resumed repeat job paying twice for the same verdict, or repeats that cannot be told apart. |
 | `test_hand_override_changes_only_the_named_answer` | Checks that a hand override sets the verdict only for the exact answer text it names, keeps the judge's verdict as judge_correct with the evidence, and that an override matching nothing is reported. | an override silently widening to other answers, or a stale override passing unnoticed. |
+| `test_gold_in_facts_is_fact_level` | Checks that fact-level evidence needs the normalised gold inside the shown facts' text, and does not apply to preference or abstention questions. | counting a question as having its evidence shown because some unrelated fact from the right session was shown. |
 
 ## [tests/test_references.py](../../tests/test_references.py)
 

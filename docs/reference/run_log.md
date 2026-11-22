@@ -237,6 +237,8 @@ One line per decision, with its reason. Times are America/Vancouver unless marke
 
 - **2026-11-22, history rewrite pushed (user approved, one-time exception to never pushing to main):** GPQA text replaced in seven historical files with git filter-repo; scan of every ref: zero blobs with any of the 546 GPQA questions (the untouched copy: 7). Force-pushed with leases on the old heads: main cdeb4dd -> fd1aaee, restructure 0eabe60 -> a9fa554; protocol tags v1-v9 unchanged. Old heads kept as tags backup/pre-gpqa-scrub/* in a local backup mirror (not on GitHub). 125 of 215 commits changed hash; map in docs/reference/history_rewrite_2026-11-22.md. Cluster copies are plain file trees (no git): nothing to update besides the format file, now synced. The never-push-to-main rule is back in force.
 
+- **2026-11-22, retrieval_miss at fact level (user):** the gold answer must be inside the facts shown (MemoryAgentBench normalisation, substring, as GRAFT's gold-in-facts); preference and abstention questions left out. run-04-lme-maj3 retagged (Fir 5230274): Memory routes' retrieval_miss 189-198 (was 77), reasoning_error 84-89 (was about 200).
+
 ### API spend (Anthropic)
 | When | What | Runs | Cost |
 |---|---|---|---|

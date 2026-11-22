@@ -288,7 +288,7 @@ def stages_main(argv: list[str]) -> None:
             graphs[(iid, key)] = json.load(open(p)) if p.exists() else None
         return graphs[(iid, key)]
 
-    from flotilla.memory_route import evidence_shown, is_abstention
+    from flotilla.memory_route import evidence_shown, gold_in_facts, is_abstention, shown_facts_text
     # grade every distinct (pool item, answer) once, in parallel (code tests and sympy run in subprocesses)
     todo = set()
     for route, tr in traces.items():
@@ -319,15 +319,18 @@ def stages_main(argv: list[str]) -> None:
                 g = lambda ans, iid=iid: pool_grades.get((iid, ans))
             else:
                 g = None
-            ev = None
+            ev = ev_session = None
             ret = t.get("retrieval") or {}
             if ret.get("source") == "graft" and iid in mem and a.graft_cache:
                 gr = graph_for(iid, ret.get("graph_key"))
-                ev = evidence_shown(mem[iid], ret.get("fact_ids") or [], gr) if gr else None
+                if gr:   # fact-level (the gold inside the facts shown); the session-level check kept for reference
+                    ev = gold_in_facts(mem[iid], shown_facts_text(ret.get("fact_ids") or [], gr))
+                    ev_session = evidence_shown(mem[iid], ret.get("fact_ids") or [], gr)
             st = error_stage(t, bool(lab.get("correct")), grade=g, evidence_shown=ev,
                              abstention=bool(iid in mem and is_abstention(mem[iid])))
             out_rows.append({"id": iid, "route": route, "task_type": r["task_type"], "correct": bool(lab.get("correct")),
-                             "error_stage": st["stage"], "error_flags": st["flags"], "evidence_shown": ev})
+                             "error_stage": st["stage"], "error_flags": st["flags"], "evidence_shown": ev,
+                             "evidence_session": ev_session})
     out = Path(a.out)
     out.mkdir(parents=True, exist_ok=True)
     with open(out / "stages.jsonl", "w") as f:

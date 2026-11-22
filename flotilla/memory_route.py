@@ -189,6 +189,37 @@ def sessions_to_chunks(item: dict, chunk_tokens: int = 4096) -> tuple[list[str],
     return chunks, cmap
 
 
+def normalize_answer(text: str) -> str:
+    """MemoryAgentBench's answer normalisation (utils/eval_other_utils.py, after DensePhrases/SQuAD): lower case, no
+    punctuation, no articles, single spaces. GRAFT's gold-in-facts check (eval/benchmark.answer_in_text) uses it."""
+    import string
+    t = "".join(ch for ch in str(text).lower() if ch not in string.punctuation)
+    t = re.sub(r"\b(a|an|the)\b", " ", t)
+    return " ".join(t.split())
+
+
+def shown_facts_text(fact_ids: list[str], graph: dict) -> str:
+    """The facts a Memory route showed, as the memory block writes them: subject, relation, object and the source
+    sentence (dates and markers left out; they never hold a gold answer)."""
+    nodes = {n["id"]: n for n in graph["nodes"] if n.get("type") == "Fact"}
+    out = []
+    for f in fact_ids:
+        n = nodes.get(f)
+        if n:
+            out.append(f"{n.get('subject')} | {n.get('relation')} | {n.get('object')} | {(n.get('provenance') or {}).get('span') or ''}")
+    return "\n".join(out)
+
+
+def gold_in_facts(item: dict, facts_text: str) -> bool | None:
+    """Fact-level evidence (2026-11-22, replacing the session-level check for error stages): the normalised gold answer
+    appears in the normalised text of the facts shown, as GRAFT's gold-in-facts rule. None where the rule does not
+    apply: preference questions (the gold is a rubric) and abstention questions (nothing to retrieve)."""
+    if is_abstention(item) or item.get("question_type") == "single-session-preference":
+        return None
+    gold = normalize_answer(item.get("answer", ""))
+    return bool(gold) and gold in normalize_answer(facts_text)
+
+
 def evidence_shown(item: dict, fact_ids: list[str], graph: dict, chunk_tokens: int = 4096) -> bool | None:
     """Whether any fact shown comes from one of the item's answer sessions (LongMemEval answer_session_ids), through
     the fact's provenance chunk and sessions_to_chunks' chunk map. None when the item names no answer session."""

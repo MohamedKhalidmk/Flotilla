@@ -480,3 +480,16 @@ def test_hand_override_changes_only_the_named_answer():
     assert out[0]["correct"] and out[0]["judge_correct"] is False and out[0]["override"]["evidence"].startswith("29.5")
     assert not out[1]["correct"] and "override" not in out[1] and not out[2]["correct"]
     assert unused == ["lme-3c1045c8: 'three years'"]
+
+
+def test_gold_in_facts_is_fact_level():
+    """Checks that fact-level evidence needs the normalised gold inside the shown facts' text, and does not apply to preference or abstention questions.
+    Guards against: counting a question as having its evidence shown because some unrelated fact from the right session was shown."""
+    g = {"nodes": [{"id": "f:1", "type": "Fact", "subject": "user", "relation": "pre-approved for", "object": "$400,000",
+                    "provenance": {"span": "Wells Fargo pre-approved me for $400,000."}},
+                   {"id": "f:2", "type": "Fact", "subject": "user", "relation": "zip code", "object": "78749"}]}
+    item = {"item_id": "lme-x", "question_type": "knowledge-update", "answer": "$400,000"}
+    assert mr.gold_in_facts(item, mr.shown_facts_text(["f:1"], g)) is True
+    assert mr.gold_in_facts(item, mr.shown_facts_text(["f:2"], g)) is False
+    assert mr.gold_in_facts({**item, "question_type": "single-session-preference"}, "anything") is None
+    assert mr.gold_in_facts({**item, "item_id": "lme-x_abs"}, "anything") is None

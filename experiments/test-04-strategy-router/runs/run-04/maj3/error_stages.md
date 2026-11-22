@@ -1,4 +1,4 @@
-# Error stages on run-04-lme-maj3 (one stage per wrong answer, PROTOCOL.md 7.1)
+# Error stages on run-04-lme-maj3 (one stage per wrong answer, PROTOCOL.md 7.1; retrieval_miss at fact level)
 
 13700 route answers tagged. Live stages (taggable without gold): timeout_or_oom, token_cap, format_parse_failure.
 
@@ -12,10 +12,10 @@
 | deep_tools | 1950 | 142 |  | 13 | 4 |  |  |  |  |  | 125 |
 | vote | 1950 | 98 |  | 4 | 1 |  | 30 |  |  |  | 63 |
 | vote_tools | 1950 | 120 |  |  |  |  | 38 |  |  |  | 82 |
-| memory | 500 | 288 |  |  | 1 |  |  |  | 77 |  | 210 |
-| memory_deep | 500 | 283 |  |  |  |  |  |  | 77 |  | 206 |
-| deep_tools_memory | 500 | 277 |  |  |  |  |  |  | 77 |  | 200 |
-| vote_memory | 500 | 280 |  |  |  |  | 6 |  | 77 |  | 197 |
+| memory | 500 | 288 |  |  | 1 |  |  |  | 198 |  | 89 |
+| memory_deep | 500 | 283 |  |  |  |  |  |  | 195 |  | 88 |
+| deep_tools_memory | 500 | 277 |  |  |  |  |  |  | 193 |  | 84 |
+| vote_memory | 500 | 280 |  |  |  |  | 6 |  | 189 |  | 85 |
 
 ## code
 
@@ -60,10 +60,10 @@
 | deep_tools | 500 | 59 |  |  |  |  |  |  |  |  | 59 |
 | vote | 500 | 50 |  |  |  |  | 12 |  |  |  | 38 |
 | vote_tools | 500 | 66 |  |  |  |  | 14 |  |  |  | 52 |
-| memory | 500 | 288 |  |  | 1 |  |  |  | 77 |  | 210 |
-| memory_deep | 500 | 283 |  |  |  |  |  |  | 77 |  | 206 |
-| deep_tools_memory | 500 | 277 |  |  |  |  |  |  | 77 |  | 200 |
-| vote_memory | 500 | 280 |  |  |  |  | 6 |  | 77 |  | 197 |
+| memory | 500 | 288 |  |  | 1 |  |  |  | 198 |  | 89 |
+| memory_deep | 500 | 283 |  |  |  |  |  |  | 195 |  | 88 |
+| deep_tools_memory | 500 | 277 |  |  |  |  |  |  | 193 |  | 84 |
+| vote_memory | 500 | 280 |  |  |  |  | 6 |  | 189 |  | 85 |
 
 ## science_mc
 
@@ -80,25 +80,21 @@
 
 retrieval_fallback 552, verifier_rejected 361, retry_used 361, samples_ungraded 310, vote_tie 180, tool_error 39
 
-## Memory routes: gold evidence among the facts shown (all answers)
+## Memory routes: gold in the facts shown (fact level; all answers)
 
-- memory: shown 419, not shown 81, no answer session 0
-- memory_deep: shown 419, not shown 81, no answer session 0
-- deep_tools_memory: shown 419, not shown 81, no answer session 0
-- vote_memory: shown 419, not shown 81, no answer session 0
+- memory: gold in facts 165, not in facts 275, rule does not apply (preference, abstention) 60; for reference, a fact from an answer session shown 419
+- memory_deep: gold in facts 165, not in facts 275, rule does not apply (preference, abstention) 60; for reference, a fact from an answer session shown 419
+- deep_tools_memory: gold in facts 165, not in facts 275, rule does not apply (preference, abstention) 60; for reference, a fact from an answer session shown 419
+- vote_memory: gold in facts 165, not in facts 275, rule does not apply (preference, abstention) 60; for reference, a fact from an answer session shown 419
 
-## Reading it (2026-11-22)
+## Reading it (fact level, 2026-11-22)
 
-- Made by `python -m flotilla.scoring stages` (Fir 5218454 pool, 5218621 LongMemEval) and `stage_table.py`; every
-  trace's final answer matched its label (no skips). Labels unchanged.
-- Most wrong answers are reasoning_error: every graded sample was wrong with the information present.
-- vote_wrong is the Vote routes' second cause (Vote 30 of 98, Vote+Tools 38 of 120); on memory questions the
-  Vote samples are often ungraded (no judge saw that text), so vote_wrong there is a lower bound (samples_ungraded
-  310).
-- token_cap hits the thinking routes (Deep 13, Deep+Tools 13, 8 of them instruction questions on Deep+Tools);
-  format_parse_failure the no-thinking ones (Fast 18: 12 instruction, 6 code).
-- verifier_false_reject happened twice; verifier_false_accept never, because the instruction verifier and the label
-  grader use the same regex and no code answer passed the public tests while failing the full tests.
-- Memory routes: gold evidence (a fact from an answer session) is among the 50 facts shown on 419 of 500 questions,
-  yet about 200 wrong answers per route had it: retrieval_miss (77) is the smaller part. "Evidence shown" is
-  session-level (any fact from an answer session, not necessarily the needed one), so retrieval_miss is a lower bound.
+- retrieval_miss now needs the gold answer itself inside the facts shown (GRAFT's gold-in-facts rule), not just a fact
+  from an answer session. On the Memory routes it rises from 77 to 189-198 per route and reasoning_error falls from
+  about 200 to 84-89: most Memory misses are retrieval (and writer) misses, as the 20-case study found.
+- The gold is in the facts shown on 165 of the 440 questions the rule applies to (60 preference or abstention
+  questions are left out); the session-level check said 419.
+- The rule is a substring test after normalisation, so a gold worded differently from the fact ("45 minutes each way"
+  against "45 minutes") counts as not shown: retrieval_miss is an upper bound and reasoning_error a lower bound.
+- Base routes and pool questions are unchanged (no facts shown). The session-level table is kept as
+  error_stages_session_level.md.

@@ -139,7 +139,7 @@ verifier retry, the LLM check and the USC tie call are not samples).
 | 4 | verifier_false_reject | the verifier rejected the first answer, which was right, and the retry's answer is wrong | yes |
 | 5 | vote_wrong | two or more samples, at least one right, and the vote's winner wrong | yes |
 | 6 | router_wrong_model | as 5, but with samples from two or more models and the winner from a model none of whose samples was right | yes |
-| 7 | retrieval_miss | a Memory route (GRAFT facts shown), not an abstention question, and no fact shown comes from the question's evidence (LongMemEval: its answer sessions, through each fact's source chunk) | yes |
+| 7 | retrieval_miss | a Memory route (GRAFT facts shown) and the gold answer is not inside the facts shown (fact level, 2026-11-22: MemoryAgentBench's normalisation, gold as a substring of the shown facts' subject, relation, object and source sentence, as GRAFT's gold-in-facts rule); not applied to abstention questions (nothing to retrieve) or preference questions (the gold is a rubric). Until 2026-11-22 the rule was session-level (any fact from an answer session), which hid most misses | yes |
 | 8 | verifier_false_accept | the final answer was accepted after a check that tests correctness (public tests, instruction constraints, the LLM check) passed it | yes |
 | 9 | reasoning_error | anything else: every graded sample wrong with the information present (the whole history, or evidence shown) and no correctness check to catch it | yes |
 
