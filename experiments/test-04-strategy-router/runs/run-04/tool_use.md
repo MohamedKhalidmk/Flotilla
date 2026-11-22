@@ -49,3 +49,21 @@ errors by tool: {'err:python_exec': 776, 'err:sympy': 578, 'err:final_answer': 1
 - The Haiku call sets no temperature, so it ran at the API default (1.0), not the official 0.
 - 795 (question, exact answer) pairs were judged more than once (3,468 verdicts). 6 pairs got both yes and no (31 verdicts, about 10 on the minority side): lme-4baee567 "12" 4 yes/5 no, lme-gpt4_194be4b3 "4" 2/4, lme-3c1045c8 "2.5 years" 1/4, lme-80ec1f4f_abs "0" 1/5, lme-ceb54acb 1/2, lme-gpt4_4cd9eba1 "1" 1/1. Other repeated prompts differ only in case (Yes/yes).
 - 2 verdicts are refusals ("I can't verify ...", preference questions) counted as no; 1 has no final answer.
+
+## constraint_check on instruction questions (236; 2026-11-22)
+
+Each sample graded with the label grader (`tools.constraint_check(task, answer, loop_wrapped=True)`); a sample "called" the check when its own text holds a constraint_check call. 130 of the 236 questions have no constraint the checker can detect, so there the check always returns `[]`.
+
+| Route | Samples that called it: right | Did not call: right | Called, answered only, with a real constraint | Not called, same | Missing final answer: called / not |
+|---|---|---|---|---|---|
+| Tools | 154/178 (86.5%) | 33/58 (56.9%) | 61/79 (77.2%) | 14/18 (77.8%) | 3.4% / 36.2% |
+| Deep+Tools | 173/206 (84.0%) | 8/30 (26.7%) | 79/97 (81.4%) | 3/5 (60.0%) | 7.3% / 66.7% |
+| Vote+Tools | 925/1,093 (84.6%) | 53/87 (60.9%) | 387/485 (79.8%) | 18/25 (72.0%) | 6.4% / 31.0% |
+
+The raw gap comes from samples without a final answer, not from the check: among samples that answered, calling it makes no clear difference. Draft (what Qwen sent to the check, when under the 500 stored characters) right and final wrong: Tools 5, Deep+Tools 16, Vote+Tools 82. In 70 of these 103 the sample then gave no final JSON answer; in the rest the final_answer field dropped the format the draft had met (draft "<<Cyberdyne Systems>> The relevant information is ..." then final "Cyberdyne Systems"; "* The answer is no." then "no"; a six-paragraph "* * *" answer then "-20"). In 3 the check had said the draft failed. Question level against the no-tool twin (earlier table): Tools +25/-5, Deep+Tools +8/-17, Vote+Tools +4/-14.
+
+## Answer length on memory questions (500; 2026-11-22)
+
+Median words of the judged answer: Fast 1, Tools 1, Deep 2, Deep+Tools 2, Vote 2, Vote+Tools 2 (preference questions 71-116, every other type 1-3). Same question against the no-tool twin: Vote+Tools shorter 135, longer 49, same 316; Deep+Tools shorter 121, longer 79; Tools shorter 36, longer 53. Vote+Tools' net losses sit in its shorter answers (lost 19, won 5; same length 6/6; longer 4/0).
+
+Why: in Vote+Tools, samples with no tool call are already shorter than Vote's on the same question (shorter 117, longer 57), and on questions with both kinds of sample, samples with 1+ calls are not shorter than those with none (53 shorter, 64 longer). So it is not the tool rounds; it comes with the tool setup itself (the tool wording plus the tool schemas sent with every request; these runs cannot separate the two). The wording says nothing about length ("You may call the tools you are given ... Do not write tool calls as text."). Deep+Tools: no-call samples shorter than Deep 66 vs 52, samples with calls 55 vs 27, so there the tool rounds add some shortening.

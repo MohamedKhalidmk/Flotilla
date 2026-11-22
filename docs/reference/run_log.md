@@ -205,6 +205,12 @@ One line per decision, with its reason. Times are America/Vancouver unless marke
 
 - **2026-11-22, relation-name mismatch check (user):** for LongMemEval misses whose gold fact is in the graph, compare the guide plan's wanted relations with the gold facts' stored relations, both mapped to T-REx relations the way planning does (`guide.canon`, after the guide's linking pass). Classes: no plan, relation-name mismatch, relation matches (the miss is elsewhere). GRAFT `scripts/plan_relation_check.py`, tests. The plan was computed but never saved; Flotilla's bridge now keeps it in each retrieval record. Runs on the G41 dev retrievals once row 24's runs make them (retrieval records from before the change, without a plan, are set aside so they are recomputed).
 
+- **2026-11-22, Haiku judge temperature (user asked for 0 and a rejudge):** not possible. Haiku 5.5's API rejects `temperature` and `top_k` (400, "Extra inputs are not permitted"; two probe calls on Fir), and the anthropic SDK 2.1.0 has no temperature argument; the code note "no sampling parameters (the API rejects them)" was right. The change was reverted; nothing was rejudged and labels are unchanged. Open choice for the user: majority of three Haiku verdicts per answer, or leave the verdicts as they are.
+
+- **2026-11-22, constraint_check on memory tasks (user):** reads only the question line when the task holds a chat history or GRAFT memory block (`system.question_only`, test). New runs only; run-04 labels unchanged.
+
+- **2026-11-22, F36 USC tie rule (user):** when no two of a free-text vote's answers match, one Qwen call (thinking off, temperature 0, `prompts/vote_usc.v1.md`, question only) picks the answer the others agree with most. First a replay on the 9 run-04 Vote+Tools losses where all five answers differed (S168, Fir 5208816), judged per sample with Haiku; the cost of any wider run goes to the user first.
+
 ### API spend (Anthropic)
 | When | What | Runs | Cost |
 |---|---|---|---|
@@ -228,4 +234,5 @@ One line per decision, with its reason. Times are America/Vancouver unless marke
 | 2026-11-21 | Same-day confirmation: Haiku check, arm A x3, guide x3 | 3 jobs | $0.217 |
 | 2026-11-21 | GRAFT test 06 arm E (guide + working memory) x3, guide rerun x3, Haiku check | 2 jobs | $0.373 |
 | 2026-11-21 | LongMemEval judge: two Haiku checks ($0.027 each), the judge ($0.128); the failed first judge job logged $0 | 3 jobs | $0.182 |
+| 2026-11-22 | Haiku temperature probes (3 calls, all rejected or a few tokens) | 0 jobs | <$0.001 |
 | | **Total so far** | | **$7.57** |
