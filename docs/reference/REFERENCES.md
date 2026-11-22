@@ -38,7 +38,7 @@ the source's licence file or dataset card (to do before any publication).
 | `mmlu-pro` | Wang et al. MMLU-Pro. NeurIPS 2024 D&B (arXiv 2406.01574) | https://huggingface.co/datasets/TIGER-Lab/MMLU-Pro | check | `flotilla/router_data.py`; router pool |
 | `gpqa` | Rein et al. GPQA: A Graduate-Level Google-Proof Q&A Benchmark. arXiv 2311.12022, 2023 | https://huggingface.co/datasets/Idavidrein/gpqa | check (gated; the card asks that examples not be published online) | `flotilla/splits.py`, `flotilla/leakage.py`, `tests/data/formats/raw_rows.json`; benchmark row 5 |
 | `rlvr-ifeval` | Lambert et al. Tulu 3: Pushing Frontiers in Open Language Model Post-Training. arXiv 2411.15124, 2024 (RLVR-IFeval) | https://huggingface.co/datasets/allenai/RLVR-IFeval | check | `flotilla/router_data.py`; router pool instruction questions; F39 (design) |
-| `livecodebench` | Jain et al. LiveCodeBench. arXiv 2403.07974, 2024 | https://huggingface.co/datasets/livecodebench/code_generation_lite | check | `flotilla/splits.py`, `flotilla/router_data.py`, `flotilla/leakage.py`, `flotilla/scoring.py` (our own runner); benchmark row 10; router pool |
+| `livecodebench` | Jain et al. LiveCodeBench. arXiv 2403.07974, 2024 | https://huggingface.co/datasets/livecodebench/code_generation_lite | check | `flotilla/splits.py`, `flotilla/router_data.py`, `flotilla/leakage.py`, `flotilla/scoring.py` (our own runner, not `lcb_runner`; PROTOCOL 1.3); benchmark row 10; router pool |
 | `mmmu` | Yue et al. MMMU. CVPR 2024 (arXiv 2311.16502) | https://huggingface.co/datasets/lmms-lab/MMMU | check | `flotilla/splits.py`, `flotilla/scoring.py`; benchmark row 7 |
 | `ocrbench` | Liu et al. On the Hidden Mystery of OCR in Large Multimodal Models (OCRBench). arXiv 2305.07895, 2023 | https://huggingface.co/datasets/echo840/OCRBench | check | `flotilla/splits.py`, `flotilla/scoring.py`; benchmark row 8 |
 | `ultrachat` | Ding et al. Enhancing Chat Language Models by Scaling High-quality Instructional Conversations. arXiv 2305.14233, 2023 (UltraChat 200k) | https://huggingface.co/datasets/HuggingFaceH4/ultrachat_200k | check | `flotilla/quantize.py`, `flotilla/calib_pool.py` (GPTQ calibration); F01, F04 |
@@ -85,5 +85,4 @@ codebase-memory-mcp, Serena, Graphify).
 
 - `tests/data/formats/raw_rows.json` holds real GPQA rows, which GPQA's card asks not to publish online; the repo is
   public, so the GPQA sample should be replaced by a made-up row in GPQA's format (needs the user's yes).
-- PROTOCOL says LiveCodeBench is scored with the official `lcb_runner`; `flotilla/scoring.py` uses our own runner.
 - Every licence marked "check".

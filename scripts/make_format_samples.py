@@ -83,6 +83,29 @@ def pick(key: str, ds) -> list[int]:
     return spread(n, ROWS.get(name, 2))
 
 
+# GPQA asks that its examples not be published online, so the committed GPQA sample rows are made up: GPQA's own
+# columns (so the loader and the format test see the real shape) with invented questions and empty validator fields.
+SYNTHETIC_GPQA = [
+    ("A ball is dropped from rest. Ignoring air resistance, how far does it fall in the first 2 seconds (g = 10 m/s^2)?",
+     "20 m", "10 m", "40 m", "5 m", "Physics"),
+    ("Which gas makes up the largest share of dry air at sea level?", "nitrogen", "oxygen", "argon", "carbon dioxide",
+     "Chemistry (general)"),
+    ("A gene has two alleles, A and a. Two Aa parents have a child. What is the chance the child is aa?",
+     "1/4", "1/2", "3/4", "0", "Genetics"),
+]
+
+
+def synthetic_gpqa(columns: list[str]) -> list[dict]:
+    rows = []
+    for k, (q, right, w1, w2, w3, sub) in enumerate(SYNTHETIC_GPQA):
+        r = {c: "" for c in columns}
+        r.update({"Question": q, "Correct Answer": right, "Incorrect Answer 1": w1, "Incorrect Answer 2": w2,
+                  "Incorrect Answer 3": w3, "Subdomain": sub, "Record ID": f"recSYNTHETIC{k:05d}",
+                  "Explanation": "made-up row for Flotilla's format test, not from GPQA"})
+        rows.append(r)
+    return rows
+
+
 def recorder(mod, store: dict):
     real = mod.load_dataset
 
@@ -137,6 +160,8 @@ def main() -> None:
     root = Path(snapshot_download("livecodebench/code_generation_lite", repo_type="dataset", local_files_only=True))
     raw["lcb|bench"] = lcb_rows(root, splits.LCB_WINDOW, None)
     raw["lcb|pool"] = lcb_rows(root, None, router_data.LCB_TEST_WINDOW_START)
+    for key in [k for k in raw if k.startswith("Idavidrein/gpqa|")]:
+        raw[key] = synthetic_gpqa(list(raw[key][0]))
     (out / "raw_rows.json").write_text(json.dumps(raw, ensure_ascii=False, indent=0))
 
     ruler = []
