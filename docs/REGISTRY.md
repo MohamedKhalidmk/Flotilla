@@ -155,19 +155,18 @@ configured.
 A run is one run folder or shard set (`runs/<name>/`, `lme/runs/<route>/<shard>`, a test's `runs/run-NN/`). Its setup
 is the row above that names it. After approval each test's table gains a setup column.
 
-## 5. Pre-fix runs to mark invalid (after approval, under each test's Revisions)
+## 5. Pre-fix runs (marked under each test's Revisions, 2026-11-21)
 
-| Runs | Setups | Bug (fixed, no config switch) | Proposed mark |
+| Runs | Setups | Bug (fixed, no config switch) | Mark |
 |---|---|---|---|
 | test 03 run-01 (`router-labels-v1-broken-*`) | S121, S122 | one call with tools offered but no tool loop (Phi 0 of 4,856 answered); code graded without stripping fences | invalid; already superseded by run-02 |
 | test 04 run-02 labels on the 263 affected questions | S126-S131 | verifier accepted only options A-D (MMLU-Pro goes to J); instruction checker misread rules; float and math-format grading | invalid for those 263 questions; run-03 replaced them |
-| test 02 run-01 small-test scores | S115-S117 | the same grader and verifier bugs, plus code fences for gpt-oss | **ask**: the scores were computed before the fixes, but the failure audit (run-02) rechecked every wrong answer and the drops stand |
-| test 03 run-02 router-B labels and router B | S119, S120, S124, S125 | as above (gpt-oss lost 227 answers to bugs) | **ask**: as above; the audit (run-03) says the gpt-oss drop stands; rechecking test 03 was set as low priority |
+| test 02 run-01 small-test scores | S115-S117 | the same grader and verifier bugs, plus code fences for gpt-oss | scored before the grader fixes, audited (user) |
+| test 03 run-02 router-B labels and router B | S119, S120, S124, S125 | as above (gpt-oss lost 227 answers to bugs) | scored before the grader fixes, audited (user) |
 
 ## 6. Conventions and open item
 
 - Next free IDs: F29, S147 (S shared with GRAFT).
 - Phi and Qwen FP8 "in the loop" (F05, F10): confirmed never run on Fir and Nibi; Trillium not checked.
 - Outside bare runs (S104, S105, S108-S114, S121, S122) have setups but no candidate ID.
-- **Open (asked 2026-11-21):** test 02 run-01 and test 03 run-02 were scored before the grader fixes and audited after:
-  marked invalid, or "scored before the grader fixes, audited"?
+- Test 02 run-01 and test 03 run-02 are marked "scored before the grader fixes, audited" (user, 2026-11-21).

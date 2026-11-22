@@ -1,1 +1,22 @@
-{"run": "run-01", "dates": "2026-11-20", "protocol": "protocol-v9 with addenda 1-2 (native tools, native-tool prompt wording, cap-aware smoke check)", "clusters": {"Nibi": "Qwen vision, ruler, mixed", "Fir": "Qwen math, gpt-oss mixed, Command A+ (4 GPUs, job 4631004)", "Trillium": "gpt-oss math and ruler"}, "script": "flotilla/serve.py + flotilla/smalltest.py, scored with flotilla/scoring.py", "status": "done", "notes": "Earlier attempts that never reached a scored run (text tool lines, port clash, missing prompts, cache races) are not kept as runs: none produced scores. phi-replacement/ holds the 25-item MATH-500 runs that decided protocol-v9."}
+{
+  "run": "run-01",
+  "dates": "2026-11-20",
+  "protocol": "protocol-v9 with addenda 1-2 (native tools, native-tool prompt wording, cap-aware smoke check)",
+  "clusters": {
+    "Nibi": "Qwen vision, ruler, mixed",
+    "Fir": "Qwen math, gpt-oss mixed, Command A+ (4 GPUs, job 4631004)",
+    "Trillium": "gpt-oss math and ruler"
+  },
+  "script": "flotilla/serve.py + flotilla/smalltest.py, scored with flotilla/scoring.py",
+  "status": "done",
+  "notes": "Earlier attempts that never reached a scored run (text tool lines, port clash, missing prompts, cache races) are not kept as runs: none produced scores. phi-replacement/ holds the 25-item MATH-500 runs that decided protocol-v9.",
+  "validity": "scored before the grader fixes, audited (run-02)",
+  "setups": [
+    "S115",
+    "S116",
+    "S117",
+    "S111",
+    "S112",
+    "S113"
+  ]
+}

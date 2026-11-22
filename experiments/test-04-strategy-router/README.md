@@ -86,6 +86,7 @@ benchmarks run once with the final system and once with the best single route on
 
 ## Revisions
 
+- 2026-11-21: **run-02's labels on the 263 affected questions are invalid** (setups S126-S131; registry rule for pre-fix runs): graded with the verifier that accepted only A-D (MMLU-Pro goes to J) and the old instruction, float and math-format graders. run-03 reran and regraded them; the other 1,187 questions' run-02 answers stand, regraded.
 - 2026-11-21: Memory routes use no base graph (T-REx dropped, test 05) and are offered only on items with a history;
   LongMemEval prepared for them; the six non-Memory routes run on LongMemEval first.
 - 2026-11-20: design written; four-route pilot on Nibi.

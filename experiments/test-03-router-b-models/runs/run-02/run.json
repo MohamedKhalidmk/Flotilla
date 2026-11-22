@@ -1,1 +1,15 @@
-{"run": "run-02", "dates": "2026-11-20", "protocol": "protocol-v9 -> v10", "status": "done (current)", "script": "flotilla/label_loop.py (the real Flotilla loop) on 16 shards per model; flotilla/router_b.py and flotilla/router_b_lite.py on Trillium job 1376758", "notes": "Label traces (22-32 MB per model) stay on the clusters at $SCRATCH/flotilla/runs/labels-*; router weights at $SCRATCH/flotilla/router/router_b_*/. Grader strips code fences (changed from run-01)."}
+{
+  "run": "run-02",
+  "dates": "2026-11-20",
+  "protocol": "protocol-v9 -> v10",
+  "status": "done (current)",
+  "script": "flotilla/label_loop.py (the real Flotilla loop) on 16 shards per model; flotilla/router_b.py and flotilla/router_b_lite.py on Trillium job 1376758",
+  "notes": "Label traces (22-32 MB per model) stay on the clusters at $SCRATCH/flotilla/runs/labels-*; router weights at $SCRATCH/flotilla/router/router_b_*/. Grader strips code fences (changed from run-01).",
+  "validity": "scored before the grader fixes, audited (run-03)",
+  "setups": [
+    "S119",
+    "S120",
+    "S124",
+    "S125"
+  ]
+}

@@ -33,6 +33,8 @@ asks whether choosing a strategy per question helps instead.
 
 ## Revisions
 
+- 2026-11-21: **run-01 marked invalid** (setups S121, S122; registry rule for pre-fix runs): one call with tools offered and no tool loop, code graded with fences.
+- 2026-11-21: **run-02 marked "scored before the grader fixes, audited"** (user; setups S119, S120, S124, S125): the labels were graded before the A-D option, instruction-checker, float and math-format fixes; run-03's audit rechecked every wrong gpt-oss label (227 lost to bugs) and the gpt-oss drop stands. Rechecking test 03 with the fixed graders stays low priority.
 - 2026-11-19: run-01, broken: the label prompt offered tools but no tool loop ran, and code answers kept markdown fences.
   Kept as the record, not used.
 - 2026-11-20: run-02, labels through the real loop; router B and the baseline trained and tested once.
