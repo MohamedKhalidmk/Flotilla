@@ -215,6 +215,8 @@ One line per decision, with its reason. Times are America/Vancouver unless marke
 
 - **2026-11-22, majority-of-3 labels done:** canary 34/100 (as on 2026-11-21); 10,044 new verdicts; combined 5,008 answer groups, 56 split; run-04-lme-maj3 merged (Fir 5213207). 17 route verdicts and 6 of 500 memory labels changed (5 train, 1 held-out, 0 dev); pool rows identical. Details: experiments/test-04-strategy-router/runs/run-04/maj3/.
 
+- **2026-11-22, GRAFT test 09 scored:** G35 48.3 (48, 48, 49), G39 47.3 at 33.1 facts, G40 47.7 at 67.9 facts and 2.8 calls; Qwen 1,024 tokens, all repeats the same day (Nibi). Keep rule: G39 matches G35 at the spread's edge with 34% fewer facts, kept if the user confirms the 30% threshold; G40 neither beats G35 nor is cheaper, drop proposed (needs the user's yes).
+
 ### API spend (Anthropic)
 | When | What | Runs | Cost |
 |---|---|---|---|
