@@ -241,6 +241,8 @@ One line per decision, with its reason. Times are America/Vancouver unless marke
 
 - **2026-11-22, Sonnet tiebreak and reasoning-error sub-types (user approved):** one guarded job (Fir 5231463, after the Haiku check 5231462). Sonnet 5.5 on the 56 split groups: differs from the Haiku majority on 22; labels in run-04-lme-maj3-sonnet change on 7 of 500 memory questions (1 dev, 1 held-out, 5 train). Haiku sub-types of 1,120 reasoning errors; hand check 36/50 (43/50 allowing either label for undercounts); 57 unparsed (reply cap). Results in experiments/test-04-strategy-router/runs/run-04/maj3/.
 
+- **2026-11-22, passage index built (user: code now, fakes and toy histories only):** GRAFT my_method/passages.py (turn-sized passages up to 256 tokens, fact-to-passage link through the source sentence, guided / HippoRAG 2-style / BM25 arms under one 4,096-token budget, outdated marks), Flotilla presets G49-G51 and the bridge. Fake end-to-end run on 7 toy histories: all presets ran (Fir 5233979); the fake writer writes no facts from chat text, so the guided arm is covered by unit tests only. No real data used.
+
 ### API spend (Anthropic)
 | When | What | Runs | Cost |
 |---|---|---|---|
