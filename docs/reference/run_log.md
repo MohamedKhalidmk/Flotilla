@@ -223,6 +223,10 @@ One line per decision, with its reason. Times are America/Vancouver unless marke
 
 - **2026-11-22, forced-tool and self-check routes designed (user asked; no runs before approval):** F37 Forced Code (Deep), F38 Forced Sympy (Fast), F39 Forced Rules (Fast, constraint_check v2 on IFEval's official checkers), F40 Self-Check (Fast, CRITIC-style); toy check S169 and pilot S170. Found on the way: the tool loop drops Qwen's thinking between tool rounds (no reasoning_content sent back), and the instruction grader's regex finds a rule in only 106 of 236 questions although each has a ground-truth rule.
 
+- **2026-11-22, error stages (user):** `scoring.error_stage` tags every scored trace with one stage by PROTOCOL 7.1's ordered rules; token_cap split from format_parse_failure (added); context_truncated and a split of Memory-route reasoning_error proposed. Live stages: timeout_or_oom, token_cap, format_parse_failure. Run on run-04-lme-maj3 (new analysis, labels unchanged): runs/run-04/maj3/error_stages.md.
+
+- **2026-11-22, references (user):** REFERENCES.md in both repos; Sources headers on prompt files and borrowed code; tests check every named source is listed. Found: real GPQA rows committed in tests/data/formats (GPQA asks that examples not be published online); PROTOCOL's lcb_runner claim does not match scoring.py's own runner.
+
 ### API spend (Anthropic)
 | When | What | Runs | Cost |
 |---|---|---|---|
