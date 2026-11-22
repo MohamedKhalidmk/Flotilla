@@ -1,0 +1,402 @@
+[
+ {
+  "k": 0,
+  "id": "lme-031748ae_abs",
+  "route": "deep_tools_memory",
+  "mine": "abstention_error",
+  "haiku": "abstention_error",
+  "haiku_reason": "The gold says the information is insufficient because the user only mentioned the Senior Software Engineer role, yet the system answered with a specific count of 4 engineers instead of abstaining."
+ },
+ {
+  "k": 1,
+  "id": "lme-0a995998",
+  "route": "tools",
+  "mine": "calculation_error",
+  "haiku": "partial_answer",
+  "haiku_reason": "The answer gives 2 where the gold requires 3, indicating it omitted one of the clothing items needing pickup or return that the chat history contains."
+ },
+ {
+  "k": 2,
+  "id": "lme-19b5f2b3_abs",
+  "route": "memory",
+  "mine": "abstention_error",
+  "haiku": "abstention_error",
+  "haiku_reason": "The gold says the user never mentioned a Korea stay, so the question cannot be answered, but the wrong answer gives a duration (three days) by conflating the Seoul trip with a time spent in Korea that the user did not describe as their own past stay."
+ },
+ {
+  "k": 3,
+  "id": "mmlupro-10440",
+  "route": "fast",
+  "mine": "calculation_error",
+  "haiku": "unparsed",
+  "haiku_reason": "Let me check the computations. The gold F: a) 010 (15's complement of FFO... the question's \"FFO\" likely FF0). 15's complement of FF0: FFF - FF0 = 00F; 16's complement = 00F+1 = 010. So gold a) 010 means 16's complement of 00F... Gold F gives a) 010, b) EDCC, c) 5433, d) 10000.\n\nAnswer E: a) 00F (15"
+ },
+ {
+  "k": 4,
+  "id": "aime-2002-II-4",
+  "route": "tools",
+  "mine": "calculation_error",
+  "haiku": "calculation_error",
+  "haiku_reason": "The answer 412 uses the correct setup of the hexagonal garden problem but gets the final count or remainder computation wrong, whereas the gold is 803."
+ },
+ {
+  "k": 5,
+  "id": "lme-1da05512",
+  "route": "memory",
+  "mine": "abstention_error",
+  "haiku": "abstention_error",
+  "haiku_reason": "The wrong answer says memory lacks information on the NAS decision, but the gold rubric expects a personalized recommendation using the user's storage issues and tech history, so the system wrongly abstained."
+ },
+ {
+  "k": 6,
+  "id": "aime-2023-I-9",
+  "route": "fast",
+  "mine": "calculation_error",
+  "haiku": "calculation_error",
+  "haiku_reason": "The answer 21 is far from the gold 738, indicating the counting/computation over the coefficient constraints was done incorrectly rather than omitting a part or misreading the question."
+ },
+ {
+  "k": 7,
+  "id": "rlvrif-1747",
+  "route": "deep_tools",
+  "mine": "other",
+  "haiku": "other",
+  "haiku_reason": "The math answer -20 is correct, but the response ignores the required paragraph count and markdown divider rule of the task."
+ },
+ {
+  "k": 8,
+  "id": "lme-58bf7951",
+  "route": "memory_deep",
+  "mine": "abstention_error",
+  "haiku": "abstention_error",
+  "haiku_reason": "The gold answer is The Glass Menagerie, and the facts include the Glass Menagerie as a play, yet the system abstained, saying the memory does not hold the information."
+ },
+ {
+  "k": 9,
+  "id": "lme-ed4ddc30",
+  "route": "vote_memory",
+  "mine": "abstention_error",
+  "haiku": "abstention_error",
+  "haiku_reason": "The gold gives an answer (20 dozen eggs) but the system abstained, saying the memory does not hold the information, even though the facts shown do not contain an answer to be retrieved from them."
+ },
+ {
+  "k": 10,
+  "id": "lme-c18a7dc8",
+  "route": "vote_memory",
+  "mine": "abstention_error",
+  "haiku": "abstention_error",
+  "haiku_reason": "The system abstained ('Not in memory') even though the facts supplied the user's graduation age (25) and the current age would be needed; the gold answer shows the information was answerable, so the abstention was wrong."
+ },
+ {
+  "k": 11,
+  "id": "lme-gpt4_5501fe77",
+  "route": "fast",
+  "mine": "other",
+  "haiku": "other",
+  "haiku_reason": "The answer names Twitter where the gold is TikTok, a plain factual error about which platform gained the most followers, not a partial, computational, outdated, abstention, or misreading mistake."
+ },
+ {
+  "k": 12,
+  "id": "lme-6456829e_abs",
+  "route": "vote_tools",
+  "mine": "abstention_error",
+  "haiku": "abstention_error",
+  "haiku_reason": "The gold answer says the information is insufficient to answer fully (no chili pepper count was given), but the wrong answer gave a partial answer of 5 tomato plants instead of stating the information is not available for chili peppers."
+ },
+ {
+  "k": 13,
+  "id": "lme-gpt4_2f8be40d",
+  "route": "deep",
+  "mine": "calculation_error",
+  "haiku": "other",
+  "haiku_reason": "The system answered 6 where the gold says three weddings; this is a plainly wrong count not explained by omission, arithmetic, an outdated value, abstention, or a misread question, so it best fits the catch-all category."
+ },
+ {
+  "k": 14,
+  "id": "lme-71017276",
+  "route": "memory",
+  "mine": "abstention_error",
+  "haiku": "abstention_error",
+  "haiku_reason": "The answer claims the memory lacks the information, but the facts show the user attended a meeting/event with the aunt and received a chandelier, so the gold answer of 4 weeks is derivable."
+ },
+ {
+  "k": 15,
+  "id": "lme-8a2466db",
+  "route": "deep_tools_memory",
+  "mine": "abstention_error",
+  "haiku": "abstention_error",
+  "haiku_reason": "The wrong answer claims the memory holds no resources for learning video editing, but the gold answer shows the system did have relevant information (Adobe Premiere Pro advanced settings resources) and should have used it."
+ },
+ {
+  "k": 16,
+  "id": "lme-d6233ab6",
+  "route": "tools",
+  "mine": "other",
+  "haiku": "other",
+  "haiku_reason": "The answer gives generic advice and fails to draw on the user's specific past experiences (debate team, AP courses, history and economics interests) that the rubric requires, which does not match any of the listed factual or completeness subtypes cleanly, so it falls under other."
+ },
+ {
+  "k": 17,
+  "id": "lme-3a704032",
+  "route": "deep_tools_memory",
+  "mine": "calculation_error",
+  "haiku": "partial_answer",
+  "haiku_reason": "The system counted only two plants (peace lily and succulent, or peace lily and rose bush) and omitted the third plant the gold answer requires, so it is right as far as it goes but incomplete."
+ },
+ {
+  "k": 18,
+  "id": "lme-1d4e3b97",
+  "route": "vote_memory",
+  "mine": "partial_answer",
+  "haiku": "partial_answer",
+  "haiku_reason": "The wrong answer correctly cites the chain and cassette replacement but omits the second required element from the gold rubric, the new Garmin bike computer."
+ },
+ {
+  "k": 19,
+  "id": "lme-42ec0761",
+  "route": "deep",
+  "mine": "other",
+  "haiku": "other",
+  "haiku_reason": "The gold answer is simply 'Yes' and the wrong answer also says yes, so the verdict matches; the error is an unsupported claim about a specific chat event (picking up a screwdriver), which is a fabricated or misattributed fact rather than any listed sub-type."
+ },
+ {
+  "k": 20,
+  "id": "lme-0a995998",
+  "route": "vote",
+  "mine": "calculation_error",
+  "haiku": "partial_answer",
+  "haiku_reason": "The system counted only 2 of the 3 clothing items to pick up or return, omitting one item the gold answer requires."
+ },
+ {
+  "k": 21,
+  "id": "mmlupro-3035",
+  "route": "vote",
+  "mine": "other",
+  "haiku": "other",
+  "haiku_reason": "The wrong answer C (internal biological clock/endogenous rhythm) is a plausible, arguably correct biological explanation rather than a partial, computational, outdated, abstention, or misread error, and the gold F is a flawed question-specific choice, so none of the listed sub-types fits and the dis"
+ },
+ {
+  "k": 22,
+  "id": "lme-38146c39",
+  "route": "memory",
+  "mine": "other",
+  "haiku": "other",
+  "haiku_reason": "The gold answer points to the user's prior use of turbinado sugar and suggests complementary ingredients or techniques, but the wrong answer just names muscovado sugar, a different sugar, without giving any advice or engaging with the user's stated experimentation."
+ },
+ {
+  "k": 23,
+  "id": "lme-46a3abf7",
+  "route": "deep_tools_memory",
+  "mine": "abstention_error",
+  "haiku": "abstention_error",
+  "haiku_reason": "The system abstained saying no tank for a friend's kid is mentioned, but the gold answer of 3 implies the memory contained the information (e.g., the 5-gallon tank, the 20-gallon tank, and the tank set up for a friend's kid), so it wrongly claimed unavailability."
+ },
+ {
+  "k": 24,
+  "id": "lme-afdc33df",
+  "route": "vote_tools",
+  "mine": "other",
+  "haiku": "other",
+  "haiku_reason": "The answer gives generic kitchen-cleaning advice that ignores the user's existing utensil holder and granite-specific concerns, which the rubric asks for, so it fails the personalization requirement rather than any single listed sub-type."
+ },
+ {
+  "k": 25,
+  "id": "lme-505af2f5",
+  "route": "memory_deep",
+  "mine": "abstention_error",
+  "haiku": "abstention_error",
+  "haiku_reason": "The gold answer gives recommendations based on the user's almond milk, vanilla extract, and honey creamer preferences, but the system abstained by claiming the memory lacks the information, even though the facts contain no creamer details and the gold expects an answer grounded in the user's prefere"
+ },
+ {
+  "k": 26,
+  "id": "lme-gpt4_31ff4165",
+  "route": "fast",
+  "mine": "calculation_error",
+  "haiku": "other",
+  "haiku_reason": "The system gave a count of 2 where the gold is 4, which is a plainly wrong fact about the user's devices rather than a partial, computational, outdated, abstention, or misread error."
+ },
+ {
+  "k": 27,
+  "id": "lme-09ba9854",
+  "route": "deep",
+  "mine": "calculation_error",
+  "haiku": "calculation_error",
+  "haiku_reason": "The wrong answer gives a savings range of $30 to $40 where the gold is $50, so the system used the right cost information but got the difference between train and taxi fares wrong."
+ },
+ {
+  "k": 28,
+  "id": "lme-caf03d32",
+  "route": "fast",
+  "mine": "other",
+  "haiku": "misread_question",
+  "haiku_reason": "The gold requires personalized advice drawing on the user's beef stew success and yogurt interest from the chat history, but the answer gives generic slow cooker tips without referencing any of that context."
+ },
+ {
+  "k": 29,
+  "id": "lme-d682f1a2",
+  "route": "vote_memory",
+  "mine": "calculation_error",
+  "haiku": "partial_answer",
+  "haiku_reason": "The gold answer is 3 food delivery services (Fresh Fusion, Uber Eats, and Domino's Pizza), but the wrong answer 'Two' omits one of the required items."
+ },
+ {
+  "k": 30,
+  "id": "lme-9d25d4e0",
+  "route": "fast",
+  "mine": "calculation_error",
+  "haiku": "partial_answer",
+  "haiku_reason": "The system counted only 2 of the 3 jewelry acquisitions in the last two months, omitting one item the gold answer requires."
+ },
+ {
+  "k": 31,
+  "id": "lme-9ea5eabc",
+  "route": "memory",
+  "mine": "outdated_fact",
+  "haiku": "outdated_fact",
+  "haiku_reason": "The system answered Hawaii, which comes from an earlier family trip mentioned in the facts, while the gold answer Paris reflects the more recent family trip, so the answer gives an older value that was later updated."
+ },
+ {
+  "k": 32,
+  "id": "lme-e9327a54",
+  "route": "tools",
+  "mine": "partial_answer",
+  "haiku": "partial_answer",
+  "haiku_reason": "The wrong answer names the correct shop but omits the location detail (Icon Park) that the gold answer includes."
+ },
+ {
+  "k": 33,
+  "id": "aime-1995-None-14",
+  "route": "tools",
+  "mine": "calculation_error",
+  "haiku": "calculation_error",
+  "haiku_reason": "The answer 861 is a computed value that differs from the correct 378, indicating the right setup was likely used but an arithmetic or geometric computation (e.g., the segment/area formula) was wrong."
+ },
+ {
+  "k": 34,
+  "id": "rlvrif-4003",
+  "route": "tools",
+  "mine": "other",
+  "haiku": "other",
+  "haiku_reason": "The wrong answer 'yes' ignores the required formatting rule (22 paragraphs separated by markdown dividers), which is a broken task rule rather than a fact, calculation, or partial-answer error."
+ },
+ {
+  "k": 35,
+  "id": "lme-b0479f84",
+  "route": "memory_deep",
+  "mine": "abstention_error",
+  "haiku": "abstention_error",
+  "haiku_reason": "The gold answer expects documentary recommendations tailored to the user's known tastes (Our Planet, Free Solo, Tiger King), but the wrong answer claims the memory holds no documentary recommendations, when the facts shown don't directly address documentaries and the system should have answered from"
+ },
+ {
+  "k": 36,
+  "id": "lme-f685340e_abs",
+  "route": "vote",
+  "mine": "other",
+  "haiku": "abstention_error",
+  "haiku_reason": "The gold says the information is insufficient because only regular tennis, not table tennis, is mentioned, but the wrong answer gives a substantive answer (every other week) about tennis instead of abstaining."
+ },
+ {
+  "k": 37,
+  "id": "lme-gpt4_1a1dc16d",
+  "route": "memory_deep",
+  "mine": "abstention_error",
+  "haiku": "abstention_error",
+  "haiku_reason": "The system said it cannot tell the order, but the gold answer gives a definite answer (the meeting with Rachel), so it wrongly abstained."
+ },
+ {
+  "k": 38,
+  "id": "rlvrif-5343",
+  "route": "vote_tools",
+  "mine": "other",
+  "haiku": "partial_answer",
+  "haiku_reason": "The answer gives the correct sum 5050 but omits the required 4-sentence explanation and the postscript starting with 'Before I forget:', so it leaves out part of what the question asked for."
+ },
+ {
+  "k": 39,
+  "id": "mmlupro-3700",
+  "route": "vote_tools",
+  "mine": "other",
+  "haiku": "other",
+  "haiku_reason": "The wrong answer I (\u0394T \u0394t \u2265 h/4\u03c0) is a plainly incorrect formula choice; the gold B (\u2265 h/c) is itself a dubious physics claim, but the error is a wrong selection rather than a partial, computational, outdated, abstention, or misread-question error."
+ },
+ {
+  "k": 40,
+  "id": "lme-f685340e_abs",
+  "route": "deep",
+  "mine": "other",
+  "haiku": "abstention_error",
+  "haiku_reason": "The gold says the information is insufficient because only tennis, not table tennis, is mentioned, but the wrong answer instead supplies an answer by substituting tennis for table tennis."
+ },
+ {
+  "k": 41,
+  "id": "lme-54026fce",
+  "route": "memory",
+  "mine": "abstention_error",
+  "haiku": "abstention_error",
+  "haiku_reason": "The wrong answer says memory has no information about staying connected with colleagues, but the gold expects a response drawing on the user's colleague-related context (farewell party, workplace), so it should have answered rather than abstained."
+ },
+ {
+  "k": 42,
+  "id": "lme-f685340e",
+  "route": "tools",
+  "mine": "partial_answer",
+  "haiku": "partial_answer",
+  "haiku_reason": "The answer gives only the current frequency ('every other week') and omits the previous frequency (every week on Sunday), which the question explicitly asks for."
+ },
+ {
+  "k": 43,
+  "id": "rlvrif-3243",
+  "route": "vote_tools",
+  "mine": "other",
+  "haiku": "other",
+  "haiku_reason": "The wrong answer 'no' ignores the required instruction to contain exactly 8 markdown bullet points, so it breaks the task's formatting rule rather than being a partial, computational, outdated, abstention, or misread error."
+ },
+ {
+  "k": 44,
+  "id": "lme-d682f1a2",
+  "route": "deep_tools_memory",
+  "mine": "calculation_error",
+  "haiku": "partial_answer",
+  "haiku_reason": "The gold answer is 3 food delivery service types, but the wrong answer lists only two (Fresh Fusion and Uber Eats), omitting the third, Domino's Pizza, which the facts show the user ordered from three times last week."
+ },
+ {
+  "k": 45,
+  "id": "mmlupro-9499",
+  "route": "deep",
+  "mine": "calculation_error",
+  "haiku": "calculation_error",
+  "haiku_reason": "The answer selected F (-22 lb-ft) instead of the gold A (-26 lb-ft), indicating the torque computation from the angular deceleration (1200 rev/min over 3.0 min, with the disk's moment of inertia) was carried out incorrectly despite using the right inputs."
+ },
+ {
+  "k": 46,
+  "id": "lme-09ba9854_abs",
+  "route": "memory_deep",
+  "mine": "abstention_error",
+  "haiku": "abstention_error",
+  "haiku_reason": "The gold answer says the information is insufficient to answer, but the system gave a specific figure (about \u00a59,000) that is not supported by the facts shown, so it should have abstained."
+ },
+ {
+  "k": 47,
+  "id": "lme-c9f37c46",
+  "route": "fast",
+  "mine": "calculation_error",
+  "haiku": "calculation_error",
+  "haiku_reason": "The system likely found the right dates in the chat history but miscomputed the elapsed duration between when regular watching started and the open mic night, giving 3 months instead of 2."
+ },
+ {
+  "k": 48,
+  "id": "lme-c18a7dc8",
+  "route": "memory_deep",
+  "mine": "abstention_error",
+  "haiku": "abstention_error",
+  "haiku_reason": "The gold answer gives a numeric answer (7), derivable from the stored graduation age of 25 and the user's current age, but the system abstained by saying the information is not available."
+ },
+ {
+  "k": 49,
+  "id": "math-train-prealgebra-130",
+  "route": "tools",
+  "mine": "calculation_error",
+  "haiku": "other",
+  "haiku_reason": "The wrong answer 60 is a plainly incorrect geometric deduction (the correct value is 160 via the parallel-line angle sum, e.g. 180-120+... with the 80 and 120 angles relating to B), not a partial answer, computation slip, outdated fact, abstention, or misreading of the question."
+ }
+]

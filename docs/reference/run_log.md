@@ -239,6 +239,8 @@ One line per decision, with its reason. Times are America/Vancouver unless marke
 
 - **2026-11-22, retrieval_miss at fact level (user):** the gold answer must be inside the facts shown (MemoryAgentBench normalisation, substring, as GRAFT's gold-in-facts); preference and abstention questions left out. run-04-lme-maj3 retagged (Fir 5230274): Memory routes' retrieval_miss 189-198 (was 77), reasoning_error 84-89 (was about 200).
 
+- **2026-11-22, Sonnet tiebreak and reasoning-error sub-types (user approved):** one guarded job (Fir 5231463, after the Haiku check 5231462). Sonnet 5.5 on the 56 split groups: differs from the Haiku majority on 22; labels in run-04-lme-maj3-sonnet change on 7 of 500 memory questions (1 dev, 1 held-out, 5 train). Haiku sub-types of 1,120 reasoning errors; hand check 36/50 (43/50 allowing either label for undercounts); 57 unparsed (reply cap). Results in experiments/test-04-strategy-router/runs/run-04/maj3/.
+
 ### API spend (Anthropic)
 | When | What | Runs | Cost |
 |---|---|---|---|
@@ -264,4 +266,5 @@ One line per decision, with its reason. Times are America/Vancouver unless marke
 | 2026-11-21 | LongMemEval judge: two Haiku checks ($0.027 each), the judge ($0.128); the failed first judge job logged $0 | 3 jobs | $0.182 |
 | 2026-11-22 | Haiku temperature probes (3 calls, all rejected or a few tokens) | 0 jobs | <$0.001 |
 | 2026-11-22 | LongMemEval judge, 2 more verdicts per answer (majority of 3) $0.256, Haiku check $0.027 | 2 jobs | $0.283 |
-| | **Total so far** | | **$7.85** |
+| 2026-11-22 | Sonnet tiebreak (56 calls) and Haiku reasoning-error sub-types (1,120 calls) $0.263, Haiku check $0.027 | 2 jobs | $0.290 |
+| | **Total so far** | | **$8.14** |
