@@ -217,6 +217,12 @@ One line per decision, with its reason. Times are America/Vancouver unless marke
 
 - **2026-11-22, GRAFT test 09 scored:** G35 48.3 (48, 48, 49), G39 47.3 at 33.1 facts, G40 47.7 at 67.9 facts and 2.8 calls; Qwen 1,024 tokens, all repeats the same day (Nibi). Keep rule: G39 matches G35 at the spread's edge with 34% fewer facts, kept if the user confirms the 30% threshold; G40 neither beats G35 nor is cheaper, drop proposed (needs the user's yes).
 
+- **2026-11-22, test 09 decision (user):** the 30% "clearly fewer" bar is not confirmed; G39 lost by 1 in every same-day pair and had lower gold in the facts (56% vs 59%). G39 and G40 stay undecided and go into the LongMemEval retrieval comparison after the G41 rebuild.
+
+- **2026-11-22, label set (user):** run-04-lme-maj3 (Haiku majority of 3) is the label set from now on; run-04-lme is kept; routers not retrained yet. lme-3c1045c8 keeps its wrong verdicts (no hand override): the gold "2.5 years" is right (32 - 29.5) and Haiku said No to the identical answer 13 times out of 15; it is the only exact match judged wrong.
+
+- **2026-11-22, forced-tool and self-check routes designed (user asked; no runs before approval):** F37 Forced Code (Deep), F38 Forced Sympy (Fast), F39 Forced Rules (Fast, constraint_check v2 on IFEval's official checkers), F40 Self-Check (Fast, CRITIC-style); toy check S169 and pilot S170. Found on the way: the tool loop drops Qwen's thinking between tool rounds (no reasoning_content sent back), and the instruction grader's regex finds a rule in only 106 of 236 questions although each has a ground-truth rule.
+
 ### API spend (Anthropic)
 | When | What | Runs | Cost |
 |---|---|---|---|

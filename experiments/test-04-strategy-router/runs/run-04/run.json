@@ -14,5 +14,6 @@
   "curve 50%": "S151-S154",
   "curve 75%": "S155-S158"
  },
- "invalid": "run-04-lme.invalid-5124280 (merge before the available-field fix) is not used"
+ "invalid": "run-04-lme.invalid-5124280 (merge before the available-field fix) is not used",
+ "labels_current": "$SCRATCH/flotilla/test04-labels/run-04-lme-maj3 (user, 2026-11-22): the label set from now on; Haiku majority of 3 per LongMemEval answer; routers not retrained (they were trained on run-04-lme, whose dev labels are identical)"
 }
