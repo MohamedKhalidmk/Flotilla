@@ -235,6 +235,8 @@ One line per decision, with its reason. Times are America/Vancouver unless marke
 
 - **2026-11-22, LiveCodeBench scorer (user asked):** every LCB result so far is from `scoring.lcb`; PROTOCOL said `lcb_runner`, now fixed; a cross-check against lcb_runner comes before the final row.
 
+- **2026-11-22, history rewrite pushed (user approved, one-time exception to never pushing to main):** GPQA text replaced in seven historical files with git filter-repo; scan of every ref: zero blobs with any of the 546 GPQA questions (the untouched copy: 7). Force-pushed with leases on the old heads: main cdeb4dd -> fd1aaee, restructure 0eabe60 -> a9fa554; protocol tags v1-v9 unchanged. Old heads kept as tags backup/pre-gpqa-scrub/* in a local backup mirror (not on GitHub). 125 of 215 commits changed hash; map in docs/reference/history_rewrite_2026-11-22.md. Cluster copies are plain file trees (no git): nothing to update besides the format file, now synced. The never-push-to-main rule is back in force.
+
 ### API spend (Anthropic)
 | When | What | Runs | Cost |
 |---|---|---|---|
