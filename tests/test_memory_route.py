@@ -466,3 +466,17 @@ def test_judge_repeats_write_one_row_per_repeat(tmp_path, monkeypatch):
     asyncio.run(mr._judge(a))
     rows = [json.loads(l) for l in open(out)]
     assert sorted(r["repeat"] for r in rows) == [0, 1] and len(calls) == 2
+
+
+def test_hand_override_changes_only_the_named_answer():
+    """Checks that a hand override sets the verdict only for the exact answer text it names, keeps the judge's verdict as judge_correct with the evidence, and that an override matching nothing is reported.
+    Guards against: an override silently widening to other answers, or a stale override passing unnoticed."""
+    vs = [{"item_id": "lme-3c1045c8", "route": "fast", "answer": "2.5 years", "correct": False},
+          {"item_id": "lme-3c1045c8", "route": "tools", "answer": "2.5", "correct": False},
+          {"item_id": "other", "route": "fast", "answer": "2.5 years", "correct": False}]
+    o = {"item_id": "lme-3c1045c8", "answer": "2.5 years", "correct": True, "reason": "gold verified",
+         "evidence": "29.5 on 2023-05-24, 32 on 2023-05-25", "by": "user", "date": "2026-11-22"}
+    out, unused = mr.apply_overrides(vs, [o, {**o, "answer": "three years"}])
+    assert out[0]["correct"] and out[0]["judge_correct"] is False and out[0]["override"]["evidence"].startswith("29.5")
+    assert not out[1]["correct"] and "override" not in out[1] and not out[2]["correct"]
+    assert unused == ["lme-3c1045c8: 'three years'"]

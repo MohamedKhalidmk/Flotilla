@@ -207,3 +207,16 @@ Set by the user on 2026-11-22, before any run with a history past the window. A 
 - 2026-11-20: protocol-v10 (decided by the user's rule, set before the result). gpt-oss-20b is dropped and Flotilla runs Qwen3.8-27B (W4A16) alone: the trained router B (ModernBERT-base fine-tune on 4,284 loop-labelled pool questions) gains +0.4 points over Qwen alone on the 476 held-out pool questions (0.899 vs 0.895), under the 1-point bar; a bge-small + logistic-regression router gains -0.8. Command A+ was dropped earlier under rule 4.2 (Command A+ minus Qwen = -0.104, 95% CI [-0.143, -0.066]). Routers A and B are then not used; vision stays with Qwen3.8. Open: whether long inputs (RULER) get a fixed rule to gpt-oss, which the pool cannot test (no long-context questions).
 - 2026-11-21: protocol-v10 addendum (decided by the user before any LongMemEval answer was graded). LongMemEval route labels are graded by Claude Haiku 5.5 with LongMemEval's official LLM-judge prompts, not by Qwen: an independent judge, the same as the other Haiku-graded labels (an earlier run-log decision, reaffirmed). Each judge batch starts with the fixed Haiku check (GRAFT `configs/runs/exp/canary/haiku_replay38.yaml`, about $0.027) and logs request IDs; spend is estimated and approved first (about $0.25 per route for 500 questions). The status line now names protocol-v10, the last tagged version (it still said v8).
 - 2026-11-22: protocol-v10 addendum 2 (set by the user before any run past the window). Section 11: a route that reads the whole history keeps the most recent part that fits (whole sessions or chunks, newest first; system prompt, question and question date always kept); every trace records what was kept. First used by the long-history design (GRAFT `docs/design/graft_long_history_design.md`).
+
+## 12. Hand overrides of judge verdicts (2026-11-22)
+
+A judge verdict is changed by hand only when the user decides it, for one exact answer text, with the evidence written
+down. Overrides live in `experiments/test-04-strategy-router/runs/run-04/overrides.jsonl` (item, exact answer, verdict,
+reason, evidence, who, date) and are applied by `python -m flotilla.memory_route combine-verdicts --overrides`, which
+keeps the judge's verdict as `judge_correct` and stops if an override matches no verdict. Labels built with overrides go
+to a new folder; the folder without them is kept.
+
+| Item | Answer overridden | Verdict | Evidence |
+|---|---|---|---|
+| lme-3c1045c8 (multi-session, 2023/05/30) "How much older am I than the average age of employees in my department?" | `2.5 years` (Fast, Deep, Deep+Tools, Vote, Vote+Tools) | right (Haiku: no, 13 of 15 times on the identical prompt) | session answer_c8cc60d6_2 (2023/05/24): the department average is 29.5; session answer_c8cc60d6_1 (2023/05/25): the user is 32; 32 - 29.5 = 2.5, the gold. Tools' `2.5` (no unit) is not covered and keeps Haiku's verdict. |
+

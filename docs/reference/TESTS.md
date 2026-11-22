@@ -1,6 +1,6 @@
 # Tests (Flotilla)
 
-108 tests in 14 files, in plain words. Generated from each test's docstring by `scripts/make_tests_doc.py`; to change a line, edit the docstring and rerun the script. `tests/test_tests_doc.py` fails if a test is missing here or a line is out of date. The Gaps section at the end is written by hand.
+109 tests in 14 files, in plain words. Generated from each test's docstring by `scripts/make_tests_doc.py`; to change a line, edit the docstring and rerun the script. `tests/test_tests_doc.py` fails if a test is missing here or a line is out of date. The Gaps section at the end is written by hand.
 
 ## [tests/test_error_stages.py](../../tests/test_error_stages.py)
 
@@ -84,6 +84,7 @@ Memory routes (flotilla/memory_route.py): availability, GRAFT documents, cache k
 | `test_ask_for_more_adds_pool_facts_within_the_limits` | Checks that with ask_more on, a NEED MORE MEMORIES reply adds the next pool batch and asks again, up to the ask limit. | G40 on LongMemEval silently answering with only the first facts, or asking forever past the limits. |
 | `test_majority_of_three_verdicts` | Checks that combine takes the majority of three verdicts per (item, route, answer), of all six when one answer sits in two folders (a tie going to the first three), keeps a missing answer wrong, and reports other counts. | one noisy Haiku verdict deciding a label (identical prompts got both yes and no), or a missing repeat passing silently. |
 | `test_judge_repeats_write_one_row_per_repeat` | Checks that judge with --repeats 2 judges every answer twice, tags rows with repeat 0 and 1, and a rerun skips rows already written. | a resumed repeat job paying twice for the same verdict, or repeats that cannot be told apart. |
+| `test_hand_override_changes_only_the_named_answer` | Checks that a hand override sets the verdict only for the exact answer text it names, keeps the judge's verdict as judge_correct with the evidence, and that an override matching nothing is reported. | an override silently widening to other answers, or a stale override passing unnoticed. |
 
 ## [tests/test_references.py](../../tests/test_references.py)
 

@@ -227,6 +227,14 @@ One line per decision, with its reason. Times are America/Vancouver unless marke
 
 - **2026-11-22, references (user):** REFERENCES.md in both repos; Sources headers on prompt files and borrowed code; tests check every named source is listed. Found: real GPQA rows committed in tests/data/formats (GPQA asks that examples not be published online); PROTOCOL's lcb_runner claim does not match scoring.py's own runner.
 
+- **2026-11-22, GPQA out of the public repo (user):** GPQA's card asks that examples not be published online. The tree now holds made-up GPQA rows (the sampler writes them too) and the test 02 audits withhold GPQA questions (5c883c3). History: a scratch mirror rewritten with git filter-repo (GPQA blobs replaced by the redacted versions, checked against all 546 GPQA questions); the force-push of main and restructure waits on the user. Repo stays public (user).
+
+- **2026-11-22, hand override (user):** lme-3c1045c8 "2.5 years" judged right by hand, evidence in PROTOCOL 12; labels with the override in run-04-lme-maj3-hand (Fir 5223617); it also goes into the full relabel.
+
+- **2026-11-22, fixes held for the full relabel (user):** reasoning kept across tool rounds, instruction grading by RLVR-IFeval's ground-truth rules, the override; no relabel before writer v2 is decided.
+
+- **2026-11-22, LiveCodeBench scorer (user asked):** every LCB result so far is from `scoring.lcb`; PROTOCOL said `lcb_runner`, now fixed; a cross-check against lcb_runner comes before the final row.
+
 ### API spend (Anthropic)
 | When | What | Runs | Cost |
 |---|---|---|---|

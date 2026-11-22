@@ -809,11 +809,33 @@ def majority_verdicts(rows: list[dict], n: int) -> tuple[list[dict], list[str]]:
     return out, problems
 
 
+def apply_overrides(verdicts: list[dict], overrides: list[dict]) -> tuple[list[dict], list[str]]:
+    """Hand overrides (PROTOCOL.md section 12): each override names an item, the exact answer text it covers, the verdict
+    and the evidence. A matching verdict takes the override's verdict and keeps the judge's as judge_correct. Returns the
+    verdicts and the overrides that matched no verdict (an override must match at least one)."""
+    unused = []
+    for o in overrides:
+        n = 0
+        for v in verdicts:
+            if v["item_id"] == o["item_id"] and v.get("answer") == o["answer"]:
+                v["judge_correct"] = v["correct"]
+                v["correct"] = bool(o["correct"])
+                v["override"] = {k: o[k] for k in ("reason", "evidence", "by", "date") if k in o}
+                n += 1
+        if not n:
+            unused.append(f"{o['item_id']}: {o['answer']!r}")
+    return verdicts, unused
+
+
 def _combine(a) -> None:
     rows = [json.loads(line) for p in a.inputs for line in open(p)]
     out, problems = majority_verdicts(rows, a.n)
     if problems:
         raise SystemExit(f"{len(problems)} groups without {a.n} verdicts, e.g. {problems[:5]}")
+    if a.overrides:
+        out, unused = apply_overrides(out, [json.loads(line) for line in open(a.overrides) if line.strip()])
+        if unused:
+            raise SystemExit(f"overrides that match no verdict: {unused}")
     Path(a.out).write_text("".join(json.dumps(v, ensure_ascii=False) + "\n" for v in out))
     print(f"{len(rows)} verdicts in, {len(out)} combined, {sum(v.get('votes_yes') not in (0, v.get('votes'), None) for v in out)} split")
 
@@ -886,6 +908,7 @@ def main() -> None:
     c.add_argument("--inputs", nargs="+", required=True)
     c.add_argument("--n", type=int, default=3)
     c.add_argument("--out", required=True)
+    c.add_argument("--overrides", help="hand overrides (JSONL: item_id, answer, correct, reason, evidence, by, date)")
     a = ap.parse_args()
     if a.cmd == "dry-run":
         cmd_dry_run(a)
