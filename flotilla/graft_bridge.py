@@ -148,6 +148,7 @@ def retrieve(job: dict, cfg: dict, gateway_url: str) -> dict:
             "pool": [fact_record(store, f, f in region.outdated) for f in pool],
             "linked_entities": [store.fact(e)["name"] if e in store.g else e for e in region.linked_entities],
             "fallback": region.fallback, "subgraph_nodes": region.subgraph_nodes, "sources": region.sources,
+            "plan": region.plan or {},  # guide planning: parsed edges, wanted (canonical) relations, steps found
             "graph": store.stats(), "seconds": round(time.time() - t0, 3), **counter.tally()}
 
 

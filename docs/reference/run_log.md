@@ -203,6 +203,8 @@ One line per decision, with its reason. Times are America/Vancouver unless marke
 
 - **2026-11-22, LongMemEval retrieval comparison planned (user):** after the G41 rebuild, five retrieval rules on the new graphs, so the choice does not rest on FactConsolidation alone: fixed 50 (G41, G35's rule), fixed 100 (new G47), fixed 200 (new G48), drop cutoff (G39), cutoff plus asks (G40); setups S163-S167. Memory route (base route Fast) on Qwen, 3 repeats each, the same day; Haiku judge with the fixed Haiku check first. Fixed 100, 200, G39 and G40 use a 40,000-token memory budget so only the fact count limits them (fixed 50 keeps G35's 5,120, which 50 facts never reach). G40 needed new code: the bridge now returns GRAFT's ranked pool, and the Memory route asks again with the next 50 pool facts on NEED MORE MEMORIES (same rule text and limits as GRAFT's agent; `tests/test_memory_route.py`). Reported per rule: accuracy with the spread, gold in the facts shown, facts shown, asks, calls and GPU-seconds.
 
+- **2026-11-22, relation-name mismatch check (user):** for LongMemEval misses whose gold fact is in the graph, compare the guide plan's wanted relations with the gold facts' stored relations, both mapped to T-REx relations the way planning does (`guide.canon`, after the guide's linking pass). Classes: no plan, relation-name mismatch, relation matches (the miss is elsewhere). GRAFT `scripts/plan_relation_check.py`, tests. The plan was computed but never saved; Flotilla's bridge now keeps it in each retrieval record. Runs on the G41 dev retrievals once row 24's runs make them (retrieval records from before the change, without a plan, are set aside so they are recomputed).
+
 ### API spend (Anthropic)
 | When | What | Runs | Cost |
 |---|---|---|---|
