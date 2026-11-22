@@ -1,6 +1,6 @@
 # Tests (Flotilla)
 
-122 tests in 16 files, in plain words. Generated from each test's docstring by `scripts/make_tests_doc.py`; to change a line, edit the docstring and rerun the script. `tests/test_tests_doc.py` fails if a test is missing here or a line is out of date. The Gaps section at the end is written by hand.
+125 tests in 17 files, in plain words. Generated from each test's docstring by `scripts/make_tests_doc.py`; to change a line, edit the docstring and rerun the script. `tests/test_tests_doc.py` fails if a test is missing here or a line is out of date. The Gaps section at the end is written by hand.
 
 ## [tests/test_error_stages.py](../../tests/test_error_stages.py)
 
@@ -16,6 +16,13 @@
 | `test_verifier_false_accept_needs_a_correctness_check` | Checks that a wrong answer accepted after a correctness check (public tests, constraints, LLM check) is verifier_false_accept, while one accepted after a form-only check is reasoning_error. | blaming the verifier for maths answers it can only check for form. |
 | `test_reasoning_error_and_ungraded_samples` | Checks that all samples wrong with nothing else to blame is reasoning_error, and that samples no grader can judge set samples_ungraded instead of vote_wrong. | a LongMemEval vote called right or wrong on samples nobody judged. |
 | `test_flags_and_stage_lists` | Checks the tool_error and retrieval_fallback flags, and that every stage the tagger returns is in the rule list, with only gold-free stages marked live. | a stage name drifting from trace.py's ERROR_STAGES, or a gold-dependent stage offered to flotilla-deploy. |
+
+## [tests/test_error_subtypes.py](../../tests/test_error_subtypes.py)
+
+| Test | What it checks | Guards against |
+|---|---|---|
+| `test_subtype_reply_parsing_never_guesses` | Checks that the classifier reply's JSON gives the sub-type and reason, and that an unknown or missing sub-type is recorded as unparsed. | a malformed Haiku reply silently counted as "other" or as a real sub-type. |
+| `test_subtype_prompt_shows_question_gold_answer_and_facts` | Checks that the fixed prompt is filled with the question, gold, answer and facts, that long text is cut with a mark, and that code and instruction golds are described rather than left empty. | the classifier judging without the facts shown, or an empty gold on code and instruction questions. |
 
 ## [tests/test_forced_routes.py](../../tests/test_forced_routes.py)
 
@@ -101,6 +108,7 @@ Memory routes (flotilla/memory_route.py): availability, GRAFT documents, cache k
 | `test_judge_repeats_write_one_row_per_repeat` | Checks that judge with --repeats 2 judges every answer twice, tags rows with repeat 0 and 1, and a rerun skips rows already written. | a resumed repeat job paying twice for the same verdict, or repeats that cannot be told apart. |
 | `test_hand_override_changes_only_the_named_answer` | Checks that a hand override sets the verdict only for the exact answer text it names, keeps the judge's verdict as judge_correct with the evidence, and that an override matching nothing is reported. | an override silently widening to other answers, or a stale override passing unnoticed. |
 | `test_gold_in_facts_is_fact_level` | Checks that fact-level evidence needs the normalised gold inside the shown facts' text, and does not apply to preference or abstention questions. | counting a question as having its evidence shown because some unrelated fact from the right session was shown. |
+| `test_sonnet_tiebreak_replaces_only_split_groups` | Checks that the tiebreak picks only groups whose verdicts split, replaces their verdict with Sonnet's (keeping the Haiku majority), and that the Sonnet judge turns thinking off with between_tools. | a tiebreak that touches unanimous groups, or a Sonnet call rejected for sending thinking disabled. |
 
 ## [tests/test_references.py](../../tests/test_references.py)
 

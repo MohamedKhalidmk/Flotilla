@@ -73,7 +73,8 @@ the source's licence file or dataset card (to do before any publication).
 | `phi-4-reasoning` | Microsoft Phi-4-reasoning and Phi-4-reasoning-plus (and the NVIDIA FP8 and AMD W4A16 builds we compared) | https://huggingface.co/microsoft/Phi-4-reasoning-plus | MIT (PROTOCOL) | F03, F04; S108-S110, S114, S122 |
 | `gpt-oss` | OpenAI gpt-oss-20b | https://huggingface.co/openai/gpt-oss-20b | Apache-2.0 (PROTOCOL v9) | F07; S111-S113, S116, S120 |
 | `command-a-plus` | Cohere Command A+ (05-2026) | https://huggingface.co/CohereLabs | check | F08, F09; S117, S118 |
-| `claude-haiku` | Anthropic Claude Haiku 5.5 (API) | https://www.anthropic.com | Anthropic commercial terms | LongMemEval judge: S132-S141, S159-S170 |
+| `claude-haiku` | Anthropic Claude Haiku 5.5 (API) | https://www.anthropic.com | Anthropic commercial terms | LongMemEval judge: S132-S141, S159-S170; reasoning-error sub-types (`flotilla/error_subtypes.py`) |
+| `claude-sonnet` | Anthropic Claude Sonnet 5.5 (API) | https://www.anthropic.com | Anthropic commercial terms | tiebreak verdict on split Haiku judge groups (`flotilla/memory_route.py` tiebreak) |
 | `modernbert` | Warner et al. ModernBERT. arXiv 2412.13663, 2024 (answerdotai/ModernBERT-base) | https://huggingface.co/answerdotai/ModernBERT-base | Apache-2.0 | `flotilla/router_b.py`, `flotilla/strategy_router.py`; F13, F24, F25, F29, F30 |
 | `bge-small` | Xiao et al. C-Pack: Packaged Resources To Advance General Chinese Embedding. arXiv 2309.07597, 2023 (BAAI/bge-small-en-v1.5) | https://huggingface.co/BAAI/bge-small-en-v1.5 | MIT | `flotilla/router_b_lite.py`, `flotilla/strategy_router.py`, `flotilla/leakage.py`; F14, F26, F27, F31, F32; GRAFT's embedder |
 | `vela3` | vllm-sr vela3-fast decision encoder | https://huggingface.co/vllm-sr | Apache-2.0 (PROTOCOL 4.5) | `flotilla/router_a.py`; F12 |

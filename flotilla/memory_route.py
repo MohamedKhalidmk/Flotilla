@@ -1,4 +1,4 @@
-# Sources: longmemeval, memoryagentbench, graft, goat, t-rex, bge-small, anthropic-sdk, claude-haiku (docs/reference/REFERENCES.md)
+# Sources: longmemeval, memoryagentbench, graft, goat, t-rex, bge-small, anthropic-sdk, claude-haiku, claude-sonnet (docs/reference/REFERENCES.md)
 """Memory routes: GRAFT facts from the question's own history, then a base route through the normal Flotilla loop.
 
     Memory            = Fast        + memory
@@ -586,6 +586,12 @@ HAIKU = "claude-haiku-5-5"
 # copied from GRAFT configs/pricing.yaml (SGAR f8c5aa4); USD per million tokens
 PRICES = {HAIKU: {"long_prompt_threshold": 100000, "short": {"input": 0.10, "output": 0.50},
                   "long": {"input": 0.50, "output": 2.50}, "cache_read_multiplier": 0.1, "cache_write_multiplier": 1.25}}
+SONNET = "claude-sonnet-5-5"
+# Claude Sonnet 5.5 (claude-api skill, models table cached 2026-11-03): $2 / $10 per million tokens, one rate card.
+PRICES[SONNET] = {"long_prompt_threshold": 10 ** 9, "short": {"input": 2.0, "output": 10.0},
+                  "long": {"input": 2.0, "output": 10.0}, "cache_read_multiplier": 0.05, "cache_write_multiplier": 1.25}
+# How each judge model turns thinking off: Haiku 5.5 takes "disabled"; Sonnet 5.5 rejects it and takes "between_tools".
+THINKING_OFF = {HAIKU: {"type": "disabled"}, SONNET: {"type": "between_tools"}}
 
 
 def token_cost(model: str, input_tokens: int, output_tokens: int, cache_read_tokens: int = 0,
@@ -600,15 +606,17 @@ def token_cost(model: str, input_tokens: int, output_tokens: int, cache_read_tok
 class HaikuJudge:
     """LongMemEval's judge on Claude Haiku: one call per answer, logged like GRAFT's gateway (usage.jsonl)."""
 
-    def __init__(self, usage_log: str | Path, model: str = HAIKU, client=None):
+    def __init__(self, usage_log: str | Path, model: str = HAIKU, client=None, max_tokens: int = 10,
+                 phase: str = "lme_judge"):
         if client is None:
             import anthropic
             client = anthropic.AsyncAnthropic(max_retries=5)  # key from ANTHROPIC_API_KEY only
         self.client, self.model, self.usage_log = client, model, Path(usage_log)
+        self.max_tokens, self.phase = max_tokens, phase
         self.lock = asyncio.Lock()
 
     async def __call__(self, prompt: str, item_id: str, route: str) -> str:
-        params = {"model": self.model, "max_tokens": 10, "thinking": {"type": "disabled"},
+        params = {"model": self.model, "max_tokens": self.max_tokens, "thinking": THINKING_OFF[self.model],
                   "messages": [{"role": "user", "content": prompt}]}
         request_hash = hashlib.sha256(json.dumps(params, sort_keys=True, ensure_ascii=False).encode()).hexdigest()[:16]
         t0 = time.time()
@@ -619,7 +627,7 @@ class HaikuJudge:
         text = "".join(getattr(b, "text", "") or "" for b in msg.content)
         u = msg.usage
         read, write = getattr(u, "cache_read_input_tokens", 0) or 0, getattr(u, "cache_creation_input_tokens", 0) or 0
-        row = {"ts": time.time(), "phase": "lme_judge", "item_id": item_id, "route": route, "model": self.model,
+        row = {"ts": time.time(), "phase": self.phase, "item_id": item_id, "route": route, "model": self.model,
                "input_tokens": u.input_tokens, "output_tokens": u.output_tokens, "cache_read_tokens": read,
                "cache_write_tokens": write, "cost_usd": token_cost(self.model, u.input_tokens, u.output_tokens, read, write),
                "latency_s": round(time.time() - t0, 3), "stop_reason": msg.stop_reason, "request_hash": request_hash,
@@ -871,6 +879,48 @@ def _combine(a) -> None:
     print(f"{len(rows)} verdicts in, {len(out)} combined, {sum(v.get('votes_yes') not in (0, v.get('votes'), None) for v in out)} split")
 
 
+def split_groups(verdicts: list[dict]) -> list[dict]:
+    """Combined verdicts whose judge calls disagreed (some yes, some no)."""
+    return [v for v in verdicts if v.get("votes") and v.get("votes_yes") not in (0, v["votes"])]
+
+
+def apply_tiebreak(verdicts: list[dict], breaks: list[dict]) -> list[dict]:
+    """Each split group takes the tiebreak judge's verdict; the Haiku majority is kept as haiku_majority."""
+    by = {(b["item_id"], b["route"], b["answer"]): b for b in breaks}
+    out = []
+    for v in verdicts:
+        b = by.get((v["item_id"], v["route"], v.get("answer")))
+        if b is not None:
+            v = {**v, "haiku_majority": v["correct"], "correct": b["correct"],
+                 "tiebreak": {"model": b["judge_model"], "reply": b["judge_reply"]}}
+        out.append(v)
+    return out
+
+
+async def _tiebreak(a) -> None:
+    """One Sonnet verdict per split group (same official prompt), then the combined verdicts with those replaced."""
+    items = {json.loads(l)["item_id"]: json.loads(l) for l in open(a.items)}
+    verdicts = [json.loads(l) for l in open(a.verdicts)]
+    groups = split_groups(verdicts)
+    out = Path(a.out)
+    out.mkdir(parents=True, exist_ok=True)
+    judge = HaikuJudge(out / "usage.jsonl", model=a.model, phase="lme_tiebreak")
+    sem = asyncio.Semaphore(4)
+
+    async def one(v):
+        async with sem:
+            r = await judge_answer_haiku(items[v["item_id"]], v["answer"], judge, v["route"])
+            return {"item_id": v["item_id"], "route": v["route"], "answer": v["answer"], **r,
+                    "haiku_votes": f"{v['votes_yes']}/{v['votes']}"}
+    breaks = await asyncio.gather(*[one(v) for v in groups])
+    (out / "tiebreak.jsonl").write_text("".join(json.dumps(b, ensure_ascii=False) + "\n" for b in breaks))
+    (out / "verdicts.jsonl").write_text("".join(json.dumps(v, ensure_ascii=False) + "\n"
+                                                for v in apply_tiebreak(verdicts, breaks)))
+    flips = sum(b["correct"] != (int(b["haiku_votes"].split("/")[0]) * 2 > int(b["haiku_votes"].split("/")[1]))
+                for b in breaks)
+    print(f"tiebreak: {len(breaks)} split groups, {flips} differ from the Haiku majority -> {out}")
+
+
 async def _judge(a) -> None:
     items = {}
     for line in open(a.items):
@@ -940,6 +990,11 @@ def main() -> None:
     c.add_argument("--n", type=int, default=3)
     c.add_argument("--out", required=True)
     c.add_argument("--overrides", help="hand overrides (JSONL: item_id, answer, correct, reason, evidence, by, date)")
+    t = sub.add_parser("tiebreak", help="one Sonnet verdict per split group (PAID); writes the replaced verdicts")
+    t.add_argument("--items", required=True)
+    t.add_argument("--verdicts", required=True, help="combined verdicts (combine-verdicts output)")
+    t.add_argument("--model", default=SONNET)
+    t.add_argument("--out", required=True)
     a = ap.parse_args()
     if a.cmd == "dry-run":
         cmd_dry_run(a)
@@ -947,6 +1002,8 @@ def main() -> None:
         cmd_prepare(a)
     elif a.cmd == "combine-verdicts":
         _combine(a)
+    elif a.cmd == "tiebreak":
+        asyncio.run(_tiebreak(a))
     else:
         asyncio.run(_judge(a))
 

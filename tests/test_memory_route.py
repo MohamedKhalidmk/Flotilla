@@ -493,3 +493,32 @@ def test_gold_in_facts_is_fact_level():
     assert mr.gold_in_facts(item, mr.shown_facts_text(["f:2"], g)) is False
     assert mr.gold_in_facts({**item, "question_type": "single-session-preference"}, "anything") is None
     assert mr.gold_in_facts({**item, "item_id": "lme-x_abs"}, "anything") is None
+
+
+def test_sonnet_tiebreak_replaces_only_split_groups(tmp_path):
+    """Checks that the tiebreak picks only groups whose verdicts split, replaces their verdict with Sonnet's (keeping the Haiku majority), and that the Sonnet judge turns thinking off with between_tools.
+    Guards against: a tiebreak that touches unanimous groups, or a Sonnet call rejected for sending thinking disabled."""
+    vs = [{"item_id": "a", "route": "fast", "answer": "x", "correct": True, "votes_yes": 2, "votes": 3},
+          {"item_id": "b", "route": "fast", "answer": "y", "correct": False, "votes_yes": 0, "votes": 3}]
+    assert [v["item_id"] for v in mr.split_groups(vs)] == ["a"]
+    out = mr.apply_tiebreak(vs, [{"item_id": "a", "route": "fast", "answer": "x", "correct": False,
+                                  "judge_model": mr.SONNET, "judge_reply": "No"}])
+    assert out[0]["correct"] is False and out[0]["haiku_majority"] is True and out[1] == vs[1]
+    from types import SimpleNamespace as NS
+    sent = []
+
+    class Raw:
+        headers = {"request-id": "r"}
+
+        async def parse(self):
+            return NS(content=[NS(type="text", text="No")], id="m", stop_reason="end_turn",
+                      usage=NS(input_tokens=300, output_tokens=1, cache_read_input_tokens=0, cache_creation_input_tokens=0))
+
+    async def create(**params):
+        sent.append(params)
+        return Raw()
+    j = mr.HaikuJudge(tmp_path / "u.jsonl", model=mr.SONNET, client=NS(messages=NS(with_raw_response=NS(create=create))))
+    asyncio.run(j("prompt", "a", "fast"))
+    assert sent[0]["thinking"] == {"type": "between_tools"} and sent[0]["model"] == "claude-sonnet-5-5"
+    row = json.loads((tmp_path / "u.jsonl").read_text())
+    assert row["cost_usd"] == pytest.approx((300 * 2.0 + 1 * 10.0) / 1e6)
