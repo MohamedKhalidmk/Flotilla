@@ -42,4 +42,10 @@ errors by tool: {'err:python_exec': 776, 'err:sympy': 578, 'err:final_answer': 1
 - Qwen often obeys: it padded answers to 500 words (lme-8a2466db), added a P.S. (lme-0a34ad58), rewrote into two paragraphs (lme-95228167), or repeated the same failing check up to the round cap (lme-22d2cb42, 7 calls per sample). None of these rewritten samples decided a break here.
 - 9 breaks are preference questions where all five samples differ, so the vote takes sample 0; there it was a generic list, while Vote's sample 0 was personalised. The checks did not choose the winner.
 - 8 breaks are wrong facts (three abstention questions answered anyway, an outdated time, a wrong count, two python_exec date or count calls on the wrong facts, a wrong order).
-- 8 are judge strictness or noise: lme-3c1045c8 "2.5 years" equals the gold and Vote's identical answer was judged right; "Rhythm Central on Main St" (gold: the music shop on Main St), "February (Valentine's Day), 2023" (gold: February 14th), "The Sugar Factory" (gold adds "at Icon Park"), plus four shorter or partial answers.
+- 8 are short answers the judge marked wrong. Haiku received each trace's final answer exactly (not cut short, not another sample). 7 follow the official rubric ("a subset of the information ... answer no"): "1" for 1 week, "Dark Souls 3" for Dark Souls 3 DLC, "less", "The Sugar Factory" without Icon Park, "February (Valentine's Day), 2023" for February 14th, "Rhythm Central on Main St" for the music shop on Main St, and an abstention answer that gives 5 tomato plants. One is real noise: lme-3c1045c8 "2.5 years" equals the gold; the same prompt got Yes once (Vote) and No four times.
+
+## Judge consistency over all 5,000 LongMemEval verdicts (2026-11-22)
+
+- The Haiku call sets no temperature, so it ran at the API default (1.0), not the official 0.
+- 795 (question, exact answer) pairs were judged more than once (3,468 verdicts). 6 pairs got both yes and no (31 verdicts, about 10 on the minority side): lme-4baee567 "12" 4 yes/5 no, lme-gpt4_194be4b3 "4" 2/4, lme-3c1045c8 "2.5 years" 1/4, lme-80ec1f4f_abs "0" 1/5, lme-ceb54acb 1/2, lme-gpt4_4cd9eba1 "1" 1/1. Other repeated prompts differ only in case (Yes/yes).
+- 2 verdicts are refusals ("I can't verify ...", preference questions) counted as no; 1 has no final answer.
