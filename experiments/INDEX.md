@@ -14,3 +14,4 @@ Candidate IDs (F01...) and setups (S102...) are in the [registry](../docs/refere
 | [03 · Router B](test-03-router-b-models/README.md) | Does routing between Qwen and gpt-oss help? | done | run-02 | F07 (gpt-oss) dropped; F13 (router B) +0.4, under the bar; F06 alone |
 | [04 · Strategy router](test-04-strategy-router/README.md) | Does picking a route per question beat the best fixed route? | running (pool labels done; LongMemEval labels in progress) | run-03 | pending |
 | [05 · GRAFT base graph](test-05-graft-base-graph/README.md) | Does a base knowledge graph help the Memory route? | done | run-02 | No base graph: G25 (RoG) and G27-G29 (full T-REx) not adopted (T-REx 0.17-0.19 vs 0.347); Memory routes use G35 |
+| [06 · LLM verifier](test-06-llm-verifier/README.md) | Does verifier v2's LLM check help free-text answers? | running | run-01 | pending |

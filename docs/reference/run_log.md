@@ -169,6 +169,8 @@ One line per decision, with its reason. Times are America/Vancouver unless marke
 
 - **2026-11-22, docs cleanup (user):** the redirect notes at the old docs/ paths removed (Flotilla 7, GRAFT 5; nothing depends on old links); session documents are markdown only (PDFs removed; one is built on Fir only when the user asks); the hash manifest moved from docs/session/SHA256SUMS to scripts/SHA256SUMS in both repos (the sync script and both tests updated).
 
+- **2026-11-22, LLM verifier (user):** verifier v2's LLM check was in `prompts/verifier.v2.md` but never ran, so free-text task types were accepted with no check. Built (`flotilla/system.py`, `llm_check`, 4 tests) as new candidates F33 (Fast + check) and F34 (Deep + check); F15 and F17 stay the baselines. Checker: Qwen on the solver's server, thinking off, temperature 0, 1,024 tokens, full task text; a reject gets the existing one retry; a reply with no verdict accepts. Test 06: LongMemEval dev only (76), 4 arms x 3 repeats, same day, free (Fir 5143762-5143791 twinned with Nibi 28424070-28424093). **Keep rule (user, set before any result):** keep the check only if it beats its baseline by more than the repeat spread without turning more right answers wrong than it fixes; otherwise drop it and log why. Labels untouched until the user decides.
+
 ### API spend (Anthropic)
 | When | What | Runs | Cost |
 |---|---|---|---|

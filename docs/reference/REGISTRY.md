@@ -62,6 +62,8 @@ the Flotilla loop). Its test 01 run and its final-benchmark runs are different s
 | F30 | Strategy router: ModernBERT success predictor + dev threshold, run-04-lme | "router ii" | 04 | scored | dev 0.959 at 72% of Vote's GPU-seconds: kept (within 1 point, less compute) |
 | F31 | Strategy router: bge-small + logistic regression, run-04-lme | "router iii" | 04 | scored | dev 0.963 at 91% of Vote's GPU-seconds: kept; best dev accuracy |
 | F32 | Strategy router: nearest neighbours on bge-small, run-04-lme | "router iv" | 04 | scored | dev 0.952: dropped by the keep rule |
+| F33 | Route Fast (F15) + verifier v2's LLM check where no exact check exists (Qwen checker, thinking off) | "Fast + LLM check", `qwen_strategy_fast_llmv` | 06 | running | baseline F15 |
+| F34 | Route Deep (F17) + the same LLM check | "Deep + LLM check", `qwen_strategy_deep_llmv` | 06 | running | baseline F17 |
 Not candidates: `qwen_alone.json` (the v5 placeholder with quant "TBD", replaced by F06's config, never run as
 such); the oracle ("some route right", a ceiling); the always-wrong audits.
 
@@ -97,6 +99,8 @@ such); the oracle ("some route right", a ceiling); the always-wrong audits.
 | F26 | bge-small + logistic regression | router | - | - | - | - | F06, F15-F19 | test 04 run-03 |
 | F27 | bge-small + kNN | router | - | - | - | - | F06, F15-F19 | test 04 run-03 |
 | F28 | RL policy over route steps, with a stop action | router | - | - | - | - | chains of F06, F15-F19 | test 04 run-03 (prior) |
+| F33 | Qwen3.8-27B W4A16 (ours) | Flotilla, verifier v2 with LLM check | off | - | 1 | - | - | - |
+| F34 | Qwen3.8-27B W4A16 (ours) | Flotilla, verifier v2 with LLM check | on | - | 1 | - | - | - |
 
 Flotilla loop = solver prompt v1, verifier v2 with one retry, up to 3 native tool rounds when tools are on, 32,768
 output tokens; one sample runs at temperature 0.
@@ -157,6 +161,10 @@ output tokens; one sample runs at temperature 0.
 | S150 | F32 | as S147 | as S147 | as S147 | as S147 | scored 0.952 |
 | S151-S154 | F29-F32 | as S147 | as S147 | trained on a nested 50% of train (3 draws) | `run04lme-frac0.5-s20261121..23` | scored (learning curve) |
 | S155-S158 | F29-F32 | as S147 | as S147 | trained on a nested 75% of train (3 draws) | `run04lme-frac0.75-s20261121..23` | scored (learning curve) |
+| S159 | F15 | LongMemEval dev, 76 (router split) | official judge prompts, Claude Haiku 5.5, Haiku check first | as S132; 3 repeats, same day as S160-S162 | `lme_llmv/runs/fast/lme_dev_r0..2` | running (test 06) |
+| S160 | F33 | as S159 | as S159 | as S159; checker Qwen, thinking off, 1,024 tokens | `lme_llmv/runs/fast_llmv/lme_dev_r0..2` | running (test 06) |
+| S161 | F17 | as S159 | as S159 | as S159 | `lme_llmv/runs/deep/lme_dev_r0..2` | running (test 06) |
+| S162 | F34 | as S159 | as S159 | as S160 | `lme_llmv/runs/deep_llmv/lme_dev_r0..2` | running (test 06) |
 The final-benchmark setups of F01 (plain Qwen), the full system and the best single route get S IDs when they are
 configured.
 
@@ -176,7 +184,7 @@ is the row above that names it. After approval each test's table gains a setup c
 
 ## 6. Conventions and open item
 
-- Next free IDs: F33, S159 (S shared with GRAFT).
+- Next free IDs: F35, S163 (S shared with GRAFT).
 - F06 checked against the saved runs (2026-11-22): test 02's small test (`qwen_w4a16_alone`, Fir and Nibi), test 03's labels
   (Trillium `labels-qwen_w4a16_alone`) and the Deep+Tools route (`strategy-labels/deep_tools`) served the same build
   (`quant/qwen3.8-27b-w4a16`) with the same vLLM settings (qwen3_coder tool parser, qwen3 reasoning parser, seed 20261119,

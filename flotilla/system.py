@@ -41,6 +41,8 @@ class SystemConfig:
     verifier: bool = True
     prompt_version: str = "v1"
     verifier_version: str = "v2"
+    llm_verify: bool = False               # F33/F34: verifier.v2's LLM check where no exact check exists (free text)
+    llm_verify_max_tokens: int = 1024
     protocol_version: str = "protocol-v2"
     extra: dict = field(default_factory=dict)
     before_call: object = None             # optional async callable(server_name) run before every model call (rate/call caps)
@@ -291,6 +293,61 @@ def verify(task: str, task_type: str, answer: str | None, options: list[str] | N
 
 # ------------------------------------------------------------------ one question
 
+LLM_CHECK_JSON = re.compile(r"\{[^{}]*\"verdict\"[^{}]*\}", re.S)
+
+
+def llm_check_messages(version: str, task_text: str, final_answer: str) -> list[dict]:
+    """verifier.<version>'s LLM check: system and user messages, filled from the prompt file."""
+    md = (PROMPTS / f"verifier.{version}.md").read_text()
+    m = re.search(r"^## LLM check.*?^### System\s*\n(.*?)^### User\s*\n(.*?)(?=^## |\Z)", md, re.S | re.M)
+    if not m:
+        raise ValueError(f"verifier.{version}.md has no LLM check section")
+    system, user = m.group(1).strip(), m.group(2).strip()
+    return [{"role": "system", "content": system},
+            {"role": "user", "content": user.replace("{task_text}", task_text).replace("{final_answer}", final_answer)}]
+
+
+def parse_llm_verdict(text: str) -> dict | None:
+    """The last JSON object with a verdict of accept or reject, else None."""
+    for blob in reversed(LLM_CHECK_JSON.findall(text or "")):
+        try:
+            d = json.loads(blob)
+        except ValueError:
+            continue
+        if str(d.get("verdict", "")).lower() in ("accept", "reject"):
+            return {"verdict": str(d["verdict"]).lower(), "reason": str(d.get("reason", ""))[:500]}
+    return None
+
+
+async def llm_check(name: str, srv: dict, task_text: str, final_answer: str, cfg: SystemConfig, trace: Trace) -> dict:
+    """One checker call on the solver's server, thinking off, temperature 0. A checker that fails or gives no
+    parseable verdict accepts (the answer stands); the check records why."""
+    srv = {**srv, "request": {**srv.get("request", {}), "extra_body": {
+        **srv.get("request", {}).get("extra_body", {}), "chat_template_kwargs": {"enable_thinking": False}}},
+        "max_tokens": cfg.llm_verify_max_tokens}
+    t0, out, tok_in, tok_out = time.time(), "", 0, 0
+    try:
+        r = await _create(f"{name}:llm_check", srv, client_for(srv),
+                          llm_check_messages(cfg.verifier_version, task_text, final_answer), cfg, 0.0)
+        out = r.choices[0].message.content or ""
+        tok_in, tok_out = r.usage.prompt_tokens, r.usage.completion_tokens
+        err = None
+    except Exception as e:  # noqa: BLE001
+        if type(e).__name__ == "CallBudget":
+            raise
+        err = f"{type(e).__name__}: {e}"[:300]
+    lat = round(time.time() - t0, 3)
+    trace.add_samples(f"{name}:llm_check", srv.get("quant", "?"),
+                      [Sample(text=out or f"ERROR {err}", final_answer=None, confidence=None, tokens_in=tok_in,
+                              tokens_out=tok_out, latency_s=lat)])
+    v = parse_llm_verdict(out)
+    if v is None:
+        return {"name": "llm_check", "passed": True, "detail": f"no verdict ({err or 'unparseable reply'}); accepted",
+                "reply": out[-500:], "latency_s": lat, "tokens_in": tok_in, "tokens_out": tok_out}
+    return {"name": "llm_check", "passed": v["verdict"] == "accept", "detail": v["reason"], "reply": out[-500:],
+            "latency_s": lat, "tokens_in": tok_in, "tokens_out": tok_out}
+
+
 async def answer(item: dict, route: dict, cfg: SystemConfig, trace: Trace) -> Trace:
     """item: {item_id, task, task_type?, options?, public_tests?, retrieved?}; route: router output."""
     trace.router = route
@@ -314,7 +371,11 @@ async def answer(item: dict, route: dict, cfg: SystemConfig, trace: Trace) -> Tr
     final = trace.vote["winner"]
     if cfg.verifier:
         v = verify(item["task"], task_type, final, item.get("options"), item.get("public_tests"))
-        trace.verifier = {"version": cfg.verifier_version,
+        if cfg.llm_verify and v["verdict"] == "accept" and not v["checks"]:  # no exact check for this task type
+            c = await llm_check(solvers[0], cfg.servers[solvers[0]], _text(msgs[-1]["content"]), final, cfg, trace)
+            v = {"verdict": "accept" if c["passed"] else "reject", "checks": [c],
+                 "reason": "LLM check passed" if c["passed"] else c["detail"] or "rejected by the LLM check"}
+        trace.verifier = {"version": cfg.verifier_version, "llm_verify": cfg.llm_verify,
                           "attempts": [{"attempt": 1, "final_answer": final, **v}]}
         if v["verdict"] == "reject":  # verifier.v2: one retry, told it was wrong and why; keep the retry's answer
             s = solvers[0]

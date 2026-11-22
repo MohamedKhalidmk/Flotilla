@@ -1,0 +1,8 @@
+{
+ "run": "run-01",
+ "date": "2026-11-22",
+ "status": "running",
+ "jobs": "Fir 5143762-5143791 twinned with Nibi 28424070-28424093 (later twin cancelled)",
+ "runs_root": "$SCRATCH/flotilla/lme_llmv/runs",
+ "time_limits": "Fast/Deep 2:00 on H100, 3:30 on a slice; with the check 4:00 / 6:00 (test 04 pilots: 25 items in 700-1,440 s, scaled to 76, +50%; the check arms' extra from an estimate of one more history prefill per item plus retries)"
+}

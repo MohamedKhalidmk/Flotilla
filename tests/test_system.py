@@ -48,3 +48,74 @@ def test_valid_option_counts_options_in_the_question():
     assert n_options("Pick one.\n(A) x\n(B) y\n(C) z", None) == 3
     assert n_options("no lettered lines", None) == 4
     assert n_options(task, ["a", "b"]) == 2
+
+
+def _fake_create(replies):
+    """A stand-in for system._create: the checker call (thinking off, system prompt from verifier.v2) gets the next
+    checker reply; solver calls get the next solver reply. Records every call's extra_body and messages."""
+    from types import SimpleNamespace as NS
+    calls = []
+
+    async def create(name, srv, client, msgs, cfg, temperature, **extra):
+        role = "check" if name.endswith(":llm_check") else "solve"
+        calls.append({"role": role, "srv": srv, "msgs": msgs, "temperature": temperature})
+        text = replies[role].pop(0)
+        return NS(choices=[NS(message=NS(content=text, tool_calls=None, reasoning_content=None), finish_reason="stop")],
+                  usage=NS(prompt_tokens=100, completion_tokens=10))
+    return create, calls
+
+
+def _run(item, cfg, replies, monkeypatch):
+    import asyncio
+    from flotilla.trace import Trace
+    create, calls = _fake_create(replies)
+    monkeypatch.setattr(system, "_create", create)
+    monkeypatch.setattr(system, "client_for", lambda srv: None)
+    tr = Trace(run_id="t", protocol_version="p", prompt_versions={}, benchmark="lme", item_id="1", split="dev")
+    return asyncio.run(system.answer(item, {}, cfg, tr)), calls
+
+
+def _cfg(**kw):
+    srv = {"q": {"url": "u", "model": "m", "quant": "w4a16", "native_tools": True,
+                 "request": {"extra_body": {"chat_template_kwargs": {"enable_thinking": True}}}}}
+    return system.SystemConfig(servers=srv, solvers=["q"], tools=False, **kw)
+
+
+def test_llm_check_prompt_comes_from_verifier_v2():
+    m = system.llm_check_messages("v2", "History...\nQuestion: what did I buy?", "a bike")
+    assert m[0]["content"].startswith("Decide whether the answer below is acceptable") and '"verdict"' in m[0]["content"]
+    assert m[1]["content"] == "Task: History...\nQuestion: what did I buy?\nAnswer: a bike"
+    assert system.parse_llm_verdict('x {"verdict": "Reject", "checks": [], "reason": "wrong date"}') == \
+        {"verdict": "reject", "reason": "wrong date"}
+    assert system.parse_llm_verdict("no json") is None
+
+
+def test_llm_check_reject_drives_one_retry(monkeypatch):
+    item = {"item_id": "1", "task": "History...\nQuestion: what did I buy?", "task_type": "longmemeval"}
+    replies = {"solve": ['{"final_answer": "a car", "confidence": 0.5}', '{"final_answer": "a bike", "confidence": 0.8}'],
+               "check": ['{"verdict": "reject", "checks": [], "reason": "the history says a bike"}']}
+    tr, calls = _run(item, _cfg(llm_verify=True), replies, monkeypatch)
+    check = [c for c in calls if c["role"] == "check"]
+    assert len(check) == 1 and check[0]["temperature"] == 0.0
+    assert check[0]["srv"]["request"]["extra_body"]["chat_template_kwargs"] == {"enable_thinking": False}
+    assert check[0]["msgs"][1]["content"].endswith("Answer: a car")
+    a1, a2 = tr.verifier["attempts"]
+    assert a1["verdict"] == "reject" and a1["checks"][0]["name"] == "llm_check" and "a bike" in a1["reason"]
+    assert "Your previous answer was wrong" in a2["retry_message"] and tr.final_answer == "a bike"
+    assert any(m["name"] == "q:llm_check" for m in tr.models)  # the checker's call is counted in compute
+
+
+def test_llm_check_off_or_exact_check_present_means_no_checker_call(monkeypatch):
+    item = {"item_id": "1", "task": "History...\nQuestion: what did I buy?", "task_type": "longmemeval"}
+    tr, calls = _run(item, _cfg(), {"solve": ['{"final_answer": "a car"}'], "check": []}, monkeypatch)
+    assert [c["role"] for c in calls] == ["solve"] and tr.final_answer == "a car"
+    math = {"item_id": "2", "task": "1+1?", "task_type": "math"}
+    tr, calls = _run(math, _cfg(llm_verify=True), {"solve": ['{"final_answer": "2"}'], "check": []}, monkeypatch)
+    assert [c["role"] for c in calls] == ["solve"] and tr.verifier["verdict"] == "accept"
+
+
+def test_llm_check_unparseable_reply_accepts(monkeypatch):
+    item = {"item_id": "1", "task": "Q?", "task_type": "longmemeval"}
+    tr, _ = _run(item, _cfg(llm_verify=True), {"solve": ['{"final_answer": "x"}'], "check": ["I think it is fine."]},
+                 monkeypatch)
+    assert tr.verifier["verdict"] == "accept" and len(tr.verifier["attempts"]) == 1 and tr.final_answer == "x"

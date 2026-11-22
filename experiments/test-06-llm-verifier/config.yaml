@@ -1,0 +1,12 @@
+test: 06
+# LLM verifier on LongMemEval dev (76), Fast and Deep, with and without the check, 3 repeats each, same day
+items: $SCRATCH/flotilla/lme_llmv/runitems/base/lme_dev.jsonl   # dev ids of data/longmemeval/split.json
+servers: configs/servers_longmemeval.json
+arms:
+  fast: configs/systems/qwen_strategy_fast.json            # F15, S159
+  fast_llmv: configs/systems/qwen_strategy_fast_llmv.json  # F33, S160
+  deep: configs/systems/qwen_strategy_deep.json            # F17, S161
+  deep_llmv: configs/systems/qwen_strategy_deep_llmv.json  # F34, S162
+repeats: 3
+submit: scripts/fir/submit_llm_verifier.sh <arm> <time> <repeat> [begin]
+judge: Claude Haiku 5.5, LongMemEval official prompts, fixed Haiku check first

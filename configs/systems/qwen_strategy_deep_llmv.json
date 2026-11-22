@@ -1,0 +1,21 @@
+{
+ "servers": {
+  "qwen_w4a16": {
+   "url": "set-by-serve",
+   "model": "qwen_w4a16",
+   "quant": "w4a16-ours",
+   "native_tools": true
+  }
+ },
+ "solvers": [
+  "qwen_w4a16"
+ ],
+ "max_tokens": 32768,
+ "protocol_version": "protocol-v10",
+ "name": "qwen_strategy_deep_llmv",
+ "notes": "Deep: full thinking, no tools, one answer. F34: F17 plus verifier.v2's LLM check where no exact check exists (Qwen, thinking off, temperature 0); a reject gets one retry.",
+ "tools": false,
+ "n_samples": 1,
+ "temperature": 0.6,
+ "llm_verify": true
+}
