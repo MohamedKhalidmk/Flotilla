@@ -1,6 +1,6 @@
 # Tests (Flotilla)
 
-119 tests in 15 files, in plain words. Generated from each test's docstring by `scripts/make_tests_doc.py`; to change a line, edit the docstring and rerun the script. `tests/test_tests_doc.py` fails if a test is missing here or a line is out of date. The Gaps section at the end is written by hand.
+121 tests in 16 files, in plain words. Generated from each test's docstring by `scripts/make_tests_doc.py`; to change a line, edit the docstring and rerun the script. `tests/test_tests_doc.py` fails if a test is missing here or a line is out of date. The Gaps section at the end is written by hand.
 
 ## [tests/test_error_stages.py](../../tests/test_error_stages.py)
 
@@ -213,6 +213,13 @@ docs/reference/TESTS.md lists every test, generated from the docstrings (scripts
 | `test_float_outputs_within_tolerance` | Checks that same_tokens matches floats that differ only in the last digits and still tells apart different numbers and integers. | a correct code output failing a test over float rounding in the 15th digit. |
 | `test_math_format_matches` | Checks that the maths grader accepts answers equal to the gold without dollar signs or LaTeX text, and the right letter in a lettered question. | answering C, where option C is 0.20, being graded wrong against a gold of 0.20. |
 | `test_math_unicode_units_and_thousands` | Checks that the maths grader accepts Unicode infinity, union and root signs, thousands separators, and a unit or short phrase around the number. | 852 BC graded wrong against a gold of 852, or 650 graded right against 670. |
+
+## [tests/test_toy_gate.py](../../tests/test_toy_gate.py)
+
+| Test | What it checks | Guards against |
+|---|---|---|
+| `test_toy_gate_stops_on_missing_answer_or_unforced_first_call` | Checks that the toy gate flags an empty final answer, a forced route whose first call did not name its tool or called another tool, an unparsed rule list, and a self-check with no program. | the pilot starting after a route quietly failed to parse, skipped its forced tool or never ran its check. |
+| `test_toy_gate_grades_known_answers` | Checks the toy grader: a number inside a sentence, a fraction, a letter and a lowercase answer containing the city. | right toy answers reported wrong because of formatting. |
 
 ## Gaps
 
