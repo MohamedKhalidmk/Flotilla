@@ -770,8 +770,10 @@ def cmd_prepare(a) -> None:
 
 def majority_verdicts(rows: list[dict], n: int) -> tuple[list[dict], list[str]]:
     """Majority of n judge verdicts per (item, route, answer) (2026-11-22: Haiku takes no temperature, and identical
-    prompts got both yes and no). Returns the combined verdicts and the problems: a group with other than n verdicts.
-    A group with no answer has no judge call and stays wrong."""
+    prompts got both yes and no). Returns the combined verdicts and the problems: a group whose count is not a
+    multiple of n. A group with k*n verdicts (the same answer in k run folders, e.g. a timed-out first attempt) takes the
+    majority of all of them; a tie goes to the majority of its first n. A group with no answer has no judge call and
+    stays wrong."""
     groups: dict[tuple, list[dict]] = {}
     for r in rows:
         groups.setdefault((r["item_id"], r["route"], r.get("answer")), []).append(r)
@@ -780,13 +782,14 @@ def majority_verdicts(rows: list[dict], n: int) -> tuple[list[dict], list[str]]:
         if ans is None:
             out.append({**g[0], "repeat": None})
             continue
-        if len(g) != n:
+        if len(g) % n:
             problems.append(f"{iid} {route}: {len(g)} verdicts, want {n}")
             continue
         yes = sum(bool(v["correct"]) for v in g)
-        out.append({"item_id": iid, "route": route, "answer": ans, "correct": yes * 2 > n,
+        first = sum(bool(v["correct"]) for v in g[:n]) * 2 > n
+        out.append({"item_id": iid, "route": route, "answer": ans, "correct": first if yes * 2 == len(g) else yes * 2 > len(g),
                     "judge_reply": g[0]["judge_reply"], "judge_replies": [v["judge_reply"] for v in g],
-                    "votes_yes": yes, "votes": n, "judge": g[0]["judge"], "judge_model": g[0].get("judge_model")})
+                    "votes_yes": yes, "votes": len(g), "judge": g[0]["judge"], "judge_model": g[0].get("judge_model")})
     return out, problems
 
 
@@ -796,7 +799,7 @@ def _combine(a) -> None:
     if problems:
         raise SystemExit(f"{len(problems)} groups without {a.n} verdicts, e.g. {problems[:5]}")
     Path(a.out).write_text("".join(json.dumps(v, ensure_ascii=False) + "\n" for v in out))
-    print(f"{len(rows)} verdicts in, {len(out)} combined, {sum(v.get('votes_yes') not in (0, a.n, None) for v in out)} split")
+    print(f"{len(rows)} verdicts in, {len(out)} combined, {sum(v.get('votes_yes') not in (0, v.get('votes'), None) for v in out)} split")
 
 
 async def _judge(a) -> None:

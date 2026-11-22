@@ -425,7 +425,7 @@ def test_ask_for_more_adds_pool_facts_within_the_limits(monkeypatch):
 
 
 def test_majority_of_three_verdicts():
-    """Checks that combine takes the majority of three verdicts per (item, route, answer), keeps a missing answer wrong without calls, and reports groups without three verdicts.
+    """Checks that combine takes the majority of three verdicts per (item, route, answer), of all six when one answer sits in two folders (a tie going to the first three), keeps a missing answer wrong, and reports other counts.
     Guards against: one noisy Haiku verdict deciding a label (identical prompts got both yes and no), or a missing repeat passing silently."""
     v = lambda r, a, c: {"item_id": "i", "route": r, "answer": a, "correct": c, "judge_reply": "Yes" if c else "No",
                          "judge": "j", "judge_model": "m"}
@@ -438,6 +438,9 @@ def test_majority_of_three_verdicts():
     assert got["fast"]["correct"] and got["fast"]["votes_yes"] == 2 and got["fast"]["judge_replies"] == ["Yes", "No", "Yes"]
     assert not got["deep"]["correct"] and not got["vote"]["correct"]
     assert "tools" not in got and problems == ["i tools: 2 verdicts, want 3"]
+    six = [v("memory", "20", c) for c in (True, False, True, False, False, True)]  # same answer in two folders, 3-3
+    out, _ = mr.majority_verdicts(six, 3)
+    assert out[0]["votes"] == 6 and out[0]["votes_yes"] == 3 and out[0]["correct"]  # tie: majority of the first three
 
 
 def test_judge_repeats_write_one_row_per_repeat(tmp_path, monkeypatch):
