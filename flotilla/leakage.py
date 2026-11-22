@@ -89,15 +89,28 @@ def embed(texts: list[str], tok, model, device: str, bs: int = 64) -> torch.Tens
     return torch.cat(out)
 
 
+def extra_targets(specs: list[str]) -> dict[str, list[str]]:
+    """NAME=JSONL pairs -> {NAME: [each line's "task" (or "text"), non-empty]}: sets checked like the test sets (the chat
+    guide's source is checked against LongMemEval this way, 2026-11-22)."""
+    out = {}
+    for spec in specs:
+        name, path = spec.split("=", 1)
+        out[name] = [t for t in (json.loads(l).get("task") or json.loads(l).get("text") or "" for l in open(path)) if t.strip()]
+    return out
+
+
 def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--pool", required=True)
     ap.add_argument("--report", required=True)
     ap.add_argument("--embedder", default="BAAI/bge-small-en-v1.5")
+    ap.add_argument("--extra-targets", nargs="*", default=[], metavar="NAME=JSONL",
+                    help="more sets to check against besides the test sets, e.g. longmemeval=units.jsonl (each line's task)")
     a = ap.parse_args()
 
     pool = [json.loads(l) for l in open(a.pool)]
     sets, missing = test_items()
+    sets.update(extra_targets(a.extra_targets))
     test_texts, test_src = [], []
     gram_index: dict[tuple[str, ...], int] = {}
     gram_df: dict[tuple[str, ...], int] = {}
