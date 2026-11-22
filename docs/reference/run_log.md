@@ -180,6 +180,10 @@ One line per decision, with its reason. Times are America/Vancouver unless marke
 
 - **2026-11-22, F35 keep rule completed (user, before any run):** "similar compute" = within 25% of Deep's GPU-seconds; "clearly less" = at most 75% of Deep's; "matches" = within 1 point of Deep. Full results reported either way (accuracy with spread, GPU-seconds, per type).
 
+- **2026-11-22, format tests (user):** `tests/test_formats.py`: real raw rows for every converter (9 benchmarks, RULER, 6 router-pool sources, the strategy label items) in `tests/data/formats/` (150 KB; written on Trillium by `scripts/make_format_samples.py`, images shrunk to 96 px, RULER haystacks cut in the middle). Each test checks the core fields and types, what the type needs (options and letters up to J, public tests, PNG images) and a round trip back to the raw row. Runs on the Mac with stubbed loaders (`.venv`, pytest only); a deliberately broken MMLU-Pro converter fails it. Whole suite on Fir: 78 passed, 2 skipped.
+- **2026-11-22, G42 finding (writer v2, thinking on, cap 16,384):** 315 of 338 extraction calls so far stopped at the cap with an empty reply (the thinking used the whole budget); 8 salvaged, 13 parsed. G41 (thinking off): 1,705 of 1,838 parsed, 30 salvaged, 103 failed. G42 keeps running under its fixed settings until the user decides (a bigger cap changes the arm).
+- **2026-11-22, supersede check (user):** `flotilla/supersede_check.py` checks three steps from a prepare cache (both facts extracted, a SUPERSEDES edge from new to old, the newer fact retrieved first and not outdated); 4 toy histories (country and number changes, same and different wording) in `tests/data/supersede_toy.jsonl`. Toy build with G41's writer v2 config: Fir 5173465 twinned with Nibi 28429303. The real case is lme-72e3ee87 (Crash Course, episode 10 then 50), checked from the G41 dev cache once built.
+
 ### API spend (Anthropic)
 | When | What | Runs | Cost |
 |---|---|---|---|
