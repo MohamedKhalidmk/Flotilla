@@ -1,4 +1,4 @@
-"""Keep the session documents (docs/session/: HANDOFF, WORKING_SETUP, PROJECT_HISTORY, md and pdf) identical in both
+"""Keep the session documents (docs/session/: HANDOFF, WORKING_SETUP, PROJECT_HISTORY; markdown only) identical in both
 repos. Flotilla's copy is the source; GRAFT gets a byte-for-byte copy.
 
     python scripts/sync_session_docs.py [--graft ../SGAR]     # from the Flotilla repo root
@@ -6,7 +6,7 @@ repos. Flotilla's copy is the source; GRAFT gets a byte-for-byte copy.
 1. Make the source's links portable: a relative link to anything outside docs/session/ becomes an absolute link to
    Flotilla's work branch on GitHub, so the same bytes work in both repos (links between session files stay relative).
 2. Copy every session file to GRAFT's docs/session/.
-3. Write docs/session/SHA256SUMS in both repos. tests/test_session_docs.py (in both repos) fails if a session file
+3. Write scripts/SHA256SUMS (the session files' hashes) in both repos. tests/test_session_docs.py (in both repos) fails if a session file
    no longer matches it, so an edit to one copy without a sync shows up in that repo's own tests.
 """
 import argparse
@@ -42,7 +42,7 @@ def main() -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--graft", default="../SGAR", help="the GRAFT checkout (default ../SGAR)")
     a = ap.parse_args()
-    files = sorted(p for p in SESSION.iterdir() if p.suffix in (".md", ".pdf"))
+    files = sorted(p for p in SESSION.iterdir() if p.suffix == ".md")
     for p in files:
         if p.suffix == ".md":
             t = p.read_text()
@@ -51,13 +51,13 @@ def main() -> None:
                 p.write_text(u)
                 print(f"portable links: {p}")
     sums = "".join(f"{sha(p)}  {p.name}\n" for p in files)
-    (SESSION / "SHA256SUMS").write_text(sums)
+    Path("scripts/SHA256SUMS").write_text(sums)
     dest = Path(a.graft) / SESSION
     dest.mkdir(parents=True, exist_ok=True)
     for p in files:
         shutil.copyfile(p, dest / p.name)
-    (dest / "SHA256SUMS").write_text(sums)
-    print(f"{len(files)} session files synced to {dest}; SHA256SUMS written in both repos")
+    (Path(a.graft) / "scripts" / "SHA256SUMS").write_text(sums)
+    print(f"{len(files)} session files synced to {dest}; scripts/SHA256SUMS written in both repos")
 
 
 if __name__ == "__main__":

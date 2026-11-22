@@ -167,6 +167,8 @@ One line per decision, with its reason. Times are America/Vancouver unless marke
 
 - **2026-11-22, docs restructure (user):** both repos now keep `docs/reference/` (Flotilla: PROTOCOL, REGISTRY, run log, PROMPTS; GRAFT: REGISTRY and the 2026-11-13 write-up, with links to Flotilla's PROTOCOL and run log), `docs/session/` (HANDOFF, WORKING_SETUP, PROJECT_HISTORY, md and pdf) and `docs/design/`. Old `.md` paths hold one-line "moved to" notes (PDFs cannot, so their links were updated). Every link updated and checked (no broken relative links in either repo apart from two placeholders in Flotilla's experiment template); GRAFT's tables rebuilt unchanged after the theme's registry path moved. Session files: Flotilla's copy is the source; `scripts/sync_session_docs.py` makes its links portable, copies it to GRAFT and writes `SHA256SUMS`; `tests/test_session_docs.py` in each repo fails on drift (checked with a deliberate edit). Work branches only. The session PDFs predate this restructure and the latest edits; they are rebuilt on Fir with the next session-docs update.
 
+- **2026-11-22, docs cleanup (user):** the redirect notes at the old docs/ paths removed (Flotilla 7, GRAFT 5; nothing depends on old links); session documents are markdown only (PDFs removed; one is built on Fir only when the user asks); the hash manifest moved from docs/session/SHA256SUMS to scripts/SHA256SUMS in both repos (the sync script and both tests updated).
+
 ### API spend (Anthropic)
 | When | What | Runs | Cost |
 |---|---|---|---|
