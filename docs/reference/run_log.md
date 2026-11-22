@@ -184,6 +184,8 @@ One line per decision, with its reason. Times are America/Vancouver unless marke
 - **2026-11-22, G42 finding (writer v2, thinking on, cap 16,384):** 315 of 338 extraction calls so far stopped at the cap with an empty reply (the thinking used the whole budget); 8 salvaged, 13 parsed. G41 (thinking off): 1,705 of 1,838 parsed, 30 salvaged, 103 failed. G42 keeps running under its fixed settings until the user decides (a bigger cap changes the arm).
 - **2026-11-22, supersede check (user):** `flotilla/supersede_check.py` checks three steps from a prepare cache (both facts extracted, a SUPERSEDES edge from new to old, the newer fact retrieved first and not outdated); 4 toy histories (country and number changes, same and different wording) in `tests/data/supersede_toy.jsonl`. Toy build with G41's writer v2 config: Fir 5173465 twinned with Nibi 28429303. The real case is lme-72e3ee87 (Crash Course, episode 10 then 50), checked from the G41 dev cache once built.
 
+- **2026-11-22, G42 dropped (user's yes):** writer v2 with thinking on at a 16,384-token cap. 336 of 358 extraction calls stopped at the cap with an empty reply (the thinking used the budget; 14 parsed, 8 salvaged), so its graphs would be nearly empty. Fir 5133097-5133100 cancelled after 1 h 49 min; no graph finished. G41 (thinking off) is the only writer-v2 arm; G43 and G46 build on it. Not rerun at a bigger cap (user's choice).
+
 ### API spend (Anthropic)
 | When | What | Runs | Cost |
 |---|---|---|---|
