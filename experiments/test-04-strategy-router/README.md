@@ -104,6 +104,7 @@ benchmarks run once with the final system and once with the best single route on
 
 ## Revisions
 
+- 2026-11-22: run-04: LongMemEval labels merged into run-04-lme (all ten routes, Haiku judge, hand check 96%); the four routers trained on it (F29-F32, dev 293): label 0.904, success 0.959, bge + LR 0.963, kNN 0.952 against Vote 0.966 and the oracle 0.983. Keep rule (within 1 point at less compute): success (72% of Vote's GPU-seconds) and bge + LR (91%) kept, label and kNN dropped. Learning curve (runs/run-04/learning_curve): by the user's bar the best router (bge + LR) is not still climbing (100%: 0.9625 vs 75% mean 0.9647, spread 0.0068), so no harder labels; only kNN climbs.
 - 2026-11-21: **run-02's labels on the 263 affected questions are invalid** (setups S126-S131; registry rule for pre-fix runs): graded with the verifier that accepted only A-D (MMLU-Pro goes to J) and the old instruction, float and math-format graders. run-03 reran and regraded them; the other 1,187 questions' run-02 answers stand, regraded.
 - 2026-11-21: Memory routes use no base graph (T-REx dropped, test 05) and are offered only on items with a history;
   LongMemEval prepared for them; the six non-Memory routes run on LongMemEval first.

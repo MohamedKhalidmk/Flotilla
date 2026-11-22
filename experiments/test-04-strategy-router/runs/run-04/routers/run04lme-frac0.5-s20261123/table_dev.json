@@ -1,0 +1,784 @@
+{
+ "split": "dev",
+ "seed": 20261120,
+ "dry_run": false,
+ "routes": [
+  "fast",
+  "tools",
+  "deep",
+  "deep_tools",
+  "vote_tools",
+  "vote",
+  "memory",
+  "deep_tools_memory",
+  "memory_deep",
+  "vote_memory"
+ ],
+ "best_fixed": "vote",
+ "results": {
+  "label": {
+   "questions": 293,
+   "accuracy": 0.9044368600682594,
+   "gpu_seconds": 9.896068259385665,
+   "output_tokens": 1721.8327645051195,
+   "picked": {
+    "fast": 168,
+    "tools": 7,
+    "deep": 118
+   },
+   "by_source": {
+    "aime": {
+     "questions": 41,
+     "accuracy": 0.9024390243902439,
+     "picked": {
+      "fast": 29,
+      "deep": 12
+     }
+    },
+    "gsm8k": {
+     "questions": 41,
+     "accuracy": 0.975609756097561,
+     "picked": {
+      "fast": 1,
+      "deep": 40
+     }
+    },
+    "ifeval_like": {
+     "questions": 36,
+     "accuracy": 0.8888888888888888,
+     "picked": {
+      "fast": 27,
+      "tools": 7,
+      "deep": 2
+     }
+    },
+    "lcb": {
+     "questions": 12,
+     "accuracy": 0.9166666666666666,
+     "picked": {
+      "fast": 12
+     }
+    },
+    "longmemeval_s": {
+     "questions": 76,
+     "accuracy": 0.8289473684210527,
+     "picked": {
+      "fast": 76
+     }
+    },
+    "math": {
+     "questions": 52,
+     "accuracy": 0.9615384615384616,
+     "picked": {
+      "fast": 12,
+      "deep": 40
+     }
+    },
+    "mmlu_pro": {
+     "questions": 35,
+     "accuracy": 0.9142857142857143,
+     "picked": {
+      "fast": 11,
+      "deep": 24
+     }
+    }
+   }
+  },
+  "success": {
+   "questions": 293,
+   "accuracy": 0.962457337883959,
+   "gpu_seconds": 31.768088737201364,
+   "output_tokens": 12196.556313993175,
+   "picked": {
+    "fast": 21,
+    "tools": 9,
+    "deep": 46,
+    "vote_tools": 71,
+    "vote": 146
+   },
+   "by_source": {
+    "aime": {
+     "questions": 41,
+     "accuracy": 1.0,
+     "picked": {
+      "fast": 7,
+      "tools": 3,
+      "deep": 16,
+      "vote_tools": 6,
+      "vote": 9
+     }
+    },
+    "gsm8k": {
+     "questions": 41,
+     "accuracy": 0.975609756097561,
+     "picked": {
+      "fast": 1,
+      "deep": 8,
+      "vote_tools": 20,
+      "vote": 12
+     }
+    },
+    "ifeval_like": {
+     "questions": 36,
+     "accuracy": 1.0,
+     "picked": {
+      "fast": 1,
+      "deep": 3,
+      "vote_tools": 13,
+      "vote": 19
+     }
+    },
+    "lcb": {
+     "questions": 12,
+     "accuracy": 1.0,
+     "picked": {
+      "deep": 2,
+      "vote_tools": 7,
+      "vote": 3
+     }
+    },
+    "longmemeval_s": {
+     "questions": 76,
+     "accuracy": 0.9210526315789473,
+     "picked": {
+      "vote": 76
+     }
+    },
+    "math": {
+     "questions": 52,
+     "accuracy": 1.0,
+     "picked": {
+      "fast": 12,
+      "tools": 6,
+      "deep": 11,
+      "vote_tools": 8,
+      "vote": 15
+     }
+    },
+    "mmlu_pro": {
+     "questions": 35,
+     "accuracy": 0.8857142857142857,
+     "picked": {
+      "deep": 6,
+      "vote_tools": 17,
+      "vote": 12
+     }
+    }
+   }
+  },
+  "bge_lr": {
+   "questions": 293,
+   "accuracy": 0.9658703071672355,
+   "gpu_seconds": 31.957088737201364,
+   "output_tokens": 13462.249146757678,
+   "picked": {
+    "deep": 46,
+    "deep_tools": 2,
+    "vote_tools": 52,
+    "vote": 193
+   },
+   "by_source": {
+    "aime": {
+     "questions": 41,
+     "accuracy": 0.975609756097561,
+     "picked": {
+      "deep": 13,
+      "vote_tools": 7,
+      "vote": 21
+     }
+    },
+    "gsm8k": {
+     "questions": 41,
+     "accuracy": 0.975609756097561,
+     "picked": {
+      "deep": 11,
+      "deep_tools": 1,
+      "vote_tools": 3,
+      "vote": 26
+     }
+    },
+    "ifeval_like": {
+     "questions": 36,
+     "accuracy": 1.0,
+     "picked": {
+      "vote_tools": 9,
+      "vote": 27
+     }
+    },
+    "lcb": {
+     "questions": 12,
+     "accuracy": 1.0,
+     "picked": {
+      "deep": 2,
+      "vote_tools": 7,
+      "vote": 3
+     }
+    },
+    "longmemeval_s": {
+     "questions": 76,
+     "accuracy": 0.9342105263157895,
+     "picked": {
+      "deep": 6,
+      "deep_tools": 1,
+      "vote": 69
+     }
+    },
+    "math": {
+     "questions": 52,
+     "accuracy": 1.0,
+     "picked": {
+      "deep": 12,
+      "vote_tools": 14,
+      "vote": 26
+     }
+    },
+    "mmlu_pro": {
+     "questions": 35,
+     "accuracy": 0.9142857142857143,
+     "picked": {
+      "deep": 2,
+      "vote_tools": 12,
+      "vote": 21
+     }
+    }
+   }
+  },
+  "knn": {
+   "questions": 293,
+   "accuracy": 0.9488054607508533,
+   "gpu_seconds": 23.077494880546077,
+   "output_tokens": 10572.14675767918,
+   "picked": {
+    "fast": 8,
+    "tools": 30,
+    "deep": 78,
+    "deep_tools": 36,
+    "vote_tools": 37,
+    "vote": 104
+   },
+   "by_source": {
+    "aime": {
+     "questions": 41,
+     "accuracy": 0.975609756097561,
+     "picked": {
+      "fast": 2,
+      "deep": 20,
+      "deep_tools": 4,
+      "vote_tools": 2,
+      "vote": 13
+     }
+    },
+    "gsm8k": {
+     "questions": 41,
+     "accuracy": 0.975609756097561,
+     "picked": {
+      "fast": 4,
+      "tools": 15,
+      "deep": 13,
+      "deep_tools": 2,
+      "vote_tools": 3,
+      "vote": 4
+     }
+    },
+    "ifeval_like": {
+     "questions": 36,
+     "accuracy": 1.0,
+     "picked": {
+      "tools": 5,
+      "deep_tools": 1,
+      "vote_tools": 6,
+      "vote": 24
+     }
+    },
+    "lcb": {
+     "questions": 12,
+     "accuracy": 1.0,
+     "picked": {
+      "tools": 2,
+      "deep": 1,
+      "deep_tools": 1,
+      "vote_tools": 3,
+      "vote": 5
+     }
+    },
+    "longmemeval_s": {
+     "questions": 76,
+     "accuracy": 0.881578947368421,
+     "picked": {
+      "deep": 14,
+      "deep_tools": 22,
+      "vote_tools": 8,
+      "vote": 32
+     }
+    },
+    "math": {
+     "questions": 52,
+     "accuracy": 1.0,
+     "picked": {
+      "fast": 2,
+      "tools": 6,
+      "deep": 27,
+      "deep_tools": 5,
+      "vote_tools": 4,
+      "vote": 8
+     }
+    },
+    "mmlu_pro": {
+     "questions": 35,
+     "accuracy": 0.8857142857142857,
+     "picked": {
+      "tools": 2,
+      "deep": 3,
+      "deep_tools": 1,
+      "vote_tools": 11,
+      "vote": 18
+     }
+    }
+   }
+  },
+  "fixed:fast": {
+   "questions": 293,
+   "accuracy": 0.89419795221843,
+   "gpu_seconds": 9.627969283276448,
+   "output_tokens": 1612.3651877133107,
+   "picked": {
+    "fast": 293
+   },
+   "by_source": {
+    "aime": {
+     "questions": 41,
+     "accuracy": 0.8780487804878049,
+     "picked": {
+      "fast": 41
+     }
+    },
+    "gsm8k": {
+     "questions": 41,
+     "accuracy": 0.975609756097561,
+     "picked": {
+      "fast": 41
+     }
+    },
+    "ifeval_like": {
+     "questions": 36,
+     "accuracy": 0.8333333333333334,
+     "picked": {
+      "fast": 36
+     }
+    },
+    "lcb": {
+     "questions": 12,
+     "accuracy": 0.9166666666666666,
+     "picked": {
+      "fast": 12
+     }
+    },
+    "longmemeval_s": {
+     "questions": 76,
+     "accuracy": 0.8289473684210527,
+     "picked": {
+      "fast": 76
+     }
+    },
+    "math": {
+     "questions": 52,
+     "accuracy": 0.9423076923076923,
+     "picked": {
+      "fast": 52
+     }
+    },
+    "mmlu_pro": {
+     "questions": 35,
+     "accuracy": 0.9428571428571428,
+     "picked": {
+      "fast": 35
+     }
+    }
+   }
+  },
+  "fixed:tools": {
+   "questions": 293,
+   "accuracy": 0.9112627986348123,
+   "gpu_seconds": 11.55851877133106,
+   "output_tokens": 1808.8293515358362,
+   "picked": {
+    "tools": 293
+   },
+   "by_source": {
+    "aime": {
+     "questions": 41,
+     "accuracy": 0.975609756097561,
+     "picked": {
+      "tools": 41
+     }
+    },
+    "gsm8k": {
+     "questions": 41,
+     "accuracy": 0.975609756097561,
+     "picked": {
+      "tools": 41
+     }
+    },
+    "ifeval_like": {
+     "questions": 36,
+     "accuracy": 0.9166666666666666,
+     "picked": {
+      "tools": 36
+     }
+    },
+    "lcb": {
+     "questions": 12,
+     "accuracy": 1.0,
+     "picked": {
+      "tools": 12
+     }
+    },
+    "longmemeval_s": {
+     "questions": 76,
+     "accuracy": 0.8289473684210527,
+     "picked": {
+      "tools": 76
+     }
+    },
+    "math": {
+     "questions": 52,
+     "accuracy": 0.9423076923076923,
+     "picked": {
+      "tools": 52
+     }
+    },
+    "mmlu_pro": {
+     "questions": 35,
+     "accuracy": 0.8571428571428571,
+     "picked": {
+      "tools": 35
+     }
+    }
+   }
+  },
+  "fixed:deep": {
+   "questions": 293,
+   "accuracy": 0.9453924914675768,
+   "gpu_seconds": 15.242180887372013,
+   "output_tokens": 3774.3481228668943,
+   "picked": {
+    "deep": 293
+   },
+   "by_source": {
+    "aime": {
+     "questions": 41,
+     "accuracy": 0.926829268292683,
+     "picked": {
+      "deep": 41
+     }
+    },
+    "gsm8k": {
+     "questions": 41,
+     "accuracy": 0.975609756097561,
+     "picked": {
+      "deep": 41
+     }
+    },
+    "ifeval_like": {
+     "questions": 36,
+     "accuracy": 0.9722222222222222,
+     "picked": {
+      "deep": 36
+     }
+    },
+    "lcb": {
+     "questions": 12,
+     "accuracy": 0.9166666666666666,
+     "picked": {
+      "deep": 12
+     }
+    },
+    "longmemeval_s": {
+     "questions": 76,
+     "accuracy": 0.9210526315789473,
+     "picked": {
+      "deep": 76
+     }
+    },
+    "math": {
+     "questions": 52,
+     "accuracy": 1.0,
+     "picked": {
+      "deep": 52
+     }
+    },
+    "mmlu_pro": {
+     "questions": 35,
+     "accuracy": 0.8857142857142857,
+     "picked": {
+      "deep": 35
+     }
+    }
+   }
+  },
+  "fixed:deep_tools": {
+   "questions": 293,
+   "accuracy": 0.9180887372013652,
+   "gpu_seconds": 18.70590784982935,
+   "output_tokens": 4334.034129692833,
+   "picked": {
+    "deep_tools": 293
+   },
+   "by_source": {
+    "aime": {
+     "questions": 41,
+     "accuracy": 0.9512195121951219,
+     "picked": {
+      "deep_tools": 41
+     }
+    },
+    "gsm8k": {
+     "questions": 41,
+     "accuracy": 0.975609756097561,
+     "picked": {
+      "deep_tools": 41
+     }
+    },
+    "ifeval_like": {
+     "questions": 36,
+     "accuracy": 0.8888888888888888,
+     "picked": {
+      "deep_tools": 36
+     }
+    },
+    "lcb": {
+     "questions": 12,
+     "accuracy": 1.0,
+     "picked": {
+      "deep_tools": 12
+     }
+    },
+    "longmemeval_s": {
+     "questions": 76,
+     "accuracy": 0.8421052631578947,
+     "picked": {
+      "deep_tools": 76
+     }
+    },
+    "math": {
+     "questions": 52,
+     "accuracy": 1.0,
+     "picked": {
+      "deep_tools": 52
+     }
+    },
+    "mmlu_pro": {
+     "questions": 35,
+     "accuracy": 0.8571428571428571,
+     "picked": {
+      "deep_tools": 35
+     }
+    }
+   }
+  },
+  "fixed:vote_tools": {
+   "questions": 293,
+   "accuracy": 0.9419795221843004,
+   "gpu_seconds": 30.093634812286695,
+   "output_tokens": 16667.72696245734,
+   "picked": {
+    "vote_tools": 293
+   },
+   "by_source": {
+    "aime": {
+     "questions": 41,
+     "accuracy": 1.0,
+     "picked": {
+      "vote_tools": 41
+     }
+    },
+    "gsm8k": {
+     "questions": 41,
+     "accuracy": 0.975609756097561,
+     "picked": {
+      "vote_tools": 41
+     }
+    },
+    "ifeval_like": {
+     "questions": 36,
+     "accuracy": 0.9166666666666666,
+     "picked": {
+      "vote_tools": 36
+     }
+    },
+    "lcb": {
+     "questions": 12,
+     "accuracy": 1.0,
+     "picked": {
+      "vote_tools": 12
+     }
+    },
+    "longmemeval_s": {
+     "questions": 76,
+     "accuracy": 0.881578947368421,
+     "picked": {
+      "vote_tools": 76
+     }
+    },
+    "math": {
+     "questions": 52,
+     "accuracy": 1.0,
+     "picked": {
+      "vote_tools": 52
+     }
+    },
+    "mmlu_pro": {
+     "questions": 35,
+     "accuracy": 0.8857142857142857,
+     "picked": {
+      "vote_tools": 35
+     }
+    }
+   }
+  },
+  "fixed:vote": {
+   "questions": 293,
+   "accuracy": 0.9658703071672355,
+   "gpu_seconds": 34.29232423208191,
+   "output_tokens": 16436.440273037544,
+   "picked": {
+    "vote": 293
+   },
+   "by_source": {
+    "aime": {
+     "questions": 41,
+     "accuracy": 0.975609756097561,
+     "picked": {
+      "vote": 41
+     }
+    },
+    "gsm8k": {
+     "questions": 41,
+     "accuracy": 0.975609756097561,
+     "picked": {
+      "vote": 41
+     }
+    },
+    "ifeval_like": {
+     "questions": 36,
+     "accuracy": 1.0,
+     "picked": {
+      "vote": 36
+     }
+    },
+    "lcb": {
+     "questions": 12,
+     "accuracy": 1.0,
+     "picked": {
+      "vote": 12
+     }
+    },
+    "longmemeval_s": {
+     "questions": 76,
+     "accuracy": 0.9210526315789473,
+     "picked": {
+      "vote": 76
+     }
+    },
+    "math": {
+     "questions": 52,
+     "accuracy": 1.0,
+     "picked": {
+      "vote": 52
+     }
+    },
+    "mmlu_pro": {
+     "questions": 35,
+     "accuracy": 0.9428571428571428,
+     "picked": {
+      "vote": 35
+     }
+    }
+   }
+  },
+  "oracle": {
+   "questions": 293,
+   "accuracy": 0.9829351535836177,
+   "gpu_seconds": 7.6736177474402725,
+   "output_tokens": 1684.962457337884,
+   "picked": {
+    "fast": 111,
+    "tools": 50,
+    "deep": 121,
+    "deep_tools": 7,
+    "vote_tools": 3,
+    "vote": 1
+   },
+   "by_source": {
+    "aime": {
+     "questions": 41,
+     "accuracy": 1.0,
+     "picked": {
+      "fast": 22,
+      "tools": 8,
+      "deep": 9,
+      "vote_tools": 1,
+      "vote": 1
+     }
+    },
+    "gsm8k": {
+     "questions": 41,
+     "accuracy": 0.975609756097561,
+     "picked": {
+      "fast": 5,
+      "tools": 2,
+      "deep": 34
+     }
+    },
+    "ifeval_like": {
+     "questions": 36,
+     "accuracy": 1.0,
+     "picked": {
+      "fast": 24,
+      "tools": 8,
+      "deep": 3,
+      "deep_tools": 1
+     }
+    },
+    "lcb": {
+     "questions": 12,
+     "accuracy": 1.0,
+     "picked": {
+      "fast": 8,
+      "tools": 4
+     }
+    },
+    "longmemeval_s": {
+     "questions": 76,
+     "accuracy": 0.9605263157894737,
+     "picked": {
+      "fast": 40,
+      "tools": 21,
+      "deep": 8,
+      "deep_tools": 5,
+      "vote_tools": 2
+     }
+    },
+    "math": {
+     "questions": 52,
+     "accuracy": 1.0,
+     "picked": {
+      "fast": 7,
+      "tools": 3,
+      "deep": 41,
+      "deep_tools": 1
+     }
+    },
+    "mmlu_pro": {
+     "questions": 35,
+     "accuracy": 0.9714285714285714,
+     "picked": {
+      "fast": 5,
+      "tools": 4,
+      "deep": 26
+     }
+    }
+   }
+  }
+ }
+}

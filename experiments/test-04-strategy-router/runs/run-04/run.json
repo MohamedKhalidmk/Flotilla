@@ -1,0 +1,18 @@
+{
+ "run": "run-04",
+ "dates": "2026-11-21 to 2026-11-22",
+ "protocol": "protocol-v10 (Haiku-judge addendum)",
+ "status": "labels merged (run-04-lme); four routers trained; learning curve done",
+ "labels": "$SCRATCH/flotilla/test04-labels/run-04-lme (1,450 pool + 500 LongMemEval; split 1,365/293/292); summary*.json and split.json copied here",
+ "judge": "Haiku 5.5, official LongMemEval prompts, judge job Fir 5119938 after Haiku check 5119937 (34/100); 5,000 verdicts kept; hand check 48/50 = 96% (judge/)",
+ "routers": "Fir 5133235-37 (full) and 5133238-58 (learning curve, 50% and 75%, seeds 20261121-23), 3g.40gb slices; dev tables in routers/",
+ "setups": {
+  "F29": "S147",
+  "F30": "S148",
+  "F31": "S149",
+  "F32": "S150",
+  "curve 50%": "S151-S154",
+  "curve 75%": "S155-S158"
+ },
+ "invalid": "run-04-lme.invalid-5124280 (merge before the available-field fix) is not used"
+}

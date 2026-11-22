@@ -1,0 +1,10 @@
+{
+ "n": 50,
+ "agree": 48,
+ "agreement": 0.96,
+ "judge_yes_hand_no": [],
+ "judge_no_hand_yes": [
+  "lme-58ef2f1c|fast",
+  "lme-75832dbd|tools"
+ ]
+}

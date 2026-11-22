@@ -58,6 +58,10 @@ the Flotilla loop). Its test 01 run and its final-benchmark runs are different s
 | F27 | Strategy router: nearest neighbours on bge-small, run-03 labels | "router iv", `knn` | 04 | free check only | as F24 |
 | F28 | Live RL router over route steps, run-03 labels | "router 5", "RL router", `flotilla/rl_router.py` | 04 | free check only | fake-model check (`rl-check`); the real one starts from the best run-04-lme router, a new ID |
 
+| F29 | Strategy router: ModernBERT label classifier, trained on run-04-lme | "router i" on run-04-lme | 04 | scored | dev 0.904 (Vote 0.966): dropped by the keep rule |
+| F30 | Strategy router: ModernBERT success predictor + dev threshold, run-04-lme | "router ii" | 04 | scored | dev 0.959 at 72% of Vote's GPU-seconds: kept (within 1 point, less compute) |
+| F31 | Strategy router: bge-small + logistic regression, run-04-lme | "router iii" | 04 | scored | dev 0.963 at 91% of Vote's GPU-seconds: kept; best dev accuracy |
+| F32 | Strategy router: nearest neighbours on bge-small, run-04-lme | "router iv" | 04 | scored | dev 0.952: dropped by the keep rule |
 Not candidates: `qwen_alone.json` (the v5 placeholder with quant "TBD", replaced by F06's config, never run as
 such); the oracle ("some route right", a ceiling); the always-wrong audits.
 
@@ -147,6 +151,12 @@ output tokens; one sample runs at temperature 0.
 | S145 | F27 | as S142 | as S142 | as S142 | as S142 | free check only |
 | S146 | F28 | strategy pool, 20 train questions | label grader | fake Qwen | Fir job `rl-check` (`rl_check.sbatch`, output folder inferred) | free check only |
 
+| S147 | F29 | strategy pool + LongMemEval dev, 293 | accuracy of the picked route's label | trained on run-04-lme train (1,365), tuned on dev | `runs/strategy-router/run04lme-full` | scored 0.904 |
+| S148 | F30 | as S147 | as S147 | as S147 | as S147 | scored 0.959 |
+| S149 | F31 | as S147 | as S147 | as S147 | as S147 | scored 0.963 |
+| S150 | F32 | as S147 | as S147 | as S147 | as S147 | scored 0.952 |
+| S151-S154 | F29-F32 | as S147 | as S147 | trained on a nested 50% of train (3 draws) | `run04lme-frac0.5-s20261121..23` | scored (learning curve) |
+| S155-S158 | F29-F32 | as S147 | as S147 | trained on a nested 75% of train (3 draws) | `run04lme-frac0.75-s20261121..23` | scored (learning curve) |
 The final-benchmark setups of F01 (plain Qwen), the full system and the best single route get S IDs when they are
 configured.
 
@@ -166,7 +176,7 @@ is the row above that names it. After approval each test's table gains a setup c
 
 ## 6. Conventions and open item
 
-- Next free IDs: F29, S147 (S shared with GRAFT).
+- Next free IDs: F33, S159 (S shared with GRAFT).
 - Phi and Qwen FP8 "in the loop" (F05, F10): confirmed never run on Fir and Nibi; Trillium not checked.
 - Outside bare runs (S104, S105, S108-S114, S121, S122) have setups but no candidate ID.
 - Test 02 run-01 and test 03 run-02 are marked "scored before the grader fixes, audited" (user, 2026-11-21).

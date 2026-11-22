@@ -1,0 +1,131 @@
+{
+ "questions": 500,
+ "dropped_incomplete": 0,
+ "labels": {
+  "fast": 250,
+  "deep_tools": 49,
+  "none": 15,
+  "vote_tools": 2,
+  "tools": 111,
+  "deep": 59,
+  "vote": 6,
+  "deep_tools_memory": 1,
+  "memory": 5,
+  "memory_deep": 2
+ },
+ "per_strategy": {
+  "fast": {
+   "questions_available": 500,
+   "accuracy": 0.808,
+   "mean_output_tokens": 417.2,
+   "mean_wall_seconds": 64.4,
+   "max_wall_seconds": 973.8,
+   "gpu_seconds_job": 15442.7,
+   "graft_prepare_seconds": 0
+  },
+  "tools": {
+   "questions_available": 500,
+   "accuracy": 0.83,
+   "mean_output_tokens": 676.7,
+   "mean_wall_seconds": 67.3,
+   "max_wall_seconds": 1415.9,
+   "gpu_seconds_job": 17362.7,
+   "graft_prepare_seconds": 0
+  },
+  "deep": {
+   "questions_available": 500,
+   "accuracy": 0.88,
+   "mean_output_tokens": 1552.9,
+   "mean_wall_seconds": 87.9,
+   "max_wall_seconds": 1026.4,
+   "gpu_seconds_job": 23296.3,
+   "graft_prepare_seconds": 0
+  },
+  "deep_tools": {
+   "questions_available": 500,
+   "accuracy": 0.88,
+   "mean_output_tokens": 914.8,
+   "mean_wall_seconds": 82.1,
+   "max_wall_seconds": 675.9,
+   "gpu_seconds_job": 20905.7,
+   "graft_prepare_seconds": 0
+  },
+  "vote": {
+   "questions_available": 500,
+   "accuracy": 0.902,
+   "mean_output_tokens": 7809.8,
+   "mean_wall_seconds": 93.4,
+   "max_wall_seconds": 671.7,
+   "gpu_seconds_job": 46727.7,
+   "graft_prepare_seconds": 0
+  },
+  "vote_tools": {
+   "questions_available": 500,
+   "accuracy": 0.866,
+   "mean_output_tokens": 5102.0,
+   "mean_wall_seconds": 72.2,
+   "max_wall_seconds": 1152.8,
+   "gpu_seconds_job": 36110.7,
+   "graft_prepare_seconds": 0
+  },
+  "memory": {
+   "questions_available": 500,
+   "accuracy": 0.424,
+   "mean_output_tokens": 244.7,
+   "mean_wall_seconds": 20.2,
+   "max_wall_seconds": 92.2,
+   "gpu_seconds_job": 963.4,
+   "graft_prepare_seconds": 2.8
+  },
+  "memory_deep": {
+   "questions_available": 500,
+   "accuracy": 0.432,
+   "mean_output_tokens": 910.4,
+   "mean_wall_seconds": 34.4,
+   "max_wall_seconds": 363.4,
+   "gpu_seconds_job": 2911.6,
+   "graft_prepare_seconds": 3.4
+  },
+  "deep_tools_memory": {
+   "questions_available": 500,
+   "accuracy": 0.442,
+   "mean_output_tokens": 894.1,
+   "mean_wall_seconds": 39.6,
+   "max_wall_seconds": 305.4,
+   "gpu_seconds_job": 2593.6,
+   "graft_prepare_seconds": 3.7
+  },
+  "vote_memory": {
+   "questions_available": 500,
+   "accuracy": 0.44,
+   "mean_output_tokens": 3883.8,
+   "mean_wall_seconds": 74.8,
+   "max_wall_seconds": 418.5,
+   "gpu_seconds_job": 4954.3,
+   "graft_prepare_seconds": 3.3
+  }
+ },
+ "graft_build": {
+  "histories": 500,
+  "llm_calls": 46580,
+  "input_tokens": 98500950,
+  "output_tokens": 47925020,
+  "wall_seconds": 1313733.554
+ },
+ "best_any_strategy": 0.97,
+ "labels_order": {
+  "fast": 404,
+  "none": 15,
+  "vote": 7,
+  "tools": 37,
+  "deep": 20,
+  "deep_tools": 10,
+  "memory": 5,
+  "memory_deep": 2
+ },
+ "graft_build_gpu": {
+  "prepare_gpu_seconds": 124948.3,
+  "histories_with_build_cost": 500,
+  "mean_gpu_seconds_per_history": 249.9
+ }
+}
