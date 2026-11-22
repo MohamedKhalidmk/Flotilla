@@ -23,6 +23,33 @@ for R in fast tools deep deep_tools vote vote_tools memory memory_deep vote_memo
     ARGS+=("$R=${found[0]}")
   done
 done
+# Keep only the verdicts of the chosen folders: the judge grades every folder with a trace.jsonl, including a timed-out
+# first attempt with part of a shard (vote_memory/lmem_16, 22 answers, 2026-11-21), and verdicts are keyed by
+# (item, route), so a stray verdict could replace the chosen folder's. A verdict is kept when its answer is the chosen
+# folder's final answer for that item; every chosen answer must have exactly one kept verdict.
+VS=$LME/judge/$JUDGE/verdicts.selected.jsonl
+python3 - "$V" "$VS" "${ARGS[@]}" <<'PY'
+import json, sys
+src, dst, pairs = sys.argv[1], sys.argv[2], sys.argv[3:]
+want = {}
+for kv in pairs:
+    route, d = kv.split("=", 1)
+    for line in open(f"{d}/trace.jsonl"):
+        t = json.loads(line)
+        want[(t["item_id"], route)] = t.get("final_answer")
+kept, n_in = {}, 0
+for line in open(src):
+    v = json.loads(line); n_in += 1
+    k = (v["item_id"], v["route"])
+    if k in want and v.get("answer") == want[k] and k not in kept:
+        kept[k] = line
+missing = [k for k in want if k not in kept]
+if missing:
+    sys.exit(f"{len(missing)} chosen answers have no matching verdict, e.g. {missing[:3]}")
+open(dst, "w").writelines(kept.values())
+print(f"verdicts: {n_in} in, {len(kept)} kept (one per chosen answer), {n_in - len(kept)} dropped")
+PY
+V=$VS
 OUT=$SCRATCH/flotilla/test04-labels/$NAME
 [[ -e $OUT ]] && { echo "$OUT exists: never overwrite a label set"; exit 4; }
 echo "${#ARGS[@]} run folders (10 routes x 20 shards)"
