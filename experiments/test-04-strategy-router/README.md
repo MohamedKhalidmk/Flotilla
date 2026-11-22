@@ -6,7 +6,7 @@
 
 ## Candidates and setups
 
-IDs from the [registry](../../docs/REGISTRY.md) (frozen 2026-11-21). A candidate is the method, a setup is the candidate plus model,
+IDs from the [registry](../../docs/reference/REGISTRY.md) (frozen 2026-11-21). A candidate is the method, a setup is the candidate plus model,
 answer cap, benchmark and scoring; old run folders keep their names.
 
 | Candidate | Setup | Row in this test |
@@ -30,7 +30,7 @@ either on accuracy or on compute at nearly the same accuracy?
 ## Setup
 
 **Routes.** Every route runs through the same Flotilla loop (solver prompt v1, verifier v2 with one retry,
-`max_tokens` 32,768). Configs are in [`configs/systems/`](../../configs/systems/).
+`max_tokens` 32,768). Configs are in [`configs/systems/`](../../configs/systems).
 
 | Route | Thinking | Tools | Samples |
 |---|---|---|---|

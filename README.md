@@ -4,6 +4,8 @@
 
 <h1 align="center">Flotilla</h1>
 
+<p align="center"><b><a href="docs/reference/PROTOCOL.md">Protocol</a> · <a href="docs/reference/REGISTRY.md">Registry</a> · <a href="docs/reference/run_log.md">Run log</a></b></p>
+
 <p align="center"><b>One small, quantized open model that picks how to think, per question.</b><br>
 A compound system on a few H100s, measured on the same benchmarks and settings as published quantized results.</p>
 
@@ -93,8 +95,8 @@ relations connect, never as facts) lifts GRAFT from 34.7 to 45.7 on Haiku; Qwen,
 | v10 | Keep gpt-oss? | **Dropped.** Router gain [+0.004](experiments/test-03-router-b-models/table.csv), under the 1-point bar |
 | test 04 | Keep the strategy router? | Pending. Kept if within 1 point of the best fixed route at lower compute, or more than 1 point better |
 
-The full rules, the leakage checks and the changelog are in [`docs/PROTOCOL.md`](docs/PROTOCOL.md); every run and
-decision is logged in [`docs/run_log.md`](docs/run_log.md).
+The full rules, the leakage checks and the changelog are in [`docs/reference/PROTOCOL.md`](docs/reference/PROTOCOL.md); every run and
+decision is logged in [`docs/reference/run_log.md`](docs/reference/run_log.md).
 
 ## 🧪 Experiments
 
@@ -107,7 +109,7 @@ decision is logged in [`docs/run_log.md`](docs/run_log.md).
 | [05 · GRAFT base graph](experiments/test-05-graft-base-graph/README.md) | Does a base knowledge graph help Memory? | done | No base graph: RoG and full T-REx both not adopted |
 
 Index and rules for adding a test: [`experiments/INDEX.md`](experiments/INDEX.md). Charts are drawn only from
-[`results/tables/`](results/tables/) by [`docs/design/charts.py`](docs/design/charts.py), never from typed numbers.
+[`results/tables/`](results/tables) by [`docs/design/charts.py`](docs/design/charts.py), never from typed numbers.
 
 ## 🗺️ Status
 
@@ -131,7 +133,7 @@ Index and rules for adding a test: [`experiments/INDEX.md`](experiments/INDEX.md
 | `experiments/` | Numbered tests: README, config, runs, table, figure |
 | `results/` | `tables/` (copies of every test table) and `figures/` (charts drawn from them) |
 | `reports/` | Leakage checks and earlier result reports |
-| `docs/` | `PROTOCOL.md` (rules), `PROMPTS.md`, `run_log.md`, `diagrams/`, `design/` (theme, chart script) |
+| `docs/` | `reference/` (PROTOCOL, REGISTRY, run log, PROMPTS), `session/` (handoff, working setup, project history; the same in GRAFT), `design/` (designs, theme, chart script), `diagrams/` |
 | `scripts/` | Cluster setup and job scripts: `trillium/`, `nibi/`, `fir/`, `mac/` |
 | `notes/` | Research behind the protocol |
 | `tests/` | Unit tests for tools and the system loop |

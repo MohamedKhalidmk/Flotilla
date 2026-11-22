@@ -1,4 +1,4 @@
-"""Flotilla orchestration (docs/PROMPTS.md flow): router -> solvers (N samples, tool loop) -> vote ->
+"""Flotilla orchestration (docs/reference/PROMPTS.md flow): router -> solvers (N samples, tool loop) -> vote ->
 cross-check (optional) -> verifier -> final answer, with a full trace per question.
 
 Solvers are OpenAI-compatible servers (vLLM, or a hosted API) listed in a config:

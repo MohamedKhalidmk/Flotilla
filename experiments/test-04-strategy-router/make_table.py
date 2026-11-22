@@ -10,7 +10,7 @@ from _common import jsonl, write_table
 
 IDS = {"fast": ("F15", "S126"), "tools": ("F16", "S127"), "deep": ("F17", "S128"), "deep_tools": ("F06", "S129"), "vote": ("F18", "S130"),
        "vote_tools": ("F19", "S131"), "memory": ("F20", ""), "memory_deep": ("F21", ""), "vote_memory": ("F22", ""),
-       "deep_tools_memory": ("F23", "")}  # docs/REGISTRY.md; pool setups (Memory routes have no pool setup)
+       "deep_tools_memory": ("F23", "")}  # docs/reference/REGISTRY.md; pool setups (Memory routes have no pool setup)
 ROUTES = [("fast", "Fast", "thinking off, no tools, 1 sample"),
           ("tools", "Tools", "thinking off, native sympy / Python / constraint tools"),
           ("deep", "Deep", "full thinking, no tools"),

@@ -3,9 +3,9 @@
 Each test has a README (Question, Setup, Result, Decision, Revisions), `config.yaml`, `runs/run-NN/` with a
 `run.json`, `table.csv` built by `make_table.py` from the runs only, and `figure.png` drawn from that table by
 [`docs/design/charts.py`](../docs/design/charts.py). Old runs are never edited: a fix or rerun is a new run-NN and a
-Revisions line. New tests start from [`_template/`](_template/).
+Revisions line. New tests start from [`_template/`](_template).
 
-Candidate IDs (F01...) and setups (S102...) are in the [registry](../docs/REGISTRY.md).
+Candidate IDs (F01...) and setups (S102...) are in the [registry](../docs/reference/REGISTRY.md).
 
 | Test | Question | Status | Current run | Decision |
 |---|---|---|---|---|

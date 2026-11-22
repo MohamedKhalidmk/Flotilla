@@ -9,7 +9,7 @@ BUILD = {"bf16": ("BF16", "16-bit reference"), "fp8-ours": ("FP8 (ours)", "8-bit
          "w4a16-ours": ("W4A16 (ours)", "4-bit"), "w4a16-amd": ("W4A16 (AMD)", "4-bit"), "int4-redhat": ("INT4 (RedHat)", "4-bit")}
 IDS = {"qwen-w4a16-ours": ("F01", "S102"), "qwen-fp8-ours": ("F02", "S103"), "qwen-bf16": ("Qwen3.8-27B BF16", "S104"),
        "qwen-int4-redhat": ("RedHat INT4", "S105"), "phi-fp8-ours": ("F03", "S106"), "phi-w4a16-ours": ("F04", "S107"),
-       "phi-bf16": ("Phi-4-reasoning-plus BF16", "S108"), "phi-fp8-nvidia": ("NVIDIA FP8", "S109"), "phi-w4a16-amd": ("AMD W4A16", "S110")}  # docs/REGISTRY.md
+       "phi-bf16": ("Phi-4-reasoning-plus BF16", "S108"), "phi-fp8-nvidia": ("NVIDIA FP8", "S109"), "phi-w4a16-amd": ("AMD W4A16", "S110")}  # docs/reference/REGISTRY.md
 rows = []
 for d in sorted((HERE / "runs" / "run-01").glob("math500-*")):
     s = json.loads((d / "summary.json").read_text())
