@@ -40,7 +40,7 @@ the Flotilla loop). Its test 01 run and its final-benchmark runs are different s
 | F09 | Command A+ through Cohere's hosted API in the loop | `cmda_alone`, `runs/cmda-smalltest` | 02 | cancelled | screen runs discarded (tool calls rejected with 422, then the trial key's 1,000 calls a month ran out); replaced by F08 (v8) |
 | F10 | Phi-4-reasoning-plus FP8 (F03) in the loop | "Phi", "Phi in the loop" | none | never run | Phi was never run in the loop: v9's Phi figure (21 of 25, 24,354 tokens, 18 at the cap) is F03's test 01 run on the 25 dev items (traces confirm) |
 | F11 | Qwen + Phi, both solving in the loop | `qwen_phi` | none | never run | the v5 configuration; superseded when Phi was dropped (v9) |
-| F12 | Router A: `vela3-fast` task-type classifier + fixed decision table over models | "router A", `flotilla/router_a.py` | protocol 4.5 | scored (routing accuracy) | not used once Flotilla became one model (v10) |
+| F12 | Router A: `vela3-fast` task-type classifier + fixed decision table over models | "router A", `flotilla/router_a.py` | protocol 4.5 | scored (routing accuracy) | 0.744 on 500 pool items ([legacy record](../../experiments/legacy/README.md)); not used once Flotilla became one model (v10) |
 | F13 | Router B: ModernBERT-base fine-tune choosing F06 or F07 | "router B", `router_b_modernbert` | 03 | scored | +0.4 over F06 on 476 held-out questions, under the 1-point bar; not used |
 | F14 | Router B lite: bge-small + logistic regression choosing F06 or F07 | "router B lite", `router_b_lite` | 03 | scored | -0.8 over F06; not used |
 | F15 | Route Fast: F01 in the loop, thinking off, no tools | **Fast**, `qwen_strategy_fast` | 04 | scored | pool 0.903; LongMemEval labels done |
@@ -130,7 +130,7 @@ output tokens; one sample runs at temperature 0.
 | S120 | F07 | router pool, 4,760 | router-label graders | loop | `router-labels-loop-gptoss` | scored |
 | S121 | Qwen3.8-27B BF16 (outside), one call | router pool, 4,856 | router-label graders | one call, no tool loop, 16,384 tokens | `router-labels-v1-broken-qwen` | invalid (section 5) |
 | S122 | Phi-4-reasoning-plus BF16 (outside), one call | router pool, 4,856 | router-label graders | as S121 | `router-labels-v1-broken-phi` | invalid (section 5) |
-| S123 | F12 | 500 clean router-pool items with known task types | routing accuracy | `vela3-fast` | `reports/router_a_pool500.json` | scored |
+| S123 | F12 | 500 clean router-pool items with known task types | routing accuracy | `vela3-fast` | [`experiments/legacy/router_a_pool500.json`](../../experiments/legacy/router_a_pool500.json) | scored |
 | S124 | F13 | router pool held-out, 476 | accuracy of the picked model's S119/S120 answer | | `router/router_b_modernbert` | scored 0.899 |
 | S125 | F14 | router pool held-out, 476 | as S124 | | `router/router_b_lite` | scored 0.887 |
 | S126 | F15 | strategy pool, 1,450 (plus the 50-question pilot) | router-label graders, fixed (run-03) | loop, 32,768, H100 | test 04 run-01 pilot, run-02 shards, run-03 reruns | scored 0.903 |

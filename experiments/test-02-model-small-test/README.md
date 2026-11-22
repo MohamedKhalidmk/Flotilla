@@ -46,5 +46,6 @@ end. Either way the whole interval is below 0.) gpt-oss went on to test 03.
 
 ## Revisions
 
+- 2026-11-22: the 2026-11-20 report (`reports/smalltest_three_models.md`) removed; what it held beyond this README and the tables (builds, Command A+ compute) moved to [runs/run-01/report_2026-11-20.md](runs/run-01/report_2026-11-20.md). The older-models failure audit moved here from `reports/failure_audit/`: [runs/run-02/audit/older_models.md](runs/run-02/audit/older_models.md) (built by `build.py` there, with `hand_checks.json`; markdown only).
 - 2026-11-21: **run-01 marked "scored before the grader fixes, audited"** (user; setups S115-S117): scored before the verifier's A-D option fix and the grader fixes (instruction checker, float tolerance, math formats, code fences for gpt-oss); run-02's failure audit rechecked every wrong answer, and the Command A+ and gpt-oss drops stand.
 - 2026-11-20: run-01. phi-replacement/ holds the 25-question MATH-500 check that replaced Phi with gpt-oss (protocol-v9).

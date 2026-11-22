@@ -1,15 +1,15 @@
 # Flotilla prompts and data flow
 
-Every prompt lives in `prompts/<role>.v<N>.md` with a header giving its role, version, users and output schema. A prompt change is a new file (`v2`), never an edit; each trace line records the prompt versions it used (`PROTOCOL.md` section 7), so prompt changes are ablations like any other component.
+Every prompt lives in `prompts/<role>.v<N>.md` with a header giving its role, version, users and output schema. A prompt change is a new file (`v2`), never an edit; prompts no code loads live in `prompts/legacy/`; each trace line records the prompt versions it used (`PROTOCOL.md` section 7), so prompt changes are ablations like any other component.
 
 ## Registry
 
 | File | Role | Called by | Returns |
 |---|---|---|---|
-| `router.v1.md` | route a task to task type, tools, models, difficulty | router A / B (classifiers emit the same fields); LLM-router ablation | JSON `{task_type, tools, models, difficulty}` |
+| `legacy/router.v1.md` (unused) | route a task to task type, tools, models, difficulty | router A / B (classifiers emit the same fields); LLM-router ablation | JSON `{task_type, tools, models, difficulty}` |
 | `solver.v1.md` | solve the task (plus per-task-type additions) | Qwen, Phi, Command A+ | free reasoning, then JSON `{final_answer, confidence, sources, tool_calls}` |
-| `cross_checker.v1.md` | review another model's answer | a second solver model (loop ablation) | JSON `{agree, issue, corrected_answer, confidence}` |
-| `verifier.v1.md` | (superseded by v2, protocol-v2) | | |
+| `legacy/cross_checker.v1.md` (unused) | review another model's answer | a second solver model (loop ablation) | JSON `{agree, issue, corrected_answer, confidence}` |
+| `legacy/verifier.v1.md` | (superseded by v2, protocol-v2) | | |
 | `verifier.v2.md` | accept or reject before returning; on reject, one retry that tells the model it was wrong and why | deterministic checks first, LLM only when no exact check exists (the LLM check runs only with `llm_verify`, F33/F34, test 06; every other route accepts free text unchecked) | JSON `{verdict, checks, reason}`; trace logs both attempts |
 | `auditor_claude.v1.md` | explain correctness and error stage | Claude, outside the system, never feeds answers | JSON `{correct, error_stage, explanation}` |
 | benchmark standard prompts | single-model baseline rows | lm-eval-harness / lmms-eval task configs, unchanged | as each benchmark defines |

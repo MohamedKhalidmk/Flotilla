@@ -129,10 +129,10 @@ Index and rules for adding a test: [`experiments/INDEX.md`](experiments/INDEX.md
 |---|---|
 | `flotilla/` | The system: routes, vote, verifier, tools, scoring, labelling, routers |
 | `configs/` | Model servers, system configs per route, data splits |
-| `prompts/` | Every prompt, versioned (a change is a new file, never an edit) |
-| `experiments/` | Numbered tests: README, config, runs, table, figure |
+| `prompts/` | Every prompt, versioned (a change is a new file, never an edit); unused ones in `legacy/` |
+| `experiments/` | Numbered tests: README, config, runs, table, figure; `legacy/` for results no decision rests on |
 | `results/` | `tables/` (copies of every test table) and `figures/` (charts drawn from them) |
-| `reports/` | Leakage checks and earlier result reports |
+| `reports/` | Leakage checks (`leakage/`: the router pool and LongMemEval, which the labels rest on) |
 | `docs/` | `reference/` (PROTOCOL, REGISTRY, run log, PROMPTS), `session/` (handoff, working setup, project history; the same in GRAFT), `design/` (designs, theme, chart script), `diagrams/` |
 | `scripts/` | Cluster setup and job scripts: `trillium/`, `nibi/`, `fir/`, `mac/` |
 | `notes/` | Research behind the protocol |
