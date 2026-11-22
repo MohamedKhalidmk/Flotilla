@@ -41,6 +41,7 @@ gateway logs them.
 import argparse
 import asyncio
 import hashlib
+import inspect
 import json
 import os
 import re
@@ -514,7 +515,9 @@ class HaikuJudge:
         request_hash = hashlib.sha256(json.dumps(params, sort_keys=True, ensure_ascii=False).encode()).hexdigest()[:16]
         t0 = time.time()
         raw = await self.client.messages.with_raw_response.create(**params)
-        msg = raw.parse()
+        msg = raw.parse()  # the async client's raw response parses with a coroutine (job 5119538 failed on it)
+        if inspect.isawaitable(msg):
+            msg = await msg
         text = "".join(getattr(b, "text", "") or "" for b in msg.content)
         u = msg.usage
         read, write = getattr(u, "cache_read_input_tokens", 0) or 0, getattr(u, "cache_creation_input_tokens", 0) or 0

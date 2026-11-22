@@ -274,7 +274,7 @@ def test_haiku_judge_logs_every_call_with_ids_and_cost(tmp_path):
     class Raw:
         headers = {"request-id": "req_123"}
 
-        def parse(self):
+        async def parse(self):  # as the real AsyncAnthropic raw response: a coroutine (job 5119538 failed on it)
             return NS(content=[NS(type="text", text="Yes.")], id="msg_1", stop_reason="end_turn",
                       usage=NS(input_tokens=300, output_tokens=2, cache_read_input_tokens=0, cache_creation_input_tokens=0))
 
