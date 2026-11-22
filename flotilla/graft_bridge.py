@@ -53,7 +53,7 @@ def start_gateway(repo: Path, llm: dict, usage_log: Path, log) -> tuple[subproce
     if llm["mode"] == "fake":
         cmd.append("--fake")
     elif llm["mode"] == "local":
-        cmd += ["--openai-base-url", llm["openai_base_url"]]
+        cmd += ["--openai-base-url", llm["openai_base_url"]] + (["--thinking"] if llm.get("thinking") else [])
     else:
         raise SystemExit(f"llm mode {llm['mode']!r}: only 'fake' and 'local' (vLLM) are allowed for Flotilla")
     env = {**os.environ, "PYTHONPATH": str(repo), "PYTHONUNBUFFERED": "1", "TOKENIZERS_PARALLELISM": "false"}

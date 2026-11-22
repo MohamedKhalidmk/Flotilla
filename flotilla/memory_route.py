@@ -86,7 +86,7 @@ GRAFT_PRESETS = {
 DEFAULT_PRESET = "plain_c"  # code default for offline tests; the four route configs choose guide_b (GRAFT default since test 06)
 # GRAFT settings that change the graph (the rest only change retrieval)
 BUILD_KEYS = ("writer", "schema", "schema_path", "revisions", "start_graph", "start_graph_path", "writer_max_tokens",
-              "writer_linking", "linking_candidates", "chunk_tokens")
+              "writer_linking", "linking_candidates", "chunk_tokens", "writer_prompt")  # thinking is in the LLM label
 # fake mode: GRAFT's offline GNN checkpoint, trained with the hash embedder (no model download)
 FAKE_GRAFT = {"gnn_checkpoint": "results/checkpoints/gnn_default", "embedding_model": "hash:384"}
 
@@ -242,7 +242,9 @@ def llm_for(mem_conf: dict, servers: dict | None = None, solvers: list | None = 
     if mode != "local":
         raise ValueError(f"GRAFT llm_mode {mode!r}: Flotilla uses only Qwen on vLLM ('local') or 'fake'")
     srv = (servers or {})[(solvers or [None])[0]]
-    return {"mode": "local", "openai_base_url": srv["url"], "model": srv["model"], "label": f"local:{srv['model']}"}
+    thinking = bool((mem_conf.get("graft") or {}).get("llm_thinking"))  # G42: GRAFT's calls with Qwen thinking on
+    return {"mode": "local", "openai_base_url": srv["url"], "model": srv["model"], "thinking": thinking,
+            "label": f"local:{srv['model']}" + (":thinking" if thinking else "")}
 
 
 # ------------------------------------------------------------------ build + retrieve (through the bridge)

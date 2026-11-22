@@ -332,3 +332,18 @@ def test_merge_keeps_legacy_pool_rows_available(tmp_path):
     assert rows["p1"]["memory"] == {"available": False}
     assert s["labels"] == {"fast": 1, "none": 1, "memory": 1} and s["best_any_strategy"] == round(2 / 3, 4)
     assert s["per_strategy"]["fast"]["questions"] == 3 and s["per_strategy"]["memory"]["questions"] == 1
+
+
+def test_writer_v2_and_thinking_change_the_graph_key():
+    """G41/G42 graphs never reuse G35's: the writer prompt is a build key, thinking is in the LLM label."""
+    srv = {"s": {"url": "http://x/v1", "model": "qwen_w4a16"}}
+    plain = mr.llm_for({"graft": {"llm_mode": "local"}}, srv, ["s"])
+    think = mr.llm_for({"graft": {"llm_mode": "local", "llm_thinking": True}}, srv, ["s"])
+    assert not plain["thinking"] and think["thinking"] and think["label"] == "local:qwen_w4a16:thinking"
+    it = {"item_id": "x", "sessions": [{"session_id": "a", "date": "2023/05/20", "turns": []}]}
+    repo = mr.graft_repo()
+    base = mr.graft_config({"graft_preset": "guide_b"})
+    v2 = mr.graft_config({"graft_preset": "guide_b", "graft": {"writer_prompt": "chat_v2"}})
+    k0 = mr.build_key(it, base, plain["label"], repo)
+    assert k0 != mr.build_key(it, v2, plain["label"], repo) and k0 != mr.build_key(it, base, think["label"], repo)
+    assert k0 == mr.build_key(it, {**base, "user_node": True, "log_writer_replies": True}, plain["label"], repo)
