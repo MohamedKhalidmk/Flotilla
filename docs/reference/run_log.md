@@ -213,6 +213,8 @@ One line per decision, with its reason. Times are America/Vancouver unless marke
 
 - **2026-11-22, majority of 3 Haiku verdicts (user):** two more verdicts per LongMemEval answer (`judge --repeats 2`, folder haiku-v10-r2, canary first, cap $1), combined with haiku-v10's verdict by `combine-verdicts` (majority per (item, route, answer); an answer in two folders takes the majority of all six, a tie going to its first three). New labels go to run-04-lme-maj3; run-04-lme stays; routers are not retrained yet.
 
+- **2026-11-22, majority-of-3 labels done:** canary 34/100 (as on 2026-11-21); 10,044 new verdicts; combined 5,008 answer groups, 56 split; run-04-lme-maj3 merged (Fir 5213207). 17 route verdicts and 6 of 500 memory labels changed (5 train, 1 held-out, 0 dev); pool rows identical. Details: experiments/test-04-strategy-router/runs/run-04/maj3/.
+
 ### API spend (Anthropic)
 | When | What | Runs | Cost |
 |---|---|---|---|
@@ -237,4 +239,5 @@ One line per decision, with its reason. Times are America/Vancouver unless marke
 | 2026-11-21 | GRAFT test 06 arm E (guide + working memory) x3, guide rerun x3, Haiku check | 2 jobs | $0.373 |
 | 2026-11-21 | LongMemEval judge: two Haiku checks ($0.027 each), the judge ($0.128); the failed first judge job logged $0 | 3 jobs | $0.182 |
 | 2026-11-22 | Haiku temperature probes (3 calls, all rejected or a few tokens) | 0 jobs | <$0.001 |
-| | **Total so far** | | **$7.57** |
+| 2026-11-22 | LongMemEval judge, 2 more verdicts per answer (majority of 3) $0.256, Haiku check $0.027 | 2 jobs | $0.283 |
+| | **Total so far** | | **$7.85** |
