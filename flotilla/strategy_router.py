@@ -156,8 +156,21 @@ def read_texts(item_globs: list[str], wanted: set) -> dict[str, str]:
                 r = json.loads(line)
                 i = r.get("id", r.get("item_id"))
                 if i in wanted and i not in texts:
-                    texts[i] = r["task"]
+                    texts[i] = item_text(r)
     return texts
+
+
+HISTORY_MARK = "[question about a long chat history] "
+
+
+def item_text(r: dict) -> str:
+    """The text a router reads. A LongMemEval item (it has "sessions") stores only "memory" as its task, so the router
+    reads its question (with the question date, as every route sees it) behind a fixed marker; the history itself is
+    too long for the router and is the same kind of input for every such item."""
+    if r.get("sessions") is not None:
+        q = r.get("question") or r.get("task", "")
+        return HISTORY_MARK + (f"Current date: {r['question_date']}\nQuestion: {q}" if r.get("question_date") else q)
+    return r["task"]
 
 
 def row_routes(row: dict) -> list[str]:

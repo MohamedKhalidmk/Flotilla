@@ -199,3 +199,16 @@ def test_load_reads_row_costs_and_task_text(tmp_path):
     lab = sr.label_index(tr.correct, tr.mask, tr.cost)
     assert lab[a] == m and lab[b] == dp                                     # b005: fast wrong (odd item), deep right
     assert sr.oracle_picks(tr)[a] == m
+
+
+def test_item_text_longmemeval_reads_the_question(tmp_path):
+    from flotilla.strategy_router import HISTORY_MARK, item_text, read_texts
+    lme = {"item_id": "lme-1", "task": "memory", "question": "What degree did I graduate with?", "question_date": "2023/05/30",
+           "sessions": [[{"role": "user", "content": "zz-session-text"}]]}
+    pool = {"id": "p-1", "task": "What is 2 + 2?"}
+    assert item_text(pool) == "What is 2 + 2?"
+    t = item_text(lme)
+    assert t.startswith(HISTORY_MARK) and "What degree did I graduate with?" in t and "memory" not in t and "zz-session-text" not in t
+    f = tmp_path / "items.jsonl"
+    f.write_text(json.dumps(lme) + "\n" + json.dumps(pool) + "\n")
+    assert read_texts([str(f)], {"lme-1", "p-1"}) == {"lme-1": t, "p-1": "What is 2 + 2?"}
