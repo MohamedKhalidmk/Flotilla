@@ -8,7 +8,7 @@
 # (only rows written since the job started) and stops past COST_CAP_USD (default $1). CPU only; needs internet (Fir or
 # Nibi compute nodes, not Trillium). The key comes only from the submitting shell's environment (sbatch passes it on).
 #   submitted by scripts/fir/submit_longmemeval.sh judge, after the fixed Haiku check (afterok)
-#   args: OUT_DIR ITEMS route=DIR [route=DIR ...]
+#   args: OUT_DIR ITEMS route=DIR [route=DIR ...]; JUDGE_REPEATS=N judges every answer N times (rows carry repeat)
 set -euo pipefail
 : "${ANTHROPIC_API_KEY:?export ANTHROPIC_API_KEY in the shell that runs sbatch}"
 CODE=/project/def-sylu/khaledmk/flotilla; [[ -d $CODE ]] || CODE=$(readlink -f "$HOME/projects/def-sylu")/khaledmk/flotilla
@@ -21,7 +21,7 @@ START=$(date +%s)
 mkdir -p "$OUT"
 echo "[judge] $(date -Is) start on $(hostname): $# run folders, cap \$$CAP"
 setsid "$PY" -m flotilla.memory_route judge --backend haiku --items "$ITEMS" --runs "$@" --out "$OUT/verdicts.jsonl" \
-  --concurrency "${JUDGE_CONCURRENCY:-8}" &
+  --concurrency "${JUDGE_CONCURRENCY:-8}" --repeats "${JUDGE_REPEATS:-1}" &
 JPID=$!
 spent() {
   "$PY" -c '

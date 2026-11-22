@@ -768,36 +768,69 @@ def cmd_prepare(a) -> None:
         raise SystemExit(f"{len(summary['errors'])} histories failed; see {Path(a.cache) / name}")
 
 
+def majority_verdicts(rows: list[dict], n: int) -> tuple[list[dict], list[str]]:
+    """Majority of n judge verdicts per (item, route, answer) (2026-11-22: Haiku takes no temperature, and identical
+    prompts got both yes and no). Returns the combined verdicts and the problems: a group with other than n verdicts.
+    A group with no answer has no judge call and stays wrong."""
+    groups: dict[tuple, list[dict]] = {}
+    for r in rows:
+        groups.setdefault((r["item_id"], r["route"], r.get("answer")), []).append(r)
+    out, problems = [], []
+    for (iid, route, ans), g in groups.items():
+        if ans is None:
+            out.append({**g[0], "repeat": None})
+            continue
+        if len(g) != n:
+            problems.append(f"{iid} {route}: {len(g)} verdicts, want {n}")
+            continue
+        yes = sum(bool(v["correct"]) for v in g)
+        out.append({"item_id": iid, "route": route, "answer": ans, "correct": yes * 2 > n,
+                    "judge_reply": g[0]["judge_reply"], "judge_replies": [v["judge_reply"] for v in g],
+                    "votes_yes": yes, "votes": n, "judge": g[0]["judge"], "judge_model": g[0].get("judge_model")})
+    return out, problems
+
+
+def _combine(a) -> None:
+    rows = [json.loads(line) for p in a.inputs for line in open(p)]
+    out, problems = majority_verdicts(rows, a.n)
+    if problems:
+        raise SystemExit(f"{len(problems)} groups without {a.n} verdicts, e.g. {problems[:5]}")
+    Path(a.out).write_text("".join(json.dumps(v, ensure_ascii=False) + "\n" for v in out))
+    print(f"{len(rows)} verdicts in, {len(out)} combined, {sum(v.get('votes_yes') not in (0, a.n, None) for v in out)} split")
+
+
 async def _judge(a) -> None:
     items = {}
     for line in open(a.items):
         it = json.loads(line)
         items[it["item_id"]] = it
     out = Path(a.out)
-    done = {(r["item_id"], r["route"]) for r in map(json.loads, open(out))} if out.exists() else set()
+    done = {(r["item_id"], r["route"], r.get("repeat", 0)) for r in map(json.loads, open(out))} if out.exists() else set()
     jobs = []
     for kv in a.runs:
         route, d = kv.split("=", 1)
         for line in open(Path(d) / "trace.jsonl"):
             t = json.loads(line)
-            if t["item_id"] in items and (t["item_id"], route) not in done:
-                jobs.append((route, t))
+            for k in range(a.repeats):
+                if t["item_id"] in items and (t["item_id"], route, k) not in done:
+                    jobs.append((route, t, k))
     if a.backend == "qwen" and not a.url:
         raise SystemExit("--backend qwen needs --url")
     srv = {"url": a.url, "model": a.model}
     haiku = HaikuJudge(out.parent / "usage.jsonl") if a.backend == "haiku" else None
     sem = asyncio.Semaphore(a.concurrency)
     with open(out, "a") as f:
-        async def one(route, t):
+        async def one(route, t, k):
             async with sem:
                 if haiku is not None:
                     v = await judge_answer_haiku(items[t["item_id"]], t["final_answer"], haiku, route)
                 else:
                     v = await judge_answer(items[t["item_id"]], t["final_answer"], srv)
-                f.write(json.dumps({"item_id": t["item_id"], "route": route, "answer": t["final_answer"], **v},
+                rep = {"repeat": k} if a.repeats > 1 else {}
+                f.write(json.dumps({"item_id": t["item_id"], "route": route, "answer": t["final_answer"], **v, **rep},
                                    ensure_ascii=False) + "\n")
                 f.flush()
-        await asyncio.gather(*[one(r, t) for r, t in jobs])
+        await asyncio.gather(*[one(r, t, k) for r, t, k in jobs])
     print(f"judged {len(jobs)} answers -> {out}")
 
 
@@ -829,11 +862,18 @@ def main() -> None:
     j.add_argument("--model", default="qwen_w4a16")
     j.add_argument("--out", required=True)
     j.add_argument("--concurrency", type=int, default=8)
+    j.add_argument("--repeats", type=int, default=1, help="judge every answer this many times (rows carry repeat)")
+    c = sub.add_parser("combine-verdicts", help="majority of N verdicts per (item, route, answer)")
+    c.add_argument("--inputs", nargs="+", required=True)
+    c.add_argument("--n", type=int, default=3)
+    c.add_argument("--out", required=True)
     a = ap.parse_args()
     if a.cmd == "dry-run":
         cmd_dry_run(a)
     elif a.cmd == "prepare":
         cmd_prepare(a)
+    elif a.cmd == "combine-verdicts":
+        _combine(a)
     else:
         asyncio.run(_judge(a))
 

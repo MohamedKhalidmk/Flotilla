@@ -422,3 +422,44 @@ def test_ask_for_more_adds_pool_facts_within_the_limits(monkeypatch):
     out = asyncio.run(mr.run_memory_route("memory", item, mem, cfg, NS(retrieval={}, models=[], final_answer=None)))
     assert shown == [2, 5] and out.retrieval["facts_final"] == 5
     assert mr.wants_more("thinking...\nNEED MORE MEMORIES.") and not mr.wants_more("I need more memories to be sure, but: Paris")
+
+
+def test_majority_of_three_verdicts():
+    """Checks that combine takes the majority of three verdicts per (item, route, answer), keeps a missing answer wrong without calls, and reports groups without three verdicts.
+    Guards against: one noisy Haiku verdict deciding a label (identical prompts got both yes and no), or a missing repeat passing silently."""
+    v = lambda r, a, c: {"item_id": "i", "route": r, "answer": a, "correct": c, "judge_reply": "Yes" if c else "No",
+                         "judge": "j", "judge_model": "m"}
+    rows = [v("fast", "2.5 years", True), v("fast", "2.5 years", False), v("fast", "2.5 years", True),
+            v("deep", "3", False), v("deep", "3", True), v("deep", "3", False),
+            {"item_id": "i", "route": "vote", "answer": None, "correct": False, "judge_reply": None, "judge": "j"},
+            v("tools", "x", True), v("tools", "x", True)]
+    out, problems = mr.majority_verdicts(rows, 3)
+    got = {o["route"]: o for o in out}
+    assert got["fast"]["correct"] and got["fast"]["votes_yes"] == 2 and got["fast"]["judge_replies"] == ["Yes", "No", "Yes"]
+    assert not got["deep"]["correct"] and not got["vote"]["correct"]
+    assert "tools" not in got and problems == ["i tools: 2 verdicts, want 3"]
+
+
+def test_judge_repeats_write_one_row_per_repeat(tmp_path, monkeypatch):
+    """Checks that judge with --repeats 2 judges every answer twice, tags rows with repeat 0 and 1, and a rerun skips rows already written.
+    Guards against: a resumed repeat job paying twice for the same verdict, or repeats that cannot be told apart."""
+    import argparse
+    run = tmp_path / "run"
+    run.mkdir()
+    (run / "trace.jsonl").write_text(json.dumps({"item_id": KU["item_id"], "final_answer": "Canada"}) + "\n")
+    items = tmp_path / "items.jsonl"
+    items.write_text(json.dumps(KU) + "\n")
+    calls = []
+
+    async def fake(item, response, judge, route=""):
+        calls.append(route)
+        return {"correct": True, "judge_reply": "Yes", "judge": "j", "judge_model": "m"}
+    monkeypatch.setattr(mr, "judge_answer_haiku", fake)
+    monkeypatch.setattr(mr, "HaikuJudge", lambda *a, **k: object())
+    out = tmp_path / "v.jsonl"
+    a = argparse.Namespace(items=str(items), runs=[f"fast={run}"], backend="haiku", url=None, model="m", out=str(out),
+                           concurrency=2, repeats=2)
+    asyncio.run(mr._judge(a))
+    asyncio.run(mr._judge(a))
+    rows = [json.loads(l) for l in open(out)]
+    assert sorted(r["repeat"] for r in rows) == [0, 1] and len(calls) == 2

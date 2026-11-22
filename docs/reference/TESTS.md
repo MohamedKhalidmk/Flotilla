@@ -1,6 +1,6 @@
 # Tests (Flotilla)
 
-93 tests in 12 files, in plain words. Generated from each test's docstring by `scripts/make_tests_doc.py`; to change a line, edit the docstring and rerun the script. `tests/test_tests_doc.py` fails if a test is missing here or a line is out of date. The Gaps section at the end is written by hand.
+95 tests in 12 files, in plain words. Generated from each test's docstring by `scripts/make_tests_doc.py`; to change a line, edit the docstring and rerun the script. `tests/test_tests_doc.py` fails if a test is missing here or a line is out of date. The Gaps section at the end is written by hand.
 
 ## [tests/test_formats.py](../../tests/test_formats.py)
 
@@ -67,6 +67,8 @@ Memory routes (flotilla/memory_route.py): availability, GRAFT documents, cache k
 | `test_merge_keeps_legacy_pool_rows_available` | Checks that merging old pool labels treats a route with a verdict as available, keeps the labels, and adds per-row GPU-seconds. | every run-03 pool row being labelled none because it lacks the available field. |
 | `test_writer_v2_and_thinking_change_the_graph_key` | Checks that the writer prompt and LLM thinking change the graph build key, while user_node and log_writer_replies do not. | a G41 or G42 run reusing a G35 graph built with another writer prompt or without thinking. |
 | `test_ask_for_more_adds_pool_facts_within_the_limits` | Checks that with ask_more on, a NEED MORE MEMORIES reply adds the next pool batch and asks again, up to the ask limit. | G40 on LongMemEval silently answering with only the first facts, or asking forever past the limits. |
+| `test_majority_of_three_verdicts` | Checks that combine takes the majority of three verdicts per (item, route, answer), keeps a missing answer wrong without calls, and reports groups without three verdicts. | one noisy Haiku verdict deciding a label (identical prompts got both yes and no), or a missing repeat passing silently. |
+| `test_judge_repeats_write_one_row_per_repeat` | Checks that judge with --repeats 2 judges every answer twice, tags rows with repeat 0 and 1, and a rerun skips rows already written. | a resumed repeat job paying twice for the same verdict, or repeats that cannot be told apart. |
 
 ## [tests/test_rl_router.py](../../tests/test_rl_router.py)
 
