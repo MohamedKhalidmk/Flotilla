@@ -1,6 +1,6 @@
 # Tests (Flotilla)
 
-109 tests in 14 files, in plain words. Generated from each test's docstring by `scripts/make_tests_doc.py`; to change a line, edit the docstring and rerun the script. `tests/test_tests_doc.py` fails if a test is missing here or a line is out of date. The Gaps section at the end is written by hand.
+119 tests in 15 files, in plain words. Generated from each test's docstring by `scripts/make_tests_doc.py`; to change a line, edit the docstring and rerun the script. `tests/test_tests_doc.py` fails if a test is missing here or a line is out of date. The Gaps section at the end is written by hand.
 
 ## [tests/test_error_stages.py](../../tests/test_error_stages.py)
 
@@ -16,6 +16,21 @@
 | `test_verifier_false_accept_needs_a_correctness_check` | Checks that a wrong answer accepted after a correctness check (public tests, constraints, LLM check) is verifier_false_accept, while one accepted after a form-only check is reasoning_error. | blaming the verifier for maths answers it can only check for form. |
 | `test_reasoning_error_and_ungraded_samples` | Checks that all samples wrong with nothing else to blame is reasoning_error, and that samples no grader can judge set samples_ungraded instead of vote_wrong. | a LongMemEval vote called right or wrong on samples nobody judged. |
 | `test_flags_and_stage_lists` | Checks the tool_error and retrieval_fallback flags, and that every stage the tagger returns is in the rule list, with only gold-free stages marked live. | a stage name drifting from trace.py's ERROR_STAGES, or a gold-dependent stage offered to flotilla-deploy. |
+
+## [tests/test_forced_routes.py](../../tests/test_forced_routes.py)
+
+| Test | What it checks | Guards against |
+|---|---|---|
+| `test_forced_route_names_its_tool_on_the_first_call_only` | Checks that a forced route sends tool_choice naming its tool on the first call, plain tools afterwards and no tools on the last round, and adds the forced-tool wording to the system message. | "required" (any tool) instead of the named tool, or a forced choice repeated on every round. |
+| `test_reasoning_is_sent_back_across_tool_rounds` | Checks that the assistant turn sent after a tool round carries that round's reasoning, and that keep_reasoning false leaves it out. | Qwen restarting its thinking after every tool result (run-04's Deep+Tools and Vote+Tools). |
+| `test_interpreter_error_reaches_qwen_and_the_trace` | Checks that a failing python_exec program's error text is in the tool message Qwen gets next and in the trace's detail field. | errors Qwen could not read, or a trace that hides why a tool call failed. |
+| `test_self_check_pass_stops_after_one_check` | Checks that F40 runs a check with python_exec forced and thinking off, and stops when the program prints CHECK PASS, keeping the answer. | revisions after a passing check, or a check run with thinking on. |
+| `test_self_check_fail_revises_and_unchanged_answer_stops` | Checks that a failing check leads to a revision that sees the program and its output, that a changed answer is checked again, and that an unchanged answer stops (CRITIC's rule). | endless check-revise loops, or a revision that never sees why the check failed. |
+| `test_self_check_error_is_a_fail_and_three_rounds_at_most` | Checks that a check program that raises counts as a fail with its error shown to the revision, and that the loop stops after three rounds. | a crashing check read as a pass, or more than three check-revise rounds. |
+| `test_check_verdict_reads_the_last_check_line` | Checks that only a final CHECK PASS line passes, and that no line, a FAIL, or PASS followed by FAIL does not. | a program that prints PASS early and fails later being taken as a pass. |
+| `test_ground_truth_grading_uses_open_instruct_rules` | Checks that instruction answers are graded by the question's RLVR-IFeval ground-truth rule (open-instruct's function), that string options are split before the choice check, and that a JSON-format rule is met by the loop. | the old regex grader that found a rule in only 106 of 236 questions, or a choice check that passes any answer. |
+| `test_label_grader_prefers_ground_truth` | Checks that the label grader uses an instruction item's ground_truth when it has one and the old regex otherwise. | the relabel still grading instructions with the regex, or old labels changing meaning. |
+| `test_rule_list_parsing_drops_unknown_ids_and_bad_arguments` | Checks that constraint_check v2 keeps listed rules whose ID and arguments build an official checker, drops unknown IDs and bad arguments, and checks a draft with the official checkers. | a hallucinated rule ID or argument crashing the check or being counted as met. |
 
 ## [tests/test_formats.py](../../tests/test_formats.py)
 

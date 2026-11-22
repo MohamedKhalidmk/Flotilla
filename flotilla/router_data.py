@@ -72,7 +72,7 @@ def ifeval_like():
         msgs = ex["messages"]
         task = msgs[-1]["content"] if isinstance(msgs, list) else str(msgs)
         yield {"id": f"rlvrif-{i}", "source": "ifeval_like", "task_type": "instruction", "task": task, "gold": None,
-               "constraint": ex.get("constraint")}
+               "constraint": ex.get("constraint"), "ground_truth": ex.get("ground_truth")}
 
 
 def _lcb_private(raw: str) -> list[dict]:

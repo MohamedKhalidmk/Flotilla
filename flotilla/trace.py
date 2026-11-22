@@ -38,6 +38,8 @@ class Trace:
     vote: dict[str, Any] = field(default_factory=dict)
     cross_check: dict[str, Any] = field(default_factory=dict)
     verifier: dict[str, Any] = field(default_factory=dict)
+    ifeval_rules: dict[str, Any] = field(default_factory=dict)   # constraint_check v2: rules listed per question
+    self_check: list[dict[str, Any]] = field(default_factory=list)  # F40: each check (program, output, verdict) and revision
     final_answer: str | None = None
     gold: Any = None
     correct: bool | None = None

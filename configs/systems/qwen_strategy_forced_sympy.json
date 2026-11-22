@@ -1,0 +1,30 @@
+{
+ "servers": {
+  "qwen_w4a16": {
+   "url": "set-by-serve",
+   "model": "qwen_w4a16",
+   "quant": "w4a16-ours",
+   "native_tools": true,
+   "request": {
+    "extra_body": {
+     "chat_template_kwargs": {
+      "enable_thinking": false
+     }
+    }
+   }
+  }
+ },
+ "solvers": [
+  "qwen_w4a16"
+ ],
+ "max_tokens": 32768,
+ "protocol_version": "protocol-v10",
+ "name": "qwen_strategy_forced_sympy",
+ "notes": "F38 Forced Sympy: Fast (thinking off) with tools; the first call must call sympy (named tool choice); up to 3 tool rounds; constraint_check v2.",
+ "tools": true,
+ "n_samples": 1,
+ "temperature": 0.6,
+ "forced_tool": "sympy",
+ "tool_rounds": 3,
+ "constraint_v2": true
+}

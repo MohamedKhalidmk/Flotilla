@@ -1,0 +1,29 @@
+{
+ "servers": {
+  "qwen_w4a16": {
+   "url": "set-by-serve",
+   "model": "qwen_w4a16",
+   "quant": "w4a16-ours",
+   "native_tools": true,
+   "request": {
+    "extra_body": {
+     "chat_template_kwargs": {
+      "enable_thinking": false
+     }
+    }
+   }
+  }
+ },
+ "solvers": [
+  "qwen_w4a16"
+ ],
+ "max_tokens": 32768,
+ "protocol_version": "protocol-v10",
+ "name": "qwen_strategy_self_check",
+ "notes": "F40 Self-Check: Fast answer, then up to 3 rounds: Qwen (thinking off) must write and run a python_exec check printing CHECK PASS or CHECK FAIL; a pass stops; otherwise Fast revises with the program and output; an unchanged answer stops.",
+ "tools": false,
+ "n_samples": 1,
+ "temperature": 0.6,
+ "self_check_rounds": 3,
+ "constraint_v2": true
+}

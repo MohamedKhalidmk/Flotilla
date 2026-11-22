@@ -72,7 +72,10 @@ def grade(item: dict, answer: str | None) -> bool:
         from flotilla.scoring import strip_fence
         return tools.run_public_tests(strip_fence(answer), item["tests"], timeout_s=6)["ok"]
     if t == "instruction":
-        return tools.constraint_check(item["task"], answer, loop_wrapped=True)["ok"]
+        if item.get("ground_truth"):   # RLVR-IFeval's own rule (2026-11-22; the full relabel grades with it)
+            from flotilla.ifeval_rules import grade_ground_truth
+            return grade_ground_truth(answer, item["ground_truth"])
+        return tools.constraint_check(item["task"], answer, loop_wrapped=True)["ok"]   # run-04 and earlier labels
     if t == "memory":  # LongMemEval: LLM judge (flotilla/memory_route.py judge), never a silent False here
         raise ValueError("memory answers are graded by LongMemEval's judge: python -m flotilla.memory_route judge")
     return False

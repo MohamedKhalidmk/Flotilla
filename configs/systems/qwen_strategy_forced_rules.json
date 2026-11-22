@@ -1,0 +1,30 @@
+{
+ "servers": {
+  "qwen_w4a16": {
+   "url": "set-by-serve",
+   "model": "qwen_w4a16",
+   "quant": "w4a16-ours",
+   "native_tools": true,
+   "request": {
+    "extra_body": {
+     "chat_template_kwargs": {
+      "enable_thinking": false
+     }
+    }
+   }
+  }
+ },
+ "solvers": [
+  "qwen_w4a16"
+ ],
+ "max_tokens": 32768,
+ "protocol_version": "protocol-v10",
+ "name": "qwen_strategy_forced_rules",
+ "notes": "F39 Forced Rules: Fast (thinking off) with tools; the first call must call constraint_check v2 (Qwen lists IFEval rules from the question; IFEval's official checkers test the draft); up to 3 tool rounds.",
+ "tools": true,
+ "n_samples": 1,
+ "temperature": 0.6,
+ "forced_tool": "constraint_check",
+ "tool_rounds": 3,
+ "constraint_v2": true
+}

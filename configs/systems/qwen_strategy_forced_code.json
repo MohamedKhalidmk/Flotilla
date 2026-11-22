@@ -1,0 +1,23 @@
+{
+ "servers": {
+  "qwen_w4a16": {
+   "url": "set-by-serve",
+   "model": "qwen_w4a16",
+   "quant": "w4a16-ours",
+   "native_tools": true
+  }
+ },
+ "solvers": [
+  "qwen_w4a16"
+ ],
+ "max_tokens": 32768,
+ "protocol_version": "protocol-v10",
+ "name": "qwen_strategy_forced_code",
+ "notes": "F37 Forced Code: Deep (thinking on) with tools; the first call must call python_exec (named tool choice); up to 8 tool rounds; reasoning kept across rounds; errors returned and saved; constraint_check v2.",
+ "tools": true,
+ "n_samples": 1,
+ "temperature": 0.6,
+ "forced_tool": "python_exec",
+ "tool_rounds": 8,
+ "constraint_v2": true
+}

@@ -16,7 +16,7 @@ import os
 import re
 import time
 from collections import Counter
-from dataclasses import dataclass, field
+from dataclasses import replace, dataclass, field
 from pathlib import Path
 
 from openai import AsyncOpenAI
@@ -45,6 +45,10 @@ class SystemConfig:
     llm_verify: bool = False               # F33/F34: verifier.v2's LLM check where no exact check exists (free text)
     llm_verify_max_tokens: int = 1024
     tie_rule: str = "first"                # free-text vote with no two answers matching: "first" sample, or "usc" (F36)
+    forced_tool: str | None = None         # F37-F39: the first call must call this tool (tool_choice by name)
+    constraint_v2: bool = False            # constraint_check and the instruction check on IFEval's official checkers
+    self_check_rounds: int = 0             # F40: up to this many code check-revise rounds after the answer
+    keep_reasoning: bool = True            # send each round's reasoning back with the assistant turn (2026-11-22 fix)
     usc_max_tokens: int = 256
     protocol_version: str = "protocol-v2"
     extra: dict = field(default_factory=dict)
@@ -181,6 +185,23 @@ def _run_tool(tool: str, arg: str, messages: list[dict]) -> dict:
         tool, lambda a: {"ok": False, "output": None, "detail": f"unknown tool {tool}"})(arg)
 
 
+def forced_tool_note(tool: str, version: str = "v1") -> str:
+    """The forced route's wording for its tool, from prompts/forced_tool.<version>.md."""
+    return _section((PROMPTS / f"forced_tool.{version}.md").read_text(), tool)
+
+
+async def _tool_result(tool: str, arg: str, messages: list[dict], name: str, srv: dict, cfg: SystemConfig,
+                       trace: Trace) -> dict:
+    """One tool call. constraint_check v2 first lists the question's rules (once per question, cached on the trace)
+    and runs IFEval's official checkers on the draft; every other tool as before."""
+    if tool == "constraint_check" and cfg.constraint_v2:
+        from flotilla import ifeval_rules
+        q = question_only(_text(messages[-1]["content"]))
+        rules = await ifeval_rules.list_rules(name, srv, q, cfg, trace)
+        return ifeval_rules.check_rules(rules["rules"], arg, q)
+    return _run_tool(tool, arg, messages)
+
+
 async def _solve_once(name: str, srv: dict, messages: list[dict], cfg: SystemConfig,
                       temperature: float, trace: Trace) -> Sample:
     client = client_for(srv)
@@ -191,12 +212,18 @@ async def _solve_once(name: str, srv: dict, messages: list[dict], cfg: SystemCon
     if msgs and msgs[0]["role"] == "system" and (native or not cfg.tools):  # never teach the text TOOL-line format
         msgs[0] = {**msgs[0], "content": native_tool_prompt(msgs[0]["content"], cfg.prompt_version,
                                                             "Native-tool wording" if cfg.tools else "No-tool wording")}
+    forced = cfg.forced_tool if (native and cfg.tools and cfg.forced_tool) else None
+    if forced and msgs and msgs[0]["role"] == "system":
+        msgs[0] = {**msgs[0], "content": msgs[0]["content"] + "\n" + forced_tool_note(forced)}
     for rnd in range(cfg.tool_rounds + 1):
         last = rnd == cfg.tool_rounds and rnd > 0
         if last:   # tool budget used up: the last call must answer
             msgs.append({"role": "user", "content": FINAL_ROUND_NOTE})
         # last round: no tools offered at all (gpt-oss still returned tool calls under tool_choice "none")
-        r = await _create(name, srv, client, msgs, cfg, temperature, **({} if last else extra))
+        kw = {} if last else dict(extra)
+        if forced and rnd == 0:   # the forced route's first call must call its tool (named, stricter than "required")
+            kw["tool_choice"] = {"type": "function", "function": {"name": forced}}
+        r = await _create(name, srv, client, msgs, cfg, temperature, **kw)
         msg = r.choices[0].message
         out = msg.content or ""
         reasoning = getattr(msg, "reasoning_content", None) or getattr(msg, "reasoning", None) or ""
@@ -212,16 +239,19 @@ async def _solve_once(name: str, srv: dict, messages: list[dict], cfg: SystemCon
                 text_all += out
                 break
             text_all += out + "\n"
-            msgs.append({"role": "assistant", "content": out, "tool_calls": [
-                {"id": c.id, "type": "function", "function": {"name": c.function.name, "arguments": c.function.arguments}} for c in calls]})
+            turn = {"role": "assistant", "content": out, "tool_calls": [
+                {"id": c.id, "type": "function", "function": {"name": c.function.name, "arguments": c.function.arguments}} for c in calls]}
+            if cfg.keep_reasoning and reasoning:   # Qwen's template keeps it after the last user turn (interleaved thinking)
+                turn["reasoning"] = reasoning
+            msgs.append(turn)
             for c in calls:
                 try:
                     arg = str(json.loads(c.function.arguments or "{}").get("input", ""))
                 except ValueError:
                     arg = c.function.arguments or ""
-                result = _run_tool(c.function.name, arg, messages)
+                result = await _tool_result(c.function.name, arg, messages, name, srv, cfg, trace)
                 trace.tools.append({"name": c.function.name, "input": arg[:500], "output": str(result.get("output"))[:500],
-                                    "ok": result["ok"], "via": "native"})
+                                    "ok": result["ok"], "detail": str(result.get("detail") or "")[:1000], "via": "native"})
                 text_all += f"TOOL {c.function.name}: {arg[:300]}\n"
                 msgs.append({"role": "tool", "tool_call_id": c.id, "content": json.dumps(result)[:2000]})
             continue
@@ -230,8 +260,9 @@ async def _solve_once(name: str, srv: dict, messages: list[dict], cfg: SystemCon
             text_all += out
             break
         tool, arg = m.group(1), m.group(2).strip()
-        result = _run_tool(tool, arg, messages)
-        trace.tools.append({"name": tool, "input": arg[:500], "output": str(result.get("output"))[:500], "ok": result["ok"]})
+        result = await _tool_result(tool, arg, messages, name, srv, cfg, trace)
+        trace.tools.append({"name": tool, "input": arg[:500], "output": str(result.get("output"))[:500], "ok": result["ok"],
+                            "detail": str(result.get("detail") or "")[:1000]})
         upto = out[: m.end()]
         text_all += upto + "\n"
         msgs += [{"role": "assistant", "content": upto}, {"role": "user", "content": f"TOOL RESULT ({tool}): {json.dumps(result)[:2000]}"}]
@@ -335,7 +366,7 @@ def n_options(task: str, options: list[str] | None) -> int:
 
 
 def verify(task: str, task_type: str, answer: str | None, options: list[str] | None = None,
-           public_tests: list[dict] | None = None) -> dict:
+           public_tests: list[dict] | None = None, rules: list[dict] | None = None) -> dict:
     checks = []
     if answer is None:
         return {"verdict": "reject", "checks": [{"name": "parse", "passed": False}], "reason": "no final answer"}
@@ -348,6 +379,10 @@ def verify(task: str, task_type: str, answer: str | None, options: list[str] | N
     elif task_type == "code" and public_tests:
         r = tools.run_public_tests(answer, public_tests)
         checks.append({"name": "public_tests", "passed": r["ok"], "detail": r["output"]})
+    elif task_type == "instruction" and rules is not None:   # constraint_check v2: IFEval's official checkers
+        from flotilla import ifeval_rules
+        r = ifeval_rules.check_rules(rules, answer, question_only(task))
+        checks.append({"name": "constraints", "passed": r["ok"], "detail": r["detail"]})
     elif task_type == "instruction":
         r = tools.constraint_check(task, answer, loop_wrapped=True)
         checks.append({"name": "constraints", "passed": r["ok"], "detail": r["detail"]})
@@ -413,6 +448,83 @@ async def llm_check(name: str, srv: dict, task_text: str, final_answer: str, cfg
             "latency_s": lat, "tokens_in": tok_in, "tokens_out": tok_out}
 
 
+CHECK_LINE = re.compile(r"^CHECK (PASS|FAIL)\b.*$", re.M)
+
+
+def self_check_messages(kind: str, version: str = "v1", **fill) -> list[dict]:
+    md = (PROMPTS / f"self_check.{version}.md").read_text()
+    text = _section(md, {"check": "Check user", "revise": "Revise user"}[kind])
+    for k, v in fill.items():
+        text = text.replace("{" + k + "}", str(v))
+    return ([{"role": "system", "content": _section(md, "Check system")}] if kind == "check" else []) + \
+        [{"role": "user", "content": text}]
+
+
+def check_verdict(stdout: str | None) -> bool:
+    """The check passes only when its last CHECK line says PASS (an error, a timeout or no line is a fail)."""
+    lines = CHECK_LINE.findall(stdout or "")
+    return bool(lines) and lines[-1] == "PASS"
+
+
+async def self_check(name: str, srv: dict, task: str, task_type: str, answer: str, cfg: SystemConfig,
+                     trace: Trace) -> str:
+    """F40 (CRITIC-style): up to cfg.self_check_rounds rounds. Check: Qwen (thinking off, temperature 0) must call
+    python_exec with a program that checks the answer and prints CHECK PASS or CHECK FAIL; the program runs here.
+    A pass stops. Otherwise revise: the route's own solver sees the program and its full output (errors included) and
+    answers again; an unchanged answer stops (CRITIC's rule). Every call is in compute; trace.self_check records each
+    round."""
+    q = question_only(task)
+    chk_srv = {**srv, "request": {**srv.get("request", {}), "extra_body": {
+        **srv.get("request", {}).get("extra_body", {}), "chat_template_kwargs": {"enable_thinking": False}}}}
+    py_tool = [t for t in TOOL_SCHEMAS if t["function"]["name"] == "python_exec"]
+    for k in range(cfg.self_check_rounds):
+        t0, out, prog, err = time.time(), "", "", None
+        ti = to = 0
+        try:
+            r = await _create(f"{name}:check", chk_srv, client_for(chk_srv),
+                              self_check_messages("check", question=q, answer=answer), cfg, 0.0, tools=py_tool,
+                              tool_choice={"type": "function", "function": {"name": "python_exec"}})
+            msg = r.choices[0].message
+            out = msg.content or ""
+            ti, to = r.usage.prompt_tokens, r.usage.completion_tokens
+            calls = msg.tool_calls or []
+            if calls:
+                try:
+                    prog = str(json.loads(calls[0].function.arguments or "{}").get("input", ""))
+                except ValueError:
+                    prog = calls[0].function.arguments or ""
+        except Exception as e:  # noqa: BLE001
+            if type(e).__name__ == "CallBudget":
+                raise
+            err = f"{type(e).__name__}: {e}"[:300]
+        trace.add_samples(f"{name}:check", srv.get("quant", "?"), [Sample(text=out or prog or f"ERROR {err}",
+                          final_answer=None, confidence=None, tokens_in=ti, tokens_out=to,
+                          latency_s=round(time.time() - t0, 3))])
+        res = tools.python_exec(prog) if prog else {"ok": False, "output": None, "detail": err or "no check program"}
+        shown = ((res.get("output") or "") + ("\n" + res["detail"] if res.get("detail") else "")).strip()
+        passed = bool(res.get("ok")) and check_verdict(res.get("output"))
+        trace.tools.append({"name": "python_exec", "input": prog[:500], "output": str(res.get("output"))[:500],
+                            "ok": res["ok"], "detail": str(res.get("detail") or "")[:1000], "via": "self_check"})
+        rec = {"round": k + 1, "answer": answer, "program": prog[:4000], "output": shown[:4000], "passed": passed}
+        if passed:
+            trace.self_check.append(rec)
+            break
+        msgs = solver_messages(task, task_type, cfg.prompt_version)[:1] + self_check_messages(
+            "revise", question=q, answer=answer, program=prog or "(no program)", output=shown or "(no output)")
+        rev = await _solve_once(name, srv, msgs, replace(cfg, tools=False), 0.0, trace)
+        trace.add_samples(f"{name}:revise", srv.get("quant", "?"), [rev])
+        rec["revised"] = rev.final_answer
+        trace.self_check.append(rec)
+        if rev.final_answer is None or _norm_ans(rev.final_answer) == _norm_ans(answer):
+            break
+        answer = rev.final_answer
+    return answer
+
+
+def _norm_ans(a: str | None) -> str:
+    return re.sub(r"\s+", " ", str(a or "").strip().lower()).strip(" .")
+
+
 async def answer(item: dict, route: dict, cfg: SystemConfig, trace: Trace) -> Trace:
     """item: {item_id, task, task_type?, options?, public_tests?, retrieved?}; route: router output."""
     trace.router = route
@@ -438,8 +550,15 @@ async def answer(item: dict, route: dict, cfg: SystemConfig, trace: Trace) -> Tr
         u = await usc_pick(solvers[0], cfg.servers[solvers[0]], question_only(_text(msgs[-1]["content"])), cands, cfg, trace)
         trace.vote = {**trace.vote, "winner": cands[u["index"]], "rule": "USC tie rule (no two answers match)", "usc": u}
     final = trace.vote["winner"]
+    if cfg.self_check_rounds and final is not None:   # F40: code check-revise rounds (CRITIC-style)
+        final = await self_check(solvers[0], cfg.servers[solvers[0]], item["task"], task_type, final, cfg, trace)
+    rules = None
+    if cfg.constraint_v2 and task_type == "instruction":
+        from flotilla import ifeval_rules
+        rules = (await ifeval_rules.list_rules(solvers[0], cfg.servers[solvers[0]], question_only(item["task"]),
+                                               cfg, trace))["rules"]
     if cfg.verifier:
-        v = verify(item["task"], task_type, final, item.get("options"), item.get("public_tests"))
+        v = verify(item["task"], task_type, final, item.get("options"), item.get("public_tests"), rules)
         if cfg.llm_verify and v["verdict"] == "accept" and not v["checks"]:  # no exact check for this task type
             c = await llm_check(solvers[0], cfg.servers[solvers[0]], _text(msgs[-1]["content"]), final, cfg, trace)
             v = {"verdict": "accept" if c["passed"] else "reject", "checks": [c],
@@ -462,7 +581,7 @@ async def answer(item: dict, route: dict, cfg: SystemConfig, trace: Trace) -> Tr
                 retry = Sample(text=f"ERROR {type(e).__name__}: {e}"[:500], final_answer=final, confidence=None,
                                tokens_in=0, tokens_out=0, latency_s=0)
             trace.add_samples(f"{s}:retry", srv.get("quant", "?"), [retry])
-            v2 = verify(item["task"], task_type, retry.final_answer, item.get("options"), item.get("public_tests"))
+            v2 = verify(item["task"], task_type, retry.final_answer, item.get("options"), item.get("public_tests"), rules)
             trace.verifier["attempts"].append({"attempt": 2, "final_answer": retry.final_answer, "retry_message": msg, **v2})
             final = retry.final_answer
         trace.verifier["verdict"] = trace.verifier["attempts"][-1]["verdict"]
