@@ -21,12 +21,16 @@ def ret(*fs, outdated=()):
 
 
 def test_all_steps_pass_when_the_newer_fact_wins():
+    """Checks that check() passes extract, link and retrieve when both facts exist, the newer one supersedes the older, and the older is marked outdated.
+    Guards against: a correct graph and retrieval being reported as a failed supersede."""
     old, new = fact(1, "user", "lives in", "France"), fact(2, "user", "lives in", "Canada")
     r = check(graph([old, new], [("f:2", "f:1")]), ret(new, old, outdated={"f:1"}), "France", "Canada", None)
     assert (r["extract"], r["link"], r["retrieve"]) == (True, True, True)
 
 
 def test_each_failing_step_is_reported():
+    """Checks that check() fails the link and retrieve steps when a reworded new fact has no SUPERSEDES edge, and fails extract when the old fact is missing.
+    Guards against: a broken step hidden behind a pass, so the wrong part of GRAFT gets blamed or fixed."""
     old, new = fact(1, "user", "is based in", "Lyon, France"), fact(2, "user", "moved to", "Toronto", "Canada is home now")
     r = check(graph([old, new]), ret(old, new), "France", "Canada", None)          # reworded: no edge, old ranked first
     assert (r["extract"], r["link"], r["retrieve"]) == (True, False, False)
@@ -35,6 +39,8 @@ def test_each_failing_step_is_reported():
 
 
 def test_chain_and_anchor():
+    """Checks that check() follows a chain of SUPERSEDES edges, uses the anchor word to ignore unrelated facts with the same number, and reads 50th as 50.
+    Guards against: a fact like 10 pages a night being taken as the old episode 10 fact."""
     a = fact(1, "user", "is on episode", "10", "episode 10 of the History series")
     b = fact(2, "user", "is on episode", "30", "episode 30")
     c = fact(3, "user", "finished episode", "50", "the 50th History episode")
@@ -46,6 +52,8 @@ def test_chain_and_anchor():
 
 
 def test_toy_items_carry_their_check():
+    """Checks that the four toy items carry old, new and anchor values, dated sessions in order, the new value as answer and the old in session 1.
+    Guards against: toy items whose answer or session order does not match their supersede check."""
     items = [json.loads(l) for l in open(TOY)]
     assert len(items) == 4 and all({"old", "new", "anchor"} <= set(i["supersede_check"]) for i in items)
     for it in items:

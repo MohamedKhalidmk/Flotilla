@@ -7,6 +7,8 @@ SESSION = Path(__file__).resolve().parent.parent / "docs" / "session"
 
 
 def test_session_docs_match_their_manifest():
+    """Checks that the files in docs/session/ are exactly those listed in scripts/SHA256SUMS and that each file's hash matches.
+    Guards against: a session document edited in one repo without running scripts/sync_session_docs.py."""
     sums = dict(reversed(l.split("  ", 1)) for l in (SESSION.parent.parent / "scripts" / "SHA256SUMS").read_text().splitlines() if l.strip())
     present = {p.name for p in SESSION.iterdir() if p.suffix == ".md"}
     assert present == set(sums), f"files and manifest differ: {sorted(present ^ set(sums))}"
@@ -20,7 +22,10 @@ COLUMNS = ["#", "Experiment", "IDs", "State", "Result (one line)", "Next step", 
 
 
 def test_status_open_experiments_table():
-    """STATUS.md's Open experiments table (user, 2026-11-22): fixed columns, the six states only, a date on every row,
+    """Checks that the Open experiments table in STATUS.md has the fixed columns, rows numbered 1 to n, one of six states, and a date on every row.
+    Guards against: a deleted row or an unknown state in the experiments table.
+
+    STATUS.md's Open experiments table (user, 2026-11-22): fixed columns, the six states only, a date on every row,
     and row numbers 1..n with no gap, so a deleted row shows up here (rows are never deleted, only their state changes)."""
     import re
     text = (SESSION / "STATUS.md").read_text()

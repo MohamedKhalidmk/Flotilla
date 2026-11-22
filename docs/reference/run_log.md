@@ -188,6 +188,8 @@ One line per decision, with its reason. Times are America/Vancouver unless marke
 
 - **2026-11-22, GRAFT presets carry G IDs (user):** `GRAFT_PRESET_IDS` in `flotilla/memory_route.py` (plain_c = G08, guide_b = G35). A winning GRAFT change is added as a named preset with its G ID before any Memory route uses it; route configs may override only runtime keys (`llm_mode`). `test_graft_config_is_a_named_preset` checks both (a route config with a `writer_prompt` override fails it). No new preset yet: nothing has won.
 
+- **2026-11-22, TESTS.md (user):** `docs/reference/TESTS.md` in both repos lists every test in plain words (what it checks, what it guards against), generated from the test docstrings by `scripts/make_tests_doc.py`; `tests/test_tests_doc.py` fails on a missing or stale line. Every test now has the two-line docstring (Flotilla 89 tests, GRAFT 53; only docstrings changed, checked with ast). Hand-written Gaps section in each. The label merge now stops and names every LongMemEval question with no answer, every answer with no verdict, and every pair with two verdicts (`strategy_labels.verdict_problems`, `tests/test_label_merge.py`); run-04-lme passes it (5,000 verdicts, 500 x 10, none missing or doubled). Flotilla suite on Fir: 87 passed, 2 skipped (after removing `._*` files that macOS tar had left on the clusters).
+
 ### API spend (Anthropic)
 | When | What | Runs | Cost |
 |---|---|---|---|

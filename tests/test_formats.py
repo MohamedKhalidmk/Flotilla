@@ -119,6 +119,8 @@ def bench(name: str) -> list[dict]:
 
 
 def test_math_benchmarks(loader):
+    """Checks that GSM8K, MATH-500 and AIME items keep the dataset's ID, question and gold, with the GSM8K gold taken after #### and commas removed.
+    Guards against: a GSM8K gold that keeps the worked solution or a thousands comma, so a right answer is graded wrong."""
     for it, r in zip(bench("gsm8k"), RAW["openai/gsm8k|main|test"]):
         assert it["task"] == r["question"] and it["gold"] == r["answer"].split("####")[-1].strip().replace(",", "")
     for it, r in zip(bench("math500"), RAW["HuggingFaceH4/MATH-500|None|test"]):
@@ -129,6 +131,8 @@ def test_math_benchmarks(loader):
 
 
 def test_gpqa_options_shuffled_but_complete(loader):
+    """Checks that each GPQA item has the four original options in some order and that the gold letter points at the correct answer.
+    Guards against: a shuffle that drops an option or leaves the gold letter pointing at a wrong answer."""
     for it, r in zip(bench("gpqa"), RAW["Idavidrein/gpqa|gpqa_diamond|train"]):
         assert it["task_type"] == "science_mc" and len(it["options"]) == 4
         orig = [r["Correct Answer"]] + [r[f"Incorrect Answer {k}"] for k in (1, 2, 3)]
@@ -138,12 +142,16 @@ def test_gpqa_options_shuffled_but_complete(loader):
 
 
 def test_ifeval_keeps_instructions(loader):
+    """Checks that IFEval items keep the prompt, the key-based ID, the instruction ID list and their kwargs unchanged.
+    Guards against: IFEval items losing the instruction list or kwargs the ifeval scorer needs to grade them."""
     for it, r in zip(bench("ifeval"), RAW["google/IFEval|None|train"]):
         assert (it["item_id"], it["task"]) == (f"ifeval/{r['key']}", r["prompt"])
         assert it["instruction_id_list"] == r["instruction_id_list"] and it["kwargs"] == r["kwargs"]
 
 
 def test_vision_benchmarks_keep_images_and_options(loader):
+    """Checks that MMMU items keep every image, option and answer letter, and OCRBench items keep the image, a gold list and the OCR type.
+    Guards against: a vision item with a missing image, or an MMMU multiple-choice question whose lettered options differ from the dataset."""
     for it, r in zip(bench("mmmu"), RAW["lmms-lab/MMMU|None|validation"]):
         imgs = [r[f"image_{k}"]["__png_b64__"] for k in range(1, 8) if r.get(f"image_{k}")]
         assert it["images"] == imgs and it["gold"] == r["answer"] and r["question"] in it["task"]
@@ -160,6 +168,8 @@ def test_vision_benchmarks_keep_images_and_options(loader):
 
 
 def test_lcb_keeps_every_test(loader):
+    """Checks that LiveCodeBench items keep all public and private tests, give public tests only for stdin problems, and show starter code.
+    Guards against: a code item graded on fewer tests than the dataset has, or a function problem shown without its starter code."""
     items = bench("lcb")
     assert {bool(it["starter_code"]) for it in items} == {True, False}    # a function problem and a stdin problem
     by_id = {f"lcb/{x['question_id']}": x for x in RAW["lcb|bench"]}
@@ -178,6 +188,8 @@ def test_lcb_keeps_every_test(loader):
 # ---------------------------------------------------------------- RULER (flotilla.export_ruler)
 
 def test_ruler_items_and_round_trip():
+    """Checks that exported RULER 32k and 64k items have a list of gold strings and the ruler_substring scorer, and rebuild exactly from the lm-eval instance.
+    Guards against: a RULER item whose ID, gold list or token count no longer matches what export_ruler.ruler_item produces."""
     assert {r["bench"] for r in RULER} == {"ruler_32k", "ruler_64k"}
     for it in RULER:
         check_core(it)
@@ -201,6 +213,8 @@ def pool(name: str) -> list[dict]:
 
 
 def test_pool_sources_round_trip(loader):
+    """Checks that every router pool source (GSM8K, MATH, AIME, MMLU-Pro, IFEval-like, LiveCodeBench) keeps the raw row's ID, question, gold and tests.
+    Guards against: MMLU-Pro rows cut to four options instead of up to ten, or a MATH gold not taken from the boxed answer."""
     for r, raw in zip(pool("gsm8k"), RAW["openai/gsm8k|main|train"]):
         assert r["task"] == raw["question"] and r["gold"] == raw["answer"].split("####")[-1].strip().replace(",", "")
     raws = [x for k, v in RAW.items() if k.startswith("EleutherAI/hendrycks_math") for x in v]
@@ -224,6 +238,8 @@ def test_pool_sources_round_trip(loader):
 
 
 def test_strategy_label_items_round_trip(loader):
+    """Checks that strategy label items built from pool rows keep the pool ID, task, task type and source, with no gold and the router_label scorer.
+    Guards against: a label item carrying its gold in the item file, or an ID that no longer matches the pool row it is graded against."""
     rows = [r for name in router_data.SOURCES for r in router_data.SOURCES[name]()]
     assert {r["task_type"] for r in rows} == {"math", "science_mc", "instruction", "code"}
     for r in rows:

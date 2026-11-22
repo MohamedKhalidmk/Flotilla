@@ -26,6 +26,8 @@ def raw(item):
 
 
 def test_sample_format():
+    """Checks that the 10-item LongMemEval sample has exactly the expected fields, all six question types, an abstention item and clean turns.
+    Guards against: converted items with a missing or extra field, or an abstention flag that does not match the _abs question ID."""
     its = items()
     assert len(its) == 10
     assert len({it["question_type"] for it in its}) == 6       # every question type is in the sample
@@ -41,6 +43,8 @@ def test_sample_format():
 
 
 def test_convert_round_trip():
+    """Checks that convert() on the raw dataset layout gives back the stored sessions, answer and map of answer-holding turns.
+    Guards against: convert() dropping turns or losing which turns hold the answer."""
     for it in items():
         out = lme.convert(raw(it), "longmemeval_s")
         assert out["sessions"] == it["sessions"] and out["answer"] == it["answer"]
@@ -48,6 +52,8 @@ def test_convert_round_trip():
 
 
 def test_units_and_flags():
+    """Checks that a long turn is cut into overlapping windows that keep every 13-word run whole, and that item_flags reports only a flagged turn or question.
+    Guards against: a 13-gram overlap being missed because it straddles two windows, or a clean item being flagged as leaked."""
     ex = raw(items()[0])
     long_turn = " ".join(f"w{i}" for i in range(450))
     windows = lme._windows(long_turn)
@@ -61,6 +67,8 @@ def test_units_and_flags():
 
 
 def test_split_is_seeded_and_stratified():
+    """Checks that split() gives the same split whatever the input order, spreads each question type evenly, and puts no item in two splits.
+    Guards against: the split changing when items are read in another order, or one question type missing from held-out."""
     fake = [{"item_id": f"lme-{t}{i}", "question_type": t} for t in "abc" for i in range(20)]
     sp = lme.split(fake)
     assert sp == lme.split(list(reversed(fake)))
@@ -70,6 +78,8 @@ def test_split_is_seeded_and_stratified():
 
 
 def test_history_prompt_orders_sessions_by_date():
+    """Checks that history_prompt sorts sessions by date, lists every session, and ends with the question after the current date.
+    Guards against: sessions shown out of date order, so the model reads an old fact as the newest one."""
     it = items()[0]
     p = lme.history_prompt({**it, "sessions": list(reversed(it["sessions"]))})
     assert p == lme.history_prompt(it)

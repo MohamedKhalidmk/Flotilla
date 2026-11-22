@@ -28,6 +28,8 @@ POOL = mr.POOL_SAMPLE
 # ------------------------------------------------------------------ unit
 
 def test_availability_is_explicit_per_item():
+    """Checks that Memory routes are offered only on items with sessions, and that memory on a pool item raises MemoryUnavailable.
+    Guards against: a Memory route silently running on a question with no history instead of being marked unavailable."""
     assert mr.has_memory(KU) and not mr.has_memory(POOL) and not mr.has_memory({**KU, "sessions": []})
     assert mr.available_routes(POOL) == list(mr.BASE_ROUTES)
     assert set(mr.available_routes(KU)) == set(mr.BASE_ROUTES) | set(mr.MEMORY_ROUTES)
@@ -42,6 +44,8 @@ def test_availability_is_explicit_per_item():
 
 
 def test_normalize_item_hides_the_answer():
+    """Checks that normalize_item turns a LongMemEval item into a memory task with the lme_judge scorer and removes the answer, answer sessions and meta.
+    Guards against: the gold answer or the answer-session IDs leaking into what the model or router sees."""
     it = mr.normalize_item({**KU, "meta": {"has_answer_turns": {"s3": [0]}}})
     assert "meta" not in it and it["task_type"] == "memory" and it["scorer"] == "lme_judge" and it["bench"] == "longmemeval_s"
     assert "answer" not in it and "answer_session_ids" not in it and it["gold"] is None
@@ -50,6 +54,8 @@ def test_normalize_item_hides_the_answer():
 
 
 def test_sessions_become_dated_chunks_in_date_order():
+    """Checks that sessions become dated chunks in date order, and that a long session is cut into numbered parts within the size limit.
+    Guards against: chunks out of date order, or the later parts of a long session losing their date."""
     chunks, cmap = mr.sessions_to_chunks(KU)
     assert [c["session_id"] for c in cmap] == ["s1", "s2", "s3"]
     assert all(c.startswith(f"[Chat session {m['session_id']}, date {m['date']}") for c, m in zip(chunks, cmap))
@@ -61,6 +67,8 @@ def test_sessions_become_dated_chunks_in_date_order():
 
 
 def test_graph_key_covers_history_and_build_settings_only(tmp_path):
+    """Checks that the graph key changes with the history, build settings and LLM label, but not with retrieval settings like max_facts.
+    Guards against: a graph built by the fake LLM or from another history being reused for a real run."""
     repo = mr.graft_repo()
     g = mr.graft_config({})
     k = mr.build_key(KU, g, "local:qwen", repo)
@@ -73,6 +81,8 @@ def test_graph_key_covers_history_and_build_settings_only(tmp_path):
 
 
 def test_graft_config_is_a_named_preset(monkeypatch):
+    """Checks that GRAFT settings come from named presets with unique G IDs, the env variable overrides them, and Memory configs match their base.
+    Guards against: a Memory route changing GRAFT's method outside a named preset, or an unknown preset name being accepted."""
     plain = mr.graft_config({})
     assert plain["preset"] == "plain_c" and plain["retrieval"] == "ppr_goat_ppr" and plain["max_facts"] == 50
     assert plain["explainer"] == "goat" and plain["start_graph"] == "empty" and "trex_guide" not in plain
@@ -102,6 +112,8 @@ def test_graft_config_is_a_named_preset(monkeypatch):
 
 
 def test_memory_block_is_labelled_and_dated():
+    """Checks that the memory block has its header, dates each fact, ends before the question, and says when no facts were recalled.
+    Guards against: recalled facts shown without dates, or the memory block placed after the question."""
     mem = {"chunk_map": [{"date": "2023/05/01"}, {"date": "2023/09/02"}],
            "retrieval": {"facts": [{"id": "f:1", "subject": "Alice", "relation": "lives in", "object": "Oslo",
                                     "span": "I moved to Oslo.", "chunk_id": 1, "outdated": False}]}}
@@ -113,6 +125,8 @@ def test_memory_block_is_labelled_and_dated():
 
 
 def test_judge_prompts_follow_longmemeval():
+    """Checks that judge prompts use LongMemEval's wording for each question type and for abstention, reject unknown types, and that yes or no replies parse.
+    Guards against: memory answers judged with a prompt that differs from LongMemEval's, so scores cannot be compared with the paper."""
     p = mr.judge_prompt("multi-session", "Q?", "A", "resp")
     assert p.startswith("I will give you a question, a correct answer") and p.endswith("Answer yes or no only.")
     assert "Question: Q?\n\nCorrect Answer: A\n\nModel Response: resp" in p
@@ -127,6 +141,8 @@ def test_judge_prompts_follow_longmemeval():
 
 
 def test_judge_answer_with_fake_qwen(monkeypatch):
+    """Checks that judge_answer marks Canada right and France wrong with thinking off, and makes no judge call when there is no answer.
+    Guards against: the judge running with thinking on, or spending a call on a missing answer."""
     fake = mr.FakeQwen()
     monkeypatch.setattr(system, "client_for", lambda srv: fake)
     srv = {"url": "fake", "model": "qwen-fake"}
@@ -139,13 +155,18 @@ def test_judge_answer_with_fake_qwen(monkeypatch):
 
 
 def test_grade_refuses_memory_items():
+    """Checks that the label grader raises an error when given a memory item.
+    Guards against: memory answers silently counted wrong by the label grader instead of being sent to LongMemEval's judge."""
     from flotilla.label_loop import grade
     with pytest.raises(ValueError):
         grade({"task_type": "memory"}, "x")
 
 
 def test_strategy_labels_with_memory_routes(tmp_path, monkeypatch):
-    """Pool items have no Memory traces (unavailable, not wrong); LME items are graded by judge verdicts;
+    """Checks that strategy labels mark pool items unavailable on Memory routes, grade LongMemEval items from judge verdicts, and count each GRAFT build once.
+    Guards against: the GRAFT build cost for one history being counted four times, once per Memory route.
+
+    Pool items have no Memory traces (unavailable, not wrong); LME items are graded by judge verdicts;
     the GRAFT build is counted once per history."""
     from flotilla import strategy_labels
     pool = tmp_path / "pool.jsonl"
@@ -189,6 +210,8 @@ HAVE_GRAFT = (REPO / "my_method" / "agent.py").exists() and Path(mr.graft_python
 
 @pytest.mark.skipif(not HAVE_GRAFT, reason="GRAFT repo, its venv or its offline GNN checkpoint not found")
 def test_four_routes_share_one_graph_and_see_the_memory(tmp_path, monkeypatch):
+    """Checks that the four Memory routes share one cached graph per history, see the memory in every prompt, and log build cost apart.
+    Guards against: each Memory route rebuilding the same graph, or build tokens being added to the answer's token count."""
     fake = mr.FakeQwen()
     monkeypatch.setattr(system, "client_for", lambda srv: fake)
     bridge_calls = []
@@ -232,7 +255,10 @@ def test_four_routes_share_one_graph_and_see_the_memory(tmp_path, monkeypatch):
 
 @pytest.mark.skipif(not HAVE_GRAFT, reason="GRAFT repo, its venv or its offline GNN checkpoint not found")
 def test_smalltest_run_with_a_memory_config(tmp_path, monkeypatch):
-    """The path real label runs take (serve -> smalltest.run): pool items skipped, LME items answered with memory,
+    """Checks that smalltest.run with a Memory config skips pool items, answers LongMemEval items with memory, and logs the GRAFT build in graft_prepare.json.
+    Guards against: real label runs sending pool items to GRAFT or putting the answer into the router record.
+
+    The path real label runs take (serve -> smalltest.run): pool items skipped, LME items answered with memory,
     build logged in graft_prepare.json apart from the traces."""
     import argparse
     from flotilla import smalltest
@@ -257,6 +283,8 @@ def test_smalltest_run_with_a_memory_config(tmp_path, monkeypatch):
 
 
 def test_cheapest_label_uses_the_rows_own_costs():
+    """Checks that cheapest_label picks the right route with the lowest GPU-seconds on that row, uses route order on ties, and gives none if all fail.
+    Guards against: a LongMemEval row labelled fast when memory was right and cheaper on that row."""
     from flotilla.strategy_labels import cheapest_label
     lme = {"fast": {"available": True, "correct": True, "gpu_seconds": 300.0},
            "deep": {"available": True, "correct": True, "gpu_seconds": 900.0},
@@ -275,7 +303,10 @@ def test_cheapest_label_uses_the_rows_own_costs():
 
 
 def test_haiku_judge_logs_every_call_with_ids_and_cost(tmp_path):
-    """protocol-v10 addendum: Haiku judges with LongMemEval's prompt, thinking off, max_tokens 10, no sampling
+    """Checks that the Haiku judge sends LongMemEval's prompt with thinking off and max_tokens 10, and logs each call's IDs, hash and cost.
+    Guards against: a judge call with no usage log row, or a paid call made when there is no answer.
+
+    protocol-v10 addendum: Haiku judges with LongMemEval's prompt, thinking off, max_tokens 10, no sampling
     parameters; each call is logged with cost, request hash, message ID, request ID and reply hash."""
     from types import SimpleNamespace as NS
     sent = []
@@ -307,7 +338,10 @@ def test_haiku_judge_logs_every_call_with_ids_and_cost(tmp_path):
 
 
 def test_merge_keeps_legacy_pool_rows_available(tmp_path):
-    """run-03's pool rows predate the "available" field: the merge must treat a route with a verdict as available, so
+    """Checks that merging old pool labels treats a route with a verdict as available, keeps the labels, and adds per-row GPU-seconds.
+    Guards against: every run-03 pool row being labelled none because it lacks the available field.
+
+    run-03's pool rows predate the "available" field: the merge must treat a route with a verdict as available, so
     pool rows keep their labels and get per-row GPU-seconds (the first run-04-lme merge labelled all 1,450 "none")."""
     from types import SimpleNamespace as NS
     from flotilla import strategy_labels as sl
@@ -344,7 +378,10 @@ def test_merge_keeps_legacy_pool_rows_available(tmp_path):
 
 
 def test_writer_v2_and_thinking_change_the_graph_key():
-    """G41/G42 graphs never reuse G35's: the writer prompt is a build key, thinking is in the LLM label."""
+    """Checks that the writer prompt and LLM thinking change the graph build key, while user_node and log_writer_replies do not.
+    Guards against: a G41 or G42 run reusing a G35 graph built with another writer prompt or without thinking.
+
+    G41/G42 graphs never reuse G35's: the writer prompt is a build key, thinking is in the LLM label."""
     srv = {"s": {"url": "http://x/v1", "model": "qwen_w4a16"}}
     plain = mr.llm_for({"graft": {"llm_mode": "local"}}, srv, ["s"])
     think = mr.llm_for({"graft": {"llm_mode": "local", "llm_thinking": True}}, srv, ["s"])

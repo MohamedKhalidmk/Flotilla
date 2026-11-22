@@ -51,6 +51,8 @@ def make_labels(tmp_path, n=40):
 
 
 def test_load_routes_masks_costs_and_held_out_untouched(tmp_path):
+    """Checks that load orders routes cheapest first, masks memory on items without one, scales costs by wall time, and refuses held-out.
+    Guards against: the router being trained with a memory route on items that have no history."""
     labels, items = make_labels(tmp_path)
     sp, info = sr.load(labels, items, ["train", "dev"])
     assert info["routes"] == ["memory", "fast", "deep"]          # cheapest first by GPU-s per question
@@ -67,12 +69,16 @@ def test_load_routes_masks_costs_and_held_out_untouched(tmp_path):
 
 
 def test_label_index_cheapest_correct_and_none():
+    """Checks that label_index gives the cheapest correct available route, or -1 when no route is right.
+    Guards against: a label pointing at a route that was right but not available on that item."""
     correct = np.array([[1, 1, 1], [0, 1, 1], [0, 0, 0], [1, 0, 1]], float)
     mask = np.array([[1, 1, 1], [1, 1, 1], [1, 1, 1], [0, 1, 1]], bool)
     assert sr.label_index(correct, mask).tolist() == [0, 1, -1, 2]  # last: route 0 right but unavailable
 
 
 def test_argmax_and_threshold_rules_respect_masks_and_ties():
+    """Checks that masked_argmax and cheapest_above skip masked routes, prefer the cheaper route on ties, and fall back to the top score.
+    Guards against: a router picking memory on an item without a history because its score was highest."""
     mask = np.array([[0, 1, 1], [1, 1, 1], [1, 1, 1]], bool)
     score = np.array([[9.0, 1.0, 1.0], [2.0, 2.0, 1.0], [0.1, 0.3, 0.2]])
     assert sr.masked_argmax(score, mask).tolist() == [1, 0, 1]      # masked max skipped; tie -> cheaper route
@@ -82,6 +88,8 @@ def test_argmax_and_threshold_rules_respect_masks_and_ties():
 
 
 def test_evaluate_refuses_unavailable_and_counts(tmp_path):
+    """Checks that evaluate raises on a pick of an unavailable route and reports accuracy, pick counts, per-source results and output tokens.
+    Guards against: an evaluation that silently scores memory picks on items with no memory."""
     labels, items = make_labels(tmp_path)
     dev = sr.load(labels, items, ["train", "dev"])[0]["dev"]
     with pytest.raises(AssertionError):
@@ -92,6 +100,8 @@ def test_evaluate_refuses_unavailable_and_counts(tmp_path):
 
 
 def test_best_fixed_oracle_keep_rule_and_choice(tmp_path):
+    """Checks the best fixed route choice, the oracle picks, the keep rule's thresholds, and picking tau by the keep rule or by accuracy.
+    Guards against: memory being chosen as the best fixed route although it is not available on every item."""
     labels, items = make_labels(tmp_path)
     sp = sr.load(labels, items, ["train", "dev"])[0]
     assert sr.best_fixed(sp["train"]) == 2                          # train accuracy: deep; memory is not on every item
@@ -115,6 +125,8 @@ def test_best_fixed_oracle_keep_rule_and_choice(tmp_path):
 
 
 def test_lr_and_knn_never_pick_masked_routes(tmp_path):
+    """Checks that the logistic regression and kNN routers never pick a masked route at any tau, and pick memory where it exists and deep elsewhere.
+    Guards against: a trained router sending items without a history to the memory route."""
     labels, items = make_labels(tmp_path)
     sp = sr.load(labels, items, ["train", "dev"])[0]
     tr, dev = sp["train"], sp["dev"]
@@ -131,6 +143,8 @@ def test_lr_and_knn_never_pick_masked_routes(tmp_path):
 
 
 def test_knn_none_neighbour_and_missing_route_prior():
+    """Checks that a kNN neighbour no route solved gives zero for every route, and that a route the neighbour lacks falls back to its training accuracy.
+    Guards against: a route missing on the neighbour being scored as if the neighbour had answered with it."""
     train = types.SimpleNamespace(correct=np.array([[0, 0], [1, 1], [0, 1]], float),
                                   mask=np.array([[1, 1], [0, 1], [0, 1]], bool), routes=["m", "d"])
     x, xt = np.array([[1.0, 0.0]]), np.array([[1.0, 0.0], [0.0, 1.0], [0.6, 0.8]])
@@ -141,6 +155,8 @@ def test_knn_none_neighbour_and_missing_route_prior():
 
 
 def test_train_and_evaluate_cheap_routers_end_to_end(tmp_path, monkeypatch):
+    """Checks that training bge_lr and kNN with fake embeddings writes their meta files and a dev table with fixed and oracle rows, and no held-out table.
+    Guards against: a held-out table being written by a train run, or a fixed memory row when memory is not on every item."""
     labels, items = make_labels(tmp_path)
     monkeypatch.setattr(sr, "embed", lambda texts, device=None: np.array(
         [[1.0, 0.0] if t.startswith("alpha") else [0.0, 1.0] for t in texts], np.float32))
@@ -161,7 +177,10 @@ def test_train_and_evaluate_cheap_routers_end_to_end(tmp_path, monkeypatch):
 
 
 def test_per_item_costs_pick_the_cheaper_route_on_each_row():
-    """2026-11-21: 'cheapest' is per item when the labels carry per-row gpu_seconds. Columns are the global order
+    """Checks that label_index, cheapest_above and masked_argmax use per-row GPU costs when given, and the global route order on ties or without them.
+    Guards against: a LongMemEval row labelled fast at 300 GPU-seconds when memory was right at 40.
+
+    2026-11-21: 'cheapest' is per item when the labels carry per-row gpu_seconds. Columns are the global order
     (fast cheapest on average, then deep, then memory); row 0 is LongMemEval-like (full-history fast costs 300 GPU-s,
     memory 40), row 1 is pool-like (fast 2, memory unavailable)."""
     correct = np.array([[1, 1, 1], [1, 1, 0]], float)
@@ -178,6 +197,8 @@ def test_per_item_costs_pick_the_cheaper_route_on_each_row():
 
 
 def test_load_reads_row_costs_and_task_text(tmp_path):
+    """Checks that load reads per-row gpu_seconds and a row's own task text, and that labels and oracle picks use those row costs.
+    Guards against: per-row costs in merged labels being ignored in favour of the job-wide average."""
     labels, items = make_labels(tmp_path)
     d = tmp_path / "graded"
     rows = [json.loads(l) for l in open(d / "per_question.jsonl") if not l.startswith('{"id": "h_broken"')]
@@ -202,6 +223,8 @@ def test_load_reads_row_costs_and_task_text(tmp_path):
 
 
 def test_item_text_longmemeval_reads_the_question(tmp_path):
+    """Checks that item_text gives a LongMemEval item's history mark and question without the session text, and a pool item's task unchanged.
+    Guards against: the router embedding the whole chat history, or the word memory, instead of the question."""
     from flotilla.strategy_router import HISTORY_MARK, item_text, read_texts
     lme = {"item_id": "lme-1", "task": "memory", "question": "What degree did I graduate with?", "question_date": "2023/05/30",
            "sessions": [[{"role": "user", "content": "zz-session-text"}]]}
@@ -215,6 +238,8 @@ def test_item_text_longmemeval_reads_the_question(tmp_path):
 
 
 def test_train_subset_nested_stratified_and_seeded():
+    """Checks that train_subset keeps source proportions, nests smaller fractions inside larger ones, keeps ID order, and changes only with the seed.
+    Guards against: learning-curve subsets that are not nested, so a bigger subset drops questions a smaller one had."""
     from flotilla.strategy_router import train_subset
     rows = {f"m{i}": {"source": "math", "task_type": "math"} for i in range(40)}
     rows.update({f"l{i}": {"source": "longmemeval", "task_type": "memory"} for i in range(20)})
@@ -228,7 +253,10 @@ def test_train_subset_nested_stratified_and_seeded():
 
 
 def test_lr_router_pickles_when_run_with_dash_m():
-    """Fir job 5124549 failed to pickle LRRouter when the module ran as __main__ (python -m)."""
+    """Checks that LRRouter can be pickled when strategy_router runs as python -m.
+    Guards against: saving the trained router failing because its class was defined under __main__.
+
+    Fir job 5124549 failed to pickle LRRouter when the module ran as __main__ (python -m)."""
     import subprocess, sys
     from pathlib import Path
     root = Path(__file__).resolve().parent.parent

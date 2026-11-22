@@ -89,6 +89,8 @@ def state(item, policy, row=None, p=None, pick=None):
 # ---------------------------------------------------------------- masks and stop
 
 def test_masks_memory_repeats_stop_and_budgets():
+    """Checks that the policy mask hides Memory on pool questions, limits repeats, allows stop only after a step, and enforces GPU and step budgets.
+    Guards against: the RL policy running the same greedy route twice or going past max_gpu_s on one question."""
     pol = rl.Policy(cfg(), {r: COST.get(r, 25.0) for r in rl.ROUTES}, rl.sampled_routes())
     assert rl.sampled_routes() == {"vote", "vote_tools", "vote_memory"}
     # pool question: no Memory route, no stop before the first step
@@ -128,6 +130,8 @@ def test_masks_memory_repeats_stop_and_budgets():
 
 
 def test_untrained_policy_starts_from_the_supervised_pick_and_stops_on_accept():
+    """Checks that an untrained policy takes the supervised pick first, stops after an accept, and moves to the best route after a reject.
+    Guards against: a new policy ignoring the supervised pick, or stopping on an answer the verifier rejected."""
     pol = rl.Policy(cfg(), {r: COST.get(r, 25.0) for r in rl.ROUTES}, rl.sampled_routes())
     p = np.zeros(rl.R)
     p[rl.ROUTES.index("vote")], p[rl.ROUTES.index("deep")], p[rl.ROUTES.index("fast")] = 0.99, 0.6, 0.9
@@ -144,6 +148,8 @@ def test_untrained_policy_starts_from_the_supervised_pick_and_stops_on_accept():
 
 
 def test_update_moves_q_towards_targets_and_save_load(tmp_path):
+    """Checks that repeated updates pull the Q-value toward the target, and that a saved policy loads with the same Q-values and update count.
+    Guards against: a resumed run starting from a policy whose weights or update count were lost on save."""
     pol = rl.Policy(cfg(), {r: COST.get(r, 25.0) for r in rl.ROUTES}, rl.sampled_routes())
     st = state(pool_item(), pol, pick="fast")
     psi = pol.features(st)
@@ -157,6 +163,8 @@ def test_update_moves_q_towards_targets_and_save_load(tmp_path):
 
 
 def test_gpu_clock_shares_time_between_steps(monkeypatch):
+    """Checks that GpuClock splits GPU time equally between steps running at the same time and counts time with no step as idle.
+    Guards against: two parallel steps each being charged the full wall time."""
     t = [0.0]
     monkeypatch.setattr(rl.time, "monotonic", lambda: t[0])
     c = rl.GpuClock(gpus=1)
@@ -175,6 +183,8 @@ def test_gpu_clock_shares_time_between_steps(monkeypatch):
 # ---------------------------------------------------------------- the real loop with fake Qwen
 
 def test_every_route_reaches_the_model_with_its_own_settings(monkeypatch):
+    """Checks that each route runs through the real loop with its own sample count, and the GRAFT build is charged only on the step that asks.
+    Guards against: vote running one sample instead of five, or the graph build being charged on every Memory route step."""
     answers = {("q00", r): GOLD for r in rl.ROUTES} | {("lme-1", r): "Carla" for r in rl.ROUTES}
     fake = rl.replay_qwen(answers)
     monkeypatch.setattr(system, "client_for", lambda srv: fake)
@@ -205,6 +215,8 @@ def _ctx(labels, items, prior_spec, c, tmp_path, names=("train", "dev")):
 
 
 def test_chain_reward_time_penalty_targets_and_log(tmp_path, monkeypatch):
+    """Checks that a chain moves to vote after a rejected fast step and logs steps, GPU-seconds, the reward with the alpha time penalty, and the Q targets.
+    Guards against: a wrong final answer earning anything other than minus the time penalty."""
     labels, items, _, _ = make_fixture(tmp_path)
     spec = write_priors(tmp_path / "pri.jsonl", TRAIN + DEV, {"fast": 0.9, "vote": 0.95, "tools": 0.1, "deep": 0.1,
                                                                "deep_tools": 0.1, "vote_tools": 0.1}, "fast")
@@ -240,6 +252,8 @@ def test_chain_reward_time_penalty_targets_and_log(tmp_path, monkeypatch):
 
 
 def test_final_rules():
+    """Checks that final_answer returns the last accepted answer, the last answer, or the vote winner as each rule says, and None when there are no steps.
+    Guards against: a chain under the last_accept rule returning a rejected answer when an earlier step was accepted."""
     steps = [{"answer": "3", "verdict": "accept"}, {"answer": "4", "verdict": "reject"}]
     assert rl.final_answer(steps, "last_accept", "math") == ("3", 0)
     assert rl.final_answer(steps, "last", "math") == ("4", 1)
@@ -255,6 +269,8 @@ def _live_args(labels, items, pool, out):
 
 
 def test_train_resume_and_config_guard(tmp_path, monkeypatch):
+    """Checks that training resumes after a job killed mid-write without redoing finished epochs, refuses a changed alpha or held-out IDs, and logs compute.
+    Guards against: a resumed run repeating epoch 0 or continuing with a different alpha than the run it extends."""
     labels, items, pool, _ = make_fixture(tmp_path)
     fake = rl.replay_qwen({(q, r): GOLD for q in TRAIN for r in ROUTES6})
     monkeypatch.setattr(system, "client_for", lambda srv: fake)
@@ -286,6 +302,8 @@ def Counter_(xs):
 
 
 def test_held_out_never_read_without_the_flag(tmp_path):
+    """Checks that the held-out split is refused without the flag, its lines are never parsed, and a held-out item cannot be run as a chain.
+    Guards against: the RL router reading or training on held-out questions."""
     labels, items, _, _ = make_fixture(tmp_path)
     with pytest.raises(SystemExit, match="held-out"):
         rl.load_data(labels, items, ["train", "held_out"])
@@ -298,6 +316,8 @@ def test_held_out_never_read_without_the_flag(tmp_path):
 
 
 def test_exclusions_from_the_audit(tmp_path):
+    """Checks that exclusions list only the audit's wrong-gold questions, round-trip through a file, and stop when the two audit files disagree.
+    Guards against: a model-wrong question excluded as wrong gold, which would change the beyond-oracle count."""
     _, _, _, audit = make_fixture(tmp_path)
     assert rl.build_exclusions(audit) == [(NONE_WRONG_GOLD, "wrong gold")]
     rl.main(["exclusions", "--audit", str(audit), "--out", str(tmp_path / "ex.txt")])
@@ -309,6 +329,8 @@ def test_exclusions_from_the_audit(tmp_path):
 
 
 def test_beyond_oracle_counts_only_questions_every_route_missed_minus_wrong_gold(tmp_path):
+    """Checks that beyond_oracle counts only solved questions that every fixed route missed, and leaves out those with a wrong gold.
+    Guards against: a solved wrong-gold question being reported as beating the oracle."""
     labels, items, _, _ = make_fixture(tmp_path)
     data = rl.load_data(labels, items, ["train", "dev"])
     chains = [{"item_id": NONE_MODEL, "correct": True}, {"item_id": NONE_WRONG_GOLD, "correct": True},
@@ -321,7 +343,10 @@ def test_beyond_oracle_counts_only_questions_every_route_missed_minus_wrong_gold
 
 
 def test_evaluate_on_dev_reports_beyond_oracle_with_chains(tmp_path, monkeypatch):
-    """Vote's first run gives no answer (rejected); its second run (sampled) finds the gold on the two dev questions
+    """Checks that evaluate on dev writes chains, a table and a beyond-oracle report when a second vote run solves questions every fixed route missed.
+    Guards against: the beyond-oracle table counting a wrong-gold question, or losing the repeat number of a sampled step.
+
+    Vote's first run gives no answer (rejected); its second run (sampled) finds the gold on the two dev questions
     every fixed route missed. One has a wrong gold: counted 1, excluded 1. Real pool grader (label_loop.grade)."""
     labels, items, pool, audit = make_fixture(tmp_path)
     out = tmp_path / "rl"
@@ -352,6 +377,8 @@ def test_evaluate_on_dev_reports_beyond_oracle_with_chains(tmp_path, monkeypatch
 
 
 def test_dry_run_end_to_end(tmp_path, monkeypatch):
+    """Checks that the dry-run command writes a table marked DRY RUN, the wrong-gold exclusions, and six train and six eval chains.
+    Guards against: dry-run output that could be mistaken for a real result."""
     labels, items, _, _ = make_fixture(tmp_path)
     monkeypatch.setattr(system, "client_for", system.client_for)      # restored after the dry run patches it
     out = tmp_path / "dry"
@@ -364,6 +391,8 @@ def test_dry_run_end_to_end(tmp_path, monkeypatch):
 
 
 def test_estimate_from_labels(tmp_path):
+    """Checks that the estimate command counts train questions per epoch, gives positive GPU-hours, and simulates the dev questions.
+    Guards against: a compute estimate that leaves out the dev questions or reports zero GPU-hours."""
     labels, items, _, _ = make_fixture(tmp_path)
     rl.main(["estimate", "--labels", labels, "--items", *items, "--out", str(tmp_path / "est"), "--epochs", "2"])
     est = json.loads((tmp_path / "est" / "estimate.json").read_text())

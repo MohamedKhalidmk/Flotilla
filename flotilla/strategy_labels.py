@@ -82,11 +82,41 @@ def gpu_seconds(dirs: list[str]) -> float:
 
 
 def load_verdicts(path: str | None) -> dict[tuple[str, str], bool]:
-    out = {}
+    """Judge verdicts keyed by (item, route). Stops, naming them, if any (item, route) has more than one verdict:
+    a second verdict would silently replace the first."""
+    out, dup = {}, set()
     if path:
         for line in open(path):
             r = json.loads(line)
-            out[(r["item_id"], r["route"])] = bool(r["correct"])
+            k = (r["item_id"], r["route"])
+            if k in out:
+                dup.add(k)
+            out[k] = bool(r["correct"])
+    if dup:
+        raise SystemExit(f"{len(dup)} (item, route) pairs have more than one judge verdict: " + name_pairs(sorted(dup)))
+    return out
+
+
+def name_pairs(pairs: list[tuple[str, str]]) -> str:
+    """Every (item, route) pair, grouped by route: 'memory: lme-1, lme-2; deep: lme-3'."""
+    by = {}
+    for i, s in pairs:
+        by.setdefault(s, []).append(i)
+    return "; ".join(f"{s}: {', '.join(ids)}" for s, ids in by.items())
+
+
+def verdict_problems(memory_ids: list[str], answered: set[str], routes: list[str],
+                     verdicts: dict[tuple[str, str], bool]) -> list[str]:
+    """Every LongMemEval question must have exactly one judge verdict per route (duplicates stop load_verdicts).
+    Returns one message per problem, naming every item: questions with no answer in some route, then answers with
+    no verdict."""
+    out = []
+    unanswered = [i for i in memory_ids if i not in answered]
+    if unanswered:
+        out.append(f"{len(unanswered)} LongMemEval questions have no answer in every route: {', '.join(unanswered)}")
+    missing = [(i, s) for i in memory_ids if i in answered for s in routes if (i, s) not in verdicts]
+    if missing:
+        out.append(f"{len(missing)} LongMemEval answers have no judge verdict: {name_pairs(missing)}")
     return out
 
 
@@ -139,10 +169,11 @@ def main() -> None:
     jobs = [(i, s) for i in ids for s in required[group(i)] if group(i) == "pool"]
     with ProcessPoolExecutor(a.workers) as ex:
         verdicts = dict(zip(jobs, ex.map(_grade, [(pool[i], traces[s][i]["final_answer"]) for i, s in jobs], chunksize=8)))
-    missing = [(i, s) for i in ids if group(i) == "memory" for s in required["memory"] if (i, s) not in verdicts_in]
-    if missing:
-        raise SystemExit(f"{len(missing)} LongMemEval answers have no judge verdict (e.g. {missing[:3]}); "
-                         "run python -m flotilla.memory_route judge first")
+    memory_ids = sorted(i for i in pool if group(i) == "memory") if required["memory"] else []
+    problems = verdict_problems(memory_ids, set(ids), required["memory"], verdicts_in)
+    if problems:
+        raise SystemExit("merge stopped:\n" + "\n".join(problems) + "\n(run python -m flotilla.memory_route judge, "
+                         "or rerun the missing answers, first)")
     verdicts.update({(i, s): verdicts_in[(i, s)] for i in ids if group(i) == "memory" for s in required["memory"]})
     rows, labels = [], Counter()
     with open(out / "per_question.jsonl", "w") as f:

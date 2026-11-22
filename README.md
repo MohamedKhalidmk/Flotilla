@@ -4,7 +4,7 @@
 
 <h1 align="center">Flotilla</h1>
 
-<p align="center"><b><a href="docs/reference/PROTOCOL.md">Protocol</a> · <a href="docs/reference/REGISTRY.md">Registry</a> · <a href="docs/reference/run_log.md">Run log</a></b></p>
+<p align="center"><b><a href="docs/reference/PROTOCOL.md">Protocol</a> · <a href="docs/reference/REGISTRY.md">Registry</a> · <a href="docs/reference/run_log.md">Run log</a> · <a href="docs/reference/TESTS.md">Tests</a></b></p>
 
 <p align="center"><b>One small, quantized open model that picks how to think, per question.</b><br>
 A compound system on a few H100s, measured on the same benchmarks and settings as published quantized results.</p>
@@ -133,7 +133,7 @@ Index and rules for adding a test: [`experiments/INDEX.md`](experiments/INDEX.md
 | `experiments/` | Numbered tests: README, config, runs, table, figure; `legacy/` for results no decision rests on |
 | `results/` | `tables/` (copies of every test table) and `figures/` (charts drawn from them) |
 | `reports/` | Leakage checks (`leakage/`: the router pool and LongMemEval, which the labels rest on) |
-| `docs/` | `reference/` (PROTOCOL, REGISTRY, run log, PROMPTS), `session/` (handoff, status, working setup, project history; the same in GRAFT), `design/` (designs, theme, chart script), `diagrams/` |
+| `docs/` | `reference/` (PROTOCOL, REGISTRY, run log, PROMPTS, TESTS), `session/` (handoff, status, working setup, project history; the same in GRAFT), `design/` (designs, theme, chart script), `diagrams/` |
 | `scripts/` | Cluster setup and job scripts: `trillium/`, `nibi/`, `fir/`, `mac/` |
 | `notes/` | Research behind the protocol |
 | `tests/` | Unit tests for tools and the system loop |
