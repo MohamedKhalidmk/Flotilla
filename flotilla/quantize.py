@@ -1,3 +1,4 @@
+# Sources: gptq, llm-compressor, cql, ultrachat, qwen3.8 (docs/reference/REFERENCES.md)
 """Quantize one model with llm-compressor (protocol 4.1: 4-bit W4A16 GPTQ and 8-bit W8A8 FP8).
 
     python -m flotilla.quantize --model Qwen/Qwen3.8-27B --scheme w4a16_gptq --out $SCRATCH/flotilla/quant/qwen-w4a16

@@ -1,3 +1,4 @@
+# Sources: longmemeval, memoryagentbench, graft, goat, t-rex, bge-small, anthropic-sdk, claude-haiku (docs/reference/REFERENCES.md)
 """Memory routes: GRAFT facts from the question's own history, then a base route through the normal Flotilla loop.
 
     Memory            = Fast        + memory
@@ -186,6 +187,21 @@ def sessions_to_chunks(item: dict, chunk_tokens: int = 4096) -> tuple[list[str],
             chunks.append(f"[Chat session {sid}, date {date}{part}]\n" + "\n".join(piece))
             cmap.append({"session_id": sid, "date": date, "part": k + 1, "parts": len(pieces)})
     return chunks, cmap
+
+
+def evidence_shown(item: dict, fact_ids: list[str], graph: dict, chunk_tokens: int = 4096) -> bool | None:
+    """Whether any fact shown comes from one of the item's answer sessions (LongMemEval answer_session_ids), through
+    the fact's provenance chunk and sessions_to_chunks' chunk map. None when the item names no answer session."""
+    want = set(item.get("answer_session_ids") or [])
+    if not want:
+        return None
+    _, cmap = sessions_to_chunks(item, chunk_tokens)
+    chunk = {n["id"]: (n.get("provenance") or {}).get("chunk_id") for n in graph["nodes"] if n.get("type") == "Fact"}
+    for f in fact_ids:
+        c = chunk.get(f)
+        if c is not None and 0 <= c < len(cmap) and cmap[c]["session_id"] in want:
+            return True
+    return False
 
 
 # ------------------------------------------------------------------ GRAFT config, keys, paths

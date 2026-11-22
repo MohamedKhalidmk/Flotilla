@@ -1,3 +1,4 @@
+# Sources: bge-small, scikit-learn (docs/reference/REFERENCES.md)
 """Router B baseline: frozen question embeddings (bge-small) + logistic regression, one model per head.
 
 Same data, labels and held-out 10% as router_b.py (ModernBERT-base fine-tune), so the two compare directly:

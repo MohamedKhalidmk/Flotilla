@@ -1,3 +1,4 @@
+# Sources: semantic-router, vela3 (docs/reference/REFERENCES.md)
 """Router A: the vLLM Semantic Router's decision model (vllm-sr/vela3-fast, Apache-2.0) classifies each task's
 type; a fixed decision table maps task type to solver models and Python tools (protocol 4.5).
 

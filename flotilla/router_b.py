@@ -1,3 +1,4 @@
+# Sources: modernbert (docs/reference/REFERENCES.md)
 """Router B: our own classifier (ModernBERT-base) trained on which model answers which non-test question
 correctly (protocol 4.5, 5). Two heads on one encoder:
   task_type  (softmax over the router's task types)

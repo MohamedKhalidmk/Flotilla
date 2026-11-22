@@ -1,3 +1,4 @@
+# Sources: modernbert, bge-small, scikit-learn (docs/reference/REFERENCES.md)
 """test-04 supervised strategy routers: pick one route per question, straight away, from the question text alone.
 
     python -m flotilla.strategy_router train    --labels DIR --items GLOB [GLOB ...] --out DIR [--routers label success bge_lr knn]

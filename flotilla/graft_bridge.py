@@ -1,3 +1,4 @@
+# Sources: graft (docs/reference/REFERENCES.md)
 """GRAFT side of the Memory routes. Runs inside GRAFT's own environment, never Flotilla's:
 
     $GRAFT_PYTHON flotilla/graft_bridge.py BRIDGE_IN.json BRIDGE_OUT.jsonl

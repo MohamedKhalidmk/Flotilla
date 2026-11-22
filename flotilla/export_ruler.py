@@ -1,3 +1,4 @@
+# Sources: ruler, lm-eval, squad, hotpotqa, paul-graham-essays (docs/reference/REFERENCES.md)
 """RULER items (protocol 1, row 9): lm-eval `ruler` group, 13 tasks, max_seq_lengths 32768 and 65536, 50 per task per length.
 
 lm-eval hard-codes num_samples=500 in every RULER generator and its metadata has no sample-count option, so this script

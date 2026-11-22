@@ -4,7 +4,7 @@
 
 <h1 align="center">Flotilla</h1>
 
-<p align="center"><b><a href="docs/reference/PROTOCOL.md">Protocol</a> · <a href="docs/reference/REGISTRY.md">Registry</a> · <a href="docs/reference/run_log.md">Run log</a> · <a href="docs/reference/TESTS.md">Tests</a></b></p>
+<p align="center"><b><a href="docs/reference/PROTOCOL.md">Protocol</a> · <a href="docs/reference/REGISTRY.md">Registry</a> · <a href="docs/reference/run_log.md">Run log</a> · <a href="docs/reference/TESTS.md">Tests</a> · <a href="docs/reference/REFERENCES.md">References</a></b></p>
 
 <p align="center"><b>One small, quantized open model that picks how to think, per question.</b><br>
 A compound system on a few H100s, measured on the same benchmarks and settings as published quantized results.</p>

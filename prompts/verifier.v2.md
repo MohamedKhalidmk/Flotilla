@@ -8,6 +8,8 @@ output_schema: {"verdict": "accept|reject", "checks": [{"name": string, "passed"
 
 # Verifier (v2)
 
+Sources: original (docs/reference/REFERENCES.md)
+
 The verifier is **tool-first**: deterministic checks run before any model is asked.
 
 ## Deterministic checks (no LLM)

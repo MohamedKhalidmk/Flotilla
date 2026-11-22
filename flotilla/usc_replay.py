@@ -1,3 +1,4 @@
+# Sources: usc, longmemeval (docs/reference/REFERENCES.md)
 """F36 replay: apply the USC tie rule to saved Vote samples, without sampling again.
 
     python -m flotilla.usc_replay --traces DIR [DIR ...] --items memory_items.jsonl --ids ID [ID ...] \

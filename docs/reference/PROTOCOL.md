@@ -124,8 +124,43 @@ Rule: **use the router with higher routing accuracy on the dev subsets**; ties g
 One JSON line per question in `runs/<run_id>/trace.jsonl`:
 `run_id, protocol_version, prompt_versions, benchmark, item_id, split (dev/test), router {decision, scores, latency}, tools [{name, input, output, ok}], models [{name, quant, samples [{text, final_answer, tokens_in, tokens_out, latency}]}], retrieval {method, items, latency}, vote {candidates, winner}, verifier {verdict, reason}, final_answer, correct, error_stage, tokens_total, gpu_seconds, wall_seconds`.
 
-Error stages (assigned automatically where possible, by Claude otherwise):
-router_wrong_model (another model's sample was right), retrieval_miss, reasoning_error, vote_wrong (a correct sample existed but lost), verifier_false_accept, verifier_false_reject, format_parse_failure, timeout_or_oom.
+### 7.1 Error stages (set 2026-11-22; `flotilla/scoring.error_stage`, tests in `tests/test_error_stages.py`)
+
+Every scored trace gets exactly one `error_stage`: the first rule below that applies, in pipeline order (the earliest
+failure is the cause). "Right" and "wrong" use the benchmark's grader; "samples" are the solver's samples (the
+verifier retry, the LLM check and the USC tie call are not samples).
+
+| # | Stage | Rule | Needs gold |
+|---|---|---|---|
+| 0 | none | the final answer is right | yes |
+| 1 | timeout_or_oom | no final answer, and every sample crashed with a timeout, out-of-memory or dead-engine error (or the run tagged the crash) | no |
+| 2 | token_cap | no final answer, and a model call stopped at the token cap (finish reason "length") | no |
+| 3 | format_parse_failure | no final answer otherwise (the model ended without a parseable JSON block) | no |
+| 4 | verifier_false_reject | the verifier rejected the first answer, which was right, and the retry's answer is wrong | yes |
+| 5 | vote_wrong | two or more samples, at least one right, and the vote's winner wrong | yes |
+| 6 | router_wrong_model | as 5, but with samples from two or more models and the winner from a model none of whose samples was right | yes |
+| 7 | retrieval_miss | a Memory route (GRAFT facts shown), not an abstention question, and no fact shown comes from the question's evidence (LongMemEval: its answer sessions, through each fact's source chunk) | yes |
+| 8 | verifier_false_accept | the final answer was accepted after a check that tests correctness (public tests, instruction constraints, the LLM check) passed it | yes |
+| 9 | reasoning_error | anything else: every graded sample wrong with the information present (the whole history, or evidence shown) and no correctness check to catch it | yes |
+
+Notes on the rules:
+- Form-only checks (maths answer parses, option letter in range) cannot see a wrong value, so an accepted wrong maths or
+  letter answer is reasoning_error, not verifier_false_accept.
+- A sample that no grader can judge (a LongMemEval Vote sample whose text no judge verdict covers) is "ungraded"; a
+  stage that needs a right sample (5, 6) is then not claimed, and the trace carries the flag `samples_ungraded`.
+- Secondary flags (every one that applies, next to the stage): `verifier_rejected`, `retry_used`, `vote_tie` (no two
+  answers match), `tool_error` (a python_exec or sympy call failed), `retrieval_fallback`, `context_truncated`
+  (section 11), `samples_ungraded`.
+- **Added:** `token_cap`, split from format_parse_failure: an answer cut at the token cap and an answer that ended
+  without the JSON block have different fixes (a larger cap or shorter thinking, against prompt or parser changes).
+- **Proposed, not yet added:** `context_truncated` as a stage of its own once a history is cut (section 11), so that
+  base routes on long histories are not called reasoning errors when the evidence was dropped; and splitting
+  reasoning_error on Memory routes into evidence shown but misread against evidence shown but outranked by an
+  outdated fact, once SUPERSEDES links are traced per fact.
+
+Live tagging (flotilla-deploy, no gold): only timeout_or_oom, token_cap and format_parse_failure are stages a deployed
+system can set itself. It can also record, as signals rather than stages, `verifier_rejected`, `retry_used`,
+`vote_tie`, `tool_error` and `retrieval_fallback`. Every other stage needs the gold answer or the gold evidence.
 
 ## 8. Compute accounting
 

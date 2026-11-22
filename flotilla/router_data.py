@@ -1,3 +1,4 @@
+# Sources: gsm8k, math, aime-1983-2024, mmlu-pro, rlvr-ifeval, livecodebench (docs/reference/REFERENCES.md)
 """Router B training pool (protocol 5): non-test questions with gold answers, from sources disjoint from the
 test sets by split, year or release date. A leakage check (flotilla.leakage) runs before training and
 drops anything flagged.

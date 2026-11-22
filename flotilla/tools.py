@@ -1,3 +1,4 @@
+# Sources: math-verify, sympy (docs/reference/REFERENCES.md)
 """Python tools the router can send work to (protocol decision 6): exact checks instead of model guesses.
 
 sympy_check   parse and compare math answers, evaluate expressions

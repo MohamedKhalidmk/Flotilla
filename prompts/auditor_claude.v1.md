@@ -8,6 +8,8 @@ output_schema: {"correct": boolean, "error_stage": "none|router_wrong_model|retr
 
 # Auditor prompt (v1)
 
+Sources: original (docs/reference/REFERENCES.md)
+
 ## System
 You audit one answer from an AI system. You are given the task, the gold answer, the official grader's verdict, and the system's full trace (router decision, tools, every model sample, retrieval, vote, verifier).
 The official grader's verdict is final for correctness; you explain it.

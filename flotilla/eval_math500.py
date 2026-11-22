@@ -1,3 +1,4 @@
+# Sources: math500, math-verify (docs/reference/REFERENCES.md)
 """MATH-500 with vLLM offline (protocol 1.3 and rule 4.1): 0-shot, chat template, greedy, math-verify scoring.
 
     python -m flotilla.eval_math500 --model <path or id> --name qwen-w4a16 --max-tokens 131072 --tp 1

@@ -1,3 +1,4 @@
+# Sources: ultrachat (docs/reference/REFERENCES.md)
 """Write the W4A16 calibration text (flotilla/quantize.py: HuggingFaceH4/ultrachat_200k train_sft[:512]) as a
 leakage-check pool: one row per message, {id, source, task}, so the 13-gram and embedding checks see every turn.
 

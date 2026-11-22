@@ -6,8 +6,10 @@ from dataclasses import asdict, dataclass, field
 from pathlib import Path
 from typing import Any
 
+# Rules and order: PROTOCOL.md section 7 and flotilla/scoring.error_stage. token_cap (proposed 2026-11-22) splits
+# "no final answer because a call hit the token cap" from format_parse_failure (ended without the JSON block).
 ERROR_STAGES = ("none", "router_wrong_model", "retrieval_miss", "reasoning_error", "vote_wrong",
-                "verifier_false_accept", "verifier_false_reject", "format_parse_failure", "timeout_or_oom")
+                "verifier_false_accept", "verifier_false_reject", "format_parse_failure", "token_cap", "timeout_or_oom")
 
 
 @dataclass

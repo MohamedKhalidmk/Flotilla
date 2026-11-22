@@ -1,3 +1,4 @@
+# Sources: usc, self-consistency, openai-sdk (docs/reference/REFERENCES.md)
 """Flotilla orchestration (docs/reference/PROMPTS.md flow): router -> solvers (N samples, tool loop) -> vote ->
 cross-check (optional) -> verifier -> final answer, with a full trace per question.
 

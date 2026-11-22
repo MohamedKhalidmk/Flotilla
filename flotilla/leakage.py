@@ -1,3 +1,4 @@
+# Sources: ngram-leakage, bge-small, gsm8k, math500, matharena, gpqa, ifeval, livecodebench (docs/reference/REFERENCES.md)
 """Leakage check (PROTOCOL.md section 5): flag any training/corpus item that shares a 13-word sequence with,
 or has embedding cosine similarity >= 0.95 to, any test item. Flagged items are dropped.
 

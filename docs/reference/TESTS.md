@@ -1,6 +1,21 @@
 # Tests (Flotilla)
 
-95 tests in 12 files, in plain words. Generated from each test's docstring by `scripts/make_tests_doc.py`; to change a line, edit the docstring and rerun the script. `tests/test_tests_doc.py` fails if a test is missing here or a line is out of date. The Gaps section at the end is written by hand.
+108 tests in 14 files, in plain words. Generated from each test's docstring by `scripts/make_tests_doc.py`; to change a line, edit the docstring and rerun the script. `tests/test_tests_doc.py` fails if a test is missing here or a line is out of date. The Gaps section at the end is written by hand.
+
+## [tests/test_error_stages.py](../../tests/test_error_stages.py)
+
+| Test | What it checks | Guards against |
+|---|---|---|
+| `test_correct_is_none` | Checks that a right final answer gets stage none, whatever else happened. | right answers counted as errors in the stage table. |
+| `test_timeout_or_oom` | Checks that a question whose every sample crashed with a timeout or out-of-memory error, and so has no answer, is timeout_or_oom. | crashes counted as the model's format failures. |
+| `test_token_cap_and_format_parse_failure` | Checks that no final answer is token_cap when a call stopped at the token limit, and format_parse_failure otherwise; both are live stages. | answers cut at max_tokens mixed with answers that ended without the JSON block. |
+| `test_verifier_false_reject` | Checks that a right first answer rejected by the verifier, followed by a wrong retry, is verifier_false_reject. | the verifier's wrong rejection being blamed on the model's reasoning. |
+| `test_vote_wrong_and_tie_flag` | Checks that a wrong vote winner when some sample was right is vote_wrong, and that five different answers set the vote_tie flag. | a lost right sample counted as a reasoning error. |
+| `test_router_wrong_model` | Checks that with two solver models, a winner from the model whose samples were all wrong is router_wrong_model. | losing to the other model being reported as an ordinary vote loss. |
+| `test_retrieval_miss_only_on_memory_routes_with_evidence_missing` | Checks that a wrong Memory-route answer is retrieval_miss when no gold evidence was shown, reasoning_error when it was, and never retrieval_miss on an abstention question. | blaming retrieval for a question with nothing to retrieve, or for a miss with the evidence in hand. |
+| `test_verifier_false_accept_needs_a_correctness_check` | Checks that a wrong answer accepted after a correctness check (public tests, constraints, LLM check) is verifier_false_accept, while one accepted after a form-only check is reasoning_error. | blaming the verifier for maths answers it can only check for form. |
+| `test_reasoning_error_and_ungraded_samples` | Checks that all samples wrong with nothing else to blame is reasoning_error, and that samples no grader can judge set samples_ungraded instead of vote_wrong. | a LongMemEval vote called right or wrong on samples nobody judged. |
+| `test_flags_and_stage_lists` | Checks the tool_error and retrieval_fallback flags, and that every stage the tagger returns is in the rule list, with only gold-free stages marked live. | a stage name drifting from trace.py's ERROR_STAGES, or a gold-dependent stage offered to flotilla-deploy. |
 
 ## [tests/test_formats.py](../../tests/test_formats.py)
 
@@ -69,6 +84,14 @@ Memory routes (flotilla/memory_route.py): availability, GRAFT documents, cache k
 | `test_ask_for_more_adds_pool_facts_within_the_limits` | Checks that with ask_more on, a NEED MORE MEMORIES reply adds the next pool batch and asks again, up to the ask limit. | G40 on LongMemEval silently answering with only the first facts, or asking forever past the limits. |
 | `test_majority_of_three_verdicts` | Checks that combine takes the majority of three verdicts per (item, route, answer), of all six when one answer sits in two folders (a tie going to the first three), keeps a missing answer wrong, and reports other counts. | one noisy Haiku verdict deciding a label (identical prompts got both yes and no), or a missing repeat passing silently. |
 | `test_judge_repeats_write_one_row_per_repeat` | Checks that judge with --repeats 2 judges every answer twice, tags rows with repeat 0 and 1, and a rerun skips rows already written. | a resumed repeat job paying twice for the same verdict, or repeats that cannot be told apart. |
+
+## [tests/test_references.py](../../tests/test_references.py)
+
+| Test | What it checks | Guards against |
+|---|---|---|
+| `test_every_named_source_is_in_references` | Checks that every key in a file's Sources line (prompts, package code, scripts, tests) is listed in docs/reference/REFERENCES.md. | a file crediting a source that the references page does not cite, link or licence. |
+| `test_every_prompt_file_names_its_source` | Checks that every prompt file in prompts/ (legacy ones aside) has a Sources line near its top, original or borrowed. | a new prompt copied from a paper without saying so. |
+| `test_reference_entries_point_at_real_files` | Checks that every repository path named in REFERENCES.md exists, and that the main borrowed-code files carry a Sources line. | a references page that credits files which were renamed or deleted. |
 
 ## [tests/test_rl_router.py](../../tests/test_rl_router.py)
 

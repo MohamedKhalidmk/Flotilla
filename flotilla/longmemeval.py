@@ -1,3 +1,4 @@
+# Sources: longmemeval (docs/reference/REFERENCES.md)
 """LongMemEval questions for labelling the Memory routes (test 04): leakage units, conversion, split, prompt tokens.
 
 Source: the authors' cleaned release, xiaowu0162/longmemeval-cleaned (MIT), downloaded on a Fir login node into

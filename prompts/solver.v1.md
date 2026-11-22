@@ -8,6 +8,8 @@ output_schema: free reasoning, then one final JSON block {"final_answer": string
 
 # Solver prompt (v1)
 
+Sources: original (docs/reference/REFERENCES.md)
+
 ## System
 You solve one task. Think step by step in plain text first. You may request a Python tool by writing a line
 `TOOL <name>: <input>` (names: sympy, python_exec, constraint_check, ocr); the result is returned to you before you continue.
