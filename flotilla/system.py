@@ -155,9 +155,24 @@ TOOL_SCHEMAS = [{"type": "function", "function": {"name": n, "description": d, "
     "type": "object", "properties": {"input": {"type": "string"}}, "required": ["input"]}}} for n, d in TOOL_FUNCS.items()]
 
 
+# A task holding a chat history: LongMemEval's history prompt (base routes) or GRAFT's memory block (Memory routes).
+HISTORY_MARKS = ("History Chats:", "MEMORY (facts that GRAFT recalled")
+
+
+def constraint_source(task: str) -> str:
+    """The text constraint_check reads its constraints from. On a task holding a chat history only the question
+    counts (from its last "Question: " line to the next blank line): instructions in old sessions ("add a P.S.", "at
+    least 500 words") are not this task's (2026-11-22: they failed 166 of 419 memory checks on Vote+Tools). A history
+    with no question line gives no constraints."""
+    if not any(m in task for m in HISTORY_MARKS):
+        return task
+    i = task.rfind("Question: ")
+    return task[i:].split("\n\n")[0] if i >= 0 else ""
+
+
 def _run_tool(tool: str, arg: str, messages: list[dict]) -> dict:
     return {"sympy": lambda a: tools.sympy_check(a), "python_exec": lambda a: tools.python_exec(a),
-            "constraint_check": lambda a: tools.constraint_check(_text(messages[-1]["content"]), a),
+            "constraint_check": lambda a: tools.constraint_check(constraint_source(_text(messages[-1]["content"])), a),
             "ocr": lambda a: {"ok": False, "output": None, "detail": "ocr tool not enabled"}}.get(
         tool, lambda a: {"ok": False, "output": None, "detail": f"unknown tool {tool}"})(arg)
 

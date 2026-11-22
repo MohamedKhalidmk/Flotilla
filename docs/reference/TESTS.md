@@ -1,6 +1,6 @@
 # Tests (Flotilla)
 
-90 tests in 12 files, in plain words. Generated from each test's docstring by `scripts/make_tests_doc.py`; to change a line, edit the docstring and rerun the script. `tests/test_tests_doc.py` fails if a test is missing here or a line is out of date. The Gaps section at the end is written by hand.
+91 tests in 12 files, in plain words. Generated from each test's docstring by `scripts/make_tests_doc.py`; to change a line, edit the docstring and rerun the script. `tests/test_tests_doc.py` fails if a test is missing here or a line is out of date. The Gaps section at the end is written by hand.
 
 ## [tests/test_formats.py](../../tests/test_formats.py)
 
@@ -144,6 +144,7 @@ flotilla.supersede_check on hand-made graphs (the real-model check runs on the c
 | `test_llm_check_reject_drives_one_retry` | Checks that an LLM check reject, run with thinking off at temperature 0, leads to one retry whose answer is kept and counted in compute. | the checker's model call being left out of the compute count, or the rejected first answer kept as final. |
 | `test_llm_check_off_or_exact_check_present_means_no_checker_call` | Checks that no LLM check call is made when llm_verify is off, or when the task type already has an exact check, as maths does. | paying for an LLM check on maths answers that the exact check already verifies. |
 | `test_llm_check_unparseable_reply_accepts` | Checks that an LLM check reply with no readable verdict accepts the answer without a retry. | a garbled checker reply forcing a retry of an answer that was fine. |
+| `test_constraint_check_on_memory_reads_only_the_question` | Checks that constraint_check on a LongMemEval history or a GRAFT memory block finds no constraints from old sessions, while an instruction task keeps its own. | "add a P.S." or "at least 500 words" from an old chat session failing a memory answer (run-04 Vote+Tools). |
 
 ## [tests/test_tests_doc.py](../../tests/test_tests_doc.py)
 

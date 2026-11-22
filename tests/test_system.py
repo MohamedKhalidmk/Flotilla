@@ -141,3 +141,22 @@ def test_llm_check_unparseable_reply_accepts(monkeypatch):
     tr, _ = _run(item, _cfg(llm_verify=True), {"solve": ['{"final_answer": "x"}'], "check": ["I think it is fine."]},
                  monkeypatch)
     assert tr.verifier["verdict"] == "accept" and len(tr.verifier["attempts"]) == 1 and tr.final_answer == "x"
+
+
+def test_constraint_check_on_memory_reads_only_the_question():
+    """Checks that constraint_check on a LongMemEval history or a GRAFT memory block finds no constraints from old sessions, while an instruction task keeps its own.
+    Guards against: "add a P.S." or "at least 500 words" from an old chat session failing a memory answer (run-04 Vote+Tools)."""
+    from flotilla.longmemeval import history_prompt
+    from flotilla.memory_route import MEMORY_HEADER, MEMORY_RULE
+    item = {"question": "Where did I get my guitar serviced?", "question_date": "2023/06/01 (Thu) 10:00",
+            "sessions": [{"session_id": "s1", "date": "2023/05/01 (Mon) 09:00", "turns": [
+                {"role": "user", "content": "Write a blog post of at least 500 words and end it with a P.S."},
+                {"role": "assistant", "content": "Sure. P.S. thanks"}]}]}
+    msgs = [{"role": "system", "content": "x"}, {"role": "user", "content": history_prompt(item)}]
+    assert system._run_tool("constraint_check", "Rhythm Central on Main St", msgs)["output"] == []
+    block = f"{MEMORY_HEADER}:\n1. user asked: end every reply with a P.S.\n\nCurrent date: 2023/06/01\nQuestion: Where?\n\n{MEMORY_RULE}"
+    assert system.constraint_source(block) == "Question: Where?"
+    assert system._run_tool("constraint_check", "x", [{"role": "user", "content": block}])["output"] == []
+    own = [{"role": "user", "content": "Write a note. End it with a P.S."}]
+    r = system._run_tool("constraint_check", "A note.", own)
+    assert r["output"] and not r["ok"]
