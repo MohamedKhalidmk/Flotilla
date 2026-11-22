@@ -5,10 +5,12 @@
 
 Each checked item names an old value, a new value and optionally an anchor word (toy items carry them as
 "supersede_check": {"old", "new", "anchor"}; --check gives them for real items). A fact "mentions" a value when the
-value appears as a whole word (a number may carry an ordinal ending: 50th) in its subject, relation, object or source span, and the anchor (if any) appears too.
+value appears as a whole word (a number may carry an ordinal ending: 50th) in its subject, relation or object, and the
+anchor (if any) appears there too. The source sentence is not used: it often holds other facts' words.
 
   1. extract   the graph holds a fact mentioning the old value and one mentioning the new value
-  2. link      a SUPERSEDES edge (directly or through a chain) runs from a new-value fact to an old-value fact
+  2. link      an old-value fact is superseded (directly or through a chain) by a fact from a later session; that fact
+               need not name the new value ("moved to Toronto" superseding "based in Lyon, France" counts)
   3. retrieve  among the facts retrieved for the question, the first that mentions either value mentions the new one
                and is not marked outdated
 
@@ -21,36 +23,34 @@ from pathlib import Path
 
 
 def mentions(fact: dict, value: str, anchor: str | None) -> bool:
-    prov = fact.get("provenance") or {}
-    text = " ".join(str(x) for x in (fact.get("subject"), fact.get("relation"), fact.get("object"),
-                                     fact.get("span") or prov.get("span")))
+    text = " ".join(str(x) for x in (fact.get("subject"), fact.get("relation"), fact.get("object")))
     if not re.search(rf"(?<![\w.]){re.escape(value)}(?:st|nd|rd|th)?(?!\w)", text, re.I):
         return False
     return anchor is None or anchor.lower() in text.lower()
 
 
-def newer_reaches(graph: dict, start: str, targets: set[str]) -> bool:
-    out = {}
+def superseders(graph: dict, fact: str) -> set[str]:
+    """Every fact that supersedes this one, directly or through a chain of SUPERSEDES edges (newer -> older)."""
+    into = {}
     for e in graph["edges"]:
         if e["type"] == "SUPERSEDES":
-            out.setdefault(e["source"], []).append(e["target"])
-    seen, todo = set(), [start]
+            into.setdefault(e["target"], []).append(e["source"])
+    seen, todo = set(), [fact]
     while todo:
-        n = todo.pop()
-        for m in out.get(n, []):
-            if m in targets:
-                return True
+        for m in into.get(todo.pop(), []):
             if m not in seen:
                 seen.add(m)
                 todo.append(m)
-    return False
+    return seen
 
 
 def check(graph: dict, retrieved: list[dict], old: str, new: str, anchor: str | None) -> dict:
     facts = [n for n in graph["nodes"] if n["type"] == "Fact"]
     olds = {f["id"] for f in facts if mentions(f, old, anchor) and not mentions(f, new, anchor)}
     news = {f["id"] for f in facts if mentions(f, new, anchor) and not mentions(f, old, anchor)}
-    linked = [n for n in news if newer_reaches(graph, n, olds)]
+    chunk = {f["id"]: (f.get("provenance") or {}).get("chunk_id", 0) for f in facts}
+    linked = [f"{o} superseded by {', '.join(sorted(n for n in superseders(graph, o) if chunk.get(n, 0) > chunk.get(o, 0)))}"
+              for o in sorted(olds) if any(chunk.get(n, 0) > chunk.get(o, 0) for n in superseders(graph, o))]
     first = next(((i, f) for i, f in enumerate(retrieved) if mentions(f, old, anchor) or mentions(f, new, anchor)), None)
     ret_ok = bool(first) and mentions(first[1], new, anchor) and not mentions(first[1], old, anchor) and not first[1].get("outdated")
     show = lambda ids: [f"{f['id']}: {f['subject']} | {f['relation']} | {f['object']}" for f in facts if f["id"] in ids]
