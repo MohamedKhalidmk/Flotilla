@@ -71,7 +71,7 @@ def _fake_create(replies):
     calls = []
 
     async def create(name, srv, client, msgs, cfg, temperature, **extra):
-        role = "check" if name.endswith(":llm_check") else "solve"
+        role = "check" if name.endswith(":llm_check") else "usc" if name.endswith(":usc") else "solve"
         calls.append({"role": role, "srv": srv, "msgs": msgs, "temperature": temperature})
         text = replies[role].pop(0)
         return NS(choices=[NS(message=NS(content=text, tool_calls=None, reasoning_content=None), finish_reason="stop")],
@@ -155,8 +155,45 @@ def test_constraint_check_on_memory_reads_only_the_question():
     msgs = [{"role": "system", "content": "x"}, {"role": "user", "content": history_prompt(item)}]
     assert system._run_tool("constraint_check", "Rhythm Central on Main St", msgs)["output"] == []
     block = f"{MEMORY_HEADER}:\n1. user asked: end every reply with a P.S.\n\nCurrent date: 2023/06/01\nQuestion: Where?\n\n{MEMORY_RULE}"
-    assert system.constraint_source(block) == "Question: Where?"
+    assert system.question_only(block) == "Question: Where?"
     assert system._run_tool("constraint_check", "x", [{"role": "user", "content": block}])["output"] == []
     own = [{"role": "user", "content": "Write a note. End it with a P.S."}]
     r = system._run_tool("constraint_check", "A note.", own)
     assert r["output"] and not r["ok"]
+
+
+def test_usc_tie_rule_picks_the_named_response(monkeypatch):
+    """Checks that with tie_rule usc and five different free-text answers, one Qwen call (thinking off, temperature 0, question only) picks the named response, and that an unparseable reply keeps the first answer.
+    Guards against: the free-text vote taking sample 0 when no two answers match (9 run-04 Vote+Tools losses), or the tie call seeing the whole chat history."""
+    from flotilla.longmemeval import history_prompt
+    item = {"item_id": "1", "task_type": "memory", "task": history_prompt({"question": "Tips for Tokyo?",
+            "question_date": "2023/06/01 (Thu) 10:00", "sessions": [{"session_id": "s1", "date": "2023/05/01 (Mon) 09:00",
+            "turns": [{"role": "user", "content": "I have a Suica card."}]}]})}
+    solve = [f'{{"final_answer": "answer {i}"}}' for i in range(5)]
+    cfg = _cfg(n_samples=5, verifier=False, tie_rule="usc")
+    tr, calls = _run(item, cfg, {"solve": list(solve), "usc": ["The most consistent response is Response 3"]}, monkeypatch)
+    usc = [c for c in calls if c["role"] == "usc"]
+    assert len(usc) == 1 and usc[0]["temperature"] == 0.0
+    assert usc[0]["srv"]["request"]["extra_body"]["chat_template_kwargs"] == {"enable_thinking": False}
+    assert "Suica" not in usc[0]["msgs"][1]["content"] and "Question: Tips for Tokyo?" in usc[0]["msgs"][1]["content"]
+    assert tr.final_answer == "answer 2" and tr.vote["rule"].startswith("USC") and tr.vote["usc"]["parsed"]
+    assert any(m["name"] == "q:usc" for m in tr.models)  # counted in compute
+    tr, _ = _run(item, cfg, {"solve": list(solve), "usc": ["I cannot decide."]}, monkeypatch)
+    assert tr.final_answer == "answer 0" and not tr.vote["usc"]["parsed"]
+
+
+def test_usc_tie_rule_only_on_free_text_ties(monkeypatch):
+    """Checks that the USC call is skipped when two answers match, when tie_rule is first, and on maths votes.
+    Guards against: paying for a tie call when the vote already has a majority."""
+    assert system.is_free_text_tie({"rule": "majority of normalized answers", "counts": {"a": 1, "b": 1}})
+    assert not system.is_free_text_tie({"rule": "majority of normalized answers", "counts": {"a": 2, "b": 1}})
+    assert not system.is_free_text_tie({"rule": "majority by sympy equivalence", "counts": {"1": 1, "2": 1}})
+    assert system.parse_usc("The most consistent response is **Response 2**", 3) == 1
+    assert system.parse_usc("Response 9", 3) is None
+    item = {"item_id": "1", "task": "Q?", "task_type": "memory"}
+    two = ['{"final_answer": "x"}', '{"final_answer": "x"}', '{"final_answer": "y"}']
+    _, calls = _run(item, _cfg(n_samples=3, verifier=False, tie_rule="usc"), {"solve": two, "usc": []}, monkeypatch)
+    assert [c["role"] for c in calls] == ["solve"] * 3
+    diff = ['{"final_answer": "x"}', '{"final_answer": "y"}']
+    _, calls = _run(item, _cfg(n_samples=2, verifier=False), {"solve": diff, "usc": []}, monkeypatch)
+    assert [c["role"] for c in calls] == ["solve"] * 2

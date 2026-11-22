@@ -1,6 +1,6 @@
 # Tests (Flotilla)
 
-91 tests in 12 files, in plain words. Generated from each test's docstring by `scripts/make_tests_doc.py`; to change a line, edit the docstring and rerun the script. `tests/test_tests_doc.py` fails if a test is missing here or a line is out of date. The Gaps section at the end is written by hand.
+93 tests in 12 files, in plain words. Generated from each test's docstring by `scripts/make_tests_doc.py`; to change a line, edit the docstring and rerun the script. `tests/test_tests_doc.py` fails if a test is missing here or a line is out of date. The Gaps section at the end is written by hand.
 
 ## [tests/test_formats.py](../../tests/test_formats.py)
 
@@ -145,6 +145,8 @@ flotilla.supersede_check on hand-made graphs (the real-model check runs on the c
 | `test_llm_check_off_or_exact_check_present_means_no_checker_call` | Checks that no LLM check call is made when llm_verify is off, or when the task type already has an exact check, as maths does. | paying for an LLM check on maths answers that the exact check already verifies. |
 | `test_llm_check_unparseable_reply_accepts` | Checks that an LLM check reply with no readable verdict accepts the answer without a retry. | a garbled checker reply forcing a retry of an answer that was fine. |
 | `test_constraint_check_on_memory_reads_only_the_question` | Checks that constraint_check on a LongMemEval history or a GRAFT memory block finds no constraints from old sessions, while an instruction task keeps its own. | "add a P.S." or "at least 500 words" from an old chat session failing a memory answer (run-04 Vote+Tools). |
+| `test_usc_tie_rule_picks_the_named_response` | Checks that with tie_rule usc and five different free-text answers, one Qwen call (thinking off, temperature 0, question only) picks the named response, and that an unparseable reply keeps the first answer. | the free-text vote taking sample 0 when no two answers match (9 run-04 Vote+Tools losses), or the tie call seeing the whole chat history. |
+| `test_usc_tie_rule_only_on_free_text_ties` | Checks that the USC call is skipped when two answers match, when tie_rule is first, and on maths votes. | paying for a tie call when the vote already has a majority. |
 
 ## [tests/test_tests_doc.py](../../tests/test_tests_doc.py)
 

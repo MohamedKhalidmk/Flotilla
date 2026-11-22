@@ -65,6 +65,7 @@ the Flotilla loop). Its test 01 run and its final-benchmark runs are different s
 | F33 | Route Fast (F15) + verifier v2's LLM check where no exact check exists (Qwen checker, thinking off) | "Fast + LLM check", `qwen_strategy_fast_llmv` | 06 | running | baseline F15 |
 | F34 | Route Deep (F17) + the same LLM check | "Deep + LLM check", `qwen_strategy_deep_llmv` | 06 | running | baseline F17 |
 | F35 | Reasoning-graph route: Qwen answers in planned steps and writes question, steps, results and notes into an empty GRAFT graph (C v2's work layer, no documents) | "reasoning graph", `reason_graph` | none yet | never run | design: [reasoning_graph_route_design.md](../design/reasoning_graph_route_design.md); pilot against Deep and Fast |
+| F36 | Route Vote+Tools (F19) with the USC tie rule: when no two of the five free-text answers match, one Qwen call (thinking off, temperature 0, `prompts/vote_usc.v1.md`, question only) picks the answer the others agree with most, instead of sample 0 | "USC tie rule", `qwen_strategy_vote_tools_usc` | 04 | free check | first a replay on run-04's 9 vote-rule losses (S168); cost reported before any wider run |
 Not candidates: `qwen_alone.json` (the v5 placeholder with quant "TBD", replaced by F06's config, never run as
 such); the oracle ("some route right", a ceiling); the always-wrong audits.
 
@@ -103,6 +104,7 @@ such); the oracle ("some route right", a ceiling); the always-wrong audits.
 | F33 | Qwen3.8-27B W4A16 (ours) | Flotilla, verifier v2 with LLM check | off | - | 1 | - | - | - |
 | F34 | Qwen3.8-27B W4A16 (ours) | Flotilla, verifier v2 with LLM check | on | - | 1 | - | - | - |
 | F35 | Qwen3.8-27B W4A16 (ours) | plan, up to 6 steps, final, written into an empty GRAFT work graph | off | - | 1 | GRAFT work layer only | - | - |
+| F36 | Qwen3.8-27B W4A16 (ours) | Flotilla, 5 samples, USC tie rule | on | - | 5 | - | - | - |
 
 Flotilla loop = solver prompt v1, verifier v2 with one retry, up to 3 native tool rounds when tools are on, 32,768
 output tokens; one sample runs at temperature 0.
@@ -167,6 +169,7 @@ output tokens; one sample runs at temperature 0.
 | S160 | F33 | as S159 | as S159 | as S159; checker Qwen, thinking off, 1,024 tokens | `lme_llmv/runs/fast_llmv/lme_dev_r0..2` | running (test 06) |
 | S161 | F17 | as S159 | as S159 | as S159 | `lme_llmv/runs/deep/lme_dev_r0..2` | running (test 06) |
 | S162 | F34 | as S159 | as S159 | as S160 | `lme_llmv/runs/deep_llmv/lme_dev_r0..2` | running (test 06) |
+| S168 | F36 | the 9 LongMemEval questions where Vote was right, Vote+Tools wrong, and no two of Vote+Tools' answers matched (run-04-lme) | official judge prompt, Claude Haiku 5.5, on the pick and on each of the 5 samples | replay: run-04's saved Vote+Tools samples, only the tie call is new (`flotilla/usc_replay.py`) | `lme_usc/replay9` | queued |
 The final-benchmark setups of F01 (plain Qwen), the full system and the best single route get S IDs when they are
 configured.
 
@@ -186,7 +189,7 @@ is the row above that names it. After approval each test's table gains a setup c
 
 ## 6. Conventions and open item
 
-- Next free IDs: F36, S168 (S shared with GRAFT; S163-S167 are GRAFT's LongMemEval retrieval comparison).
+- Next free IDs: F37, S169 (S shared with GRAFT; S163-S167 are GRAFT's LongMemEval retrieval comparison).
 - F06 checked against the saved runs (2026-11-22): test 02's small test (`qwen_w4a16_alone`, Fir and Nibi), test 03's labels
   (Trillium `labels-qwen_w4a16_alone`) and the Deep+Tools route (`strategy-labels/deep_tools`) served the same build
   (`quant/qwen3.8-27b-w4a16`) with the same vLLM settings (qwen3_coder tool parser, qwen3 reasoning parser, seed 20261119,

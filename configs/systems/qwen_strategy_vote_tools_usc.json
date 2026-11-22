@@ -1,0 +1,21 @@
+{
+ "servers": {
+  "qwen_w4a16": {
+   "url": "set-by-serve",
+   "model": "qwen_w4a16",
+   "quant": "w4a16-ours",
+   "native_tools": true
+  }
+ },
+ "solvers": [
+  "qwen_w4a16"
+ ],
+ "max_tokens": 32768,
+ "protocol_version": "protocol-v10",
+ "name": "qwen_strategy_vote_tools_usc",
+ "notes": "F36: Vote+Tools (F19) with the USC tie rule: when no two of the five free-text answers match, one Qwen call (thinking off, temperature 0, prompts/vote_usc.v1.md, the question only) picks the answer the others agree with most, instead of sample 0.",
+ "tools": true,
+ "n_samples": 5,
+ "temperature": 0.6,
+ "tie_rule": "usc"
+}

@@ -43,6 +43,8 @@ class SystemConfig:
     verifier_version: str = "v2"
     llm_verify: bool = False               # F33/F34: verifier.v2's LLM check where no exact check exists (free text)
     llm_verify_max_tokens: int = 1024
+    tie_rule: str = "first"                # free-text vote with no two answers matching: "first" sample, or "usc" (F36)
+    usc_max_tokens: int = 256
     protocol_version: str = "protocol-v2"
     extra: dict = field(default_factory=dict)
     before_call: object = None             # optional async callable(server_name) run before every model call (rate/call caps)
@@ -159,8 +161,9 @@ TOOL_SCHEMAS = [{"type": "function", "function": {"name": n, "description": d, "
 HISTORY_MARKS = ("History Chats:", "MEMORY (facts that GRAFT recalled")
 
 
-def constraint_source(task: str) -> str:
-    """The text constraint_check reads its constraints from. On a task holding a chat history only the question
+def question_only(task: str) -> str:
+    """The task's own question. constraint_check reads its constraints from it, and the USC tie rule shows it. On a
+    task holding a chat history only the question
     counts (from its last "Question: " line to the next blank line): instructions in old sessions ("add a P.S.", "at
     least 500 words") are not this task's (2026-11-22: they failed 166 of 419 memory checks on Vote+Tools). A history
     with no question line gives no constraints."""
@@ -172,7 +175,7 @@ def constraint_source(task: str) -> str:
 
 def _run_tool(tool: str, arg: str, messages: list[dict]) -> dict:
     return {"sympy": lambda a: tools.sympy_check(a), "python_exec": lambda a: tools.python_exec(a),
-            "constraint_check": lambda a: tools.constraint_check(constraint_source(_text(messages[-1]["content"])), a),
+            "constraint_check": lambda a: tools.constraint_check(question_only(_text(messages[-1]["content"])), a),
             "ocr": lambda a: {"ok": False, "output": None, "detail": "ocr tool not enabled"}}.get(
         tool, lambda a: {"ok": False, "output": None, "detail": f"unknown tool {tool}"})(arg)
 
@@ -264,6 +267,52 @@ def vote(task_type: str, answers: list[str], public_tests: list[dict] | None = N
     norm = [re.sub(r"\s+", " ", a.strip().strip(".").upper() if len(a) <= 3 else a.strip().lower()) for a in cands]
     top, _ = Counter(norm).most_common(1)[0]
     return {"winner": cands[norm.index(top)], "rule": "majority of normalized answers", "counts": dict(Counter(norm))}
+
+
+USC_PICK = re.compile(r"most consistent response is\s*\**\s*Response\s*(\d+)", re.I)
+
+
+def is_free_text_tie(vote_rec: dict) -> bool:
+    """The free-text vote found no two matching answers among two or more (the old rule then took sample 0)."""
+    c = vote_rec.get("counts") or {}
+    return vote_rec.get("rule") == "majority of normalized answers" and len(c) >= 2 and max(c.values()) == 1
+
+
+def usc_messages(question: str, answers: list[str]) -> list[dict]:
+    md = (PROMPTS / "vote_usc.v1.md").read_text()
+    resp = "\n\n".join(f"Response {i}: {a}" for i, a in enumerate(answers, 1))
+    return [{"role": "system", "content": _section(md, "System")},
+            {"role": "user", "content": _section(md, "User").replace("{question}", question).replace("{responses}", resp)}]
+
+
+def parse_usc(text: str, n: int) -> int | None:
+    """0-based index of the picked response, or None when the reply names none in range."""
+    m = USC_PICK.search(text or "")
+    k = int(m.group(1)) if m else 0
+    return k - 1 if 1 <= k <= n else None
+
+
+async def usc_pick(name: str, srv: dict, question: str, answers: list[str], cfg: SystemConfig, trace: Trace) -> dict:
+    """F36: one Qwen call (thinking off, temperature 0) picks the answer most others agree with. A failed call or an
+    unparseable reply keeps the first answer (the old rule); the record says why."""
+    srv = {**srv, "request": {**srv.get("request", {}), "extra_body": {
+        **srv.get("request", {}).get("extra_body", {}), "chat_template_kwargs": {"enable_thinking": False}}},
+        "max_tokens": cfg.usc_max_tokens}
+    t0, out, tok_in, tok_out, err = time.time(), "", 0, 0, None
+    try:
+        r = await _create(f"{name}:usc", srv, client_for(srv), usc_messages(question, answers), cfg, 0.0)
+        out = r.choices[0].message.content or ""
+        tok_in, tok_out = r.usage.prompt_tokens, r.usage.completion_tokens
+    except Exception as e:  # noqa: BLE001
+        if type(e).__name__ == "CallBudget":
+            raise
+        err = f"{type(e).__name__}: {e}"[:300]
+    lat = round(time.time() - t0, 3)
+    trace.add_samples(f"{name}:usc", srv.get("quant", "?"), [Sample(text=out or f"ERROR {err}", final_answer=None,
+                      confidence=None, tokens_in=tok_in, tokens_out=tok_out, latency_s=lat)])
+    k = parse_usc(out, len(answers))
+    return {"index": 0 if k is None else k, "parsed": k is not None, "error": err, "reply": out[-300:],
+            "tokens_in": tok_in, "tokens_out": tok_out, "latency_s": lat}
 
 
 # ------------------------------------------------------------------ verifier (deterministic first)
@@ -383,6 +432,10 @@ async def answer(item: dict, route: dict, cfg: SystemConfig, trace: Trace) -> Tr
         trace.add_samples(s, cfg.servers[s].get("quant", "?"), samples)
     answers = [smp.final_answer for ss in by_model.values() for smp in ss]
     trace.vote = vote(task_type, answers, item.get("public_tests"))
+    if cfg.tie_rule == "usc" and is_free_text_tie(trace.vote):
+        cands = [a for a in answers if a]
+        u = await usc_pick(solvers[0], cfg.servers[solvers[0]], question_only(_text(msgs[-1]["content"])), cands, cfg, trace)
+        trace.vote = {**trace.vote, "winner": cands[u["index"]], "rule": "USC tie rule (no two answers match)", "usc": u}
     final = trace.vote["winner"]
     if cfg.verifier:
         v = verify(item["task"], task_type, final, item.get("options"), item.get("public_tests"))
