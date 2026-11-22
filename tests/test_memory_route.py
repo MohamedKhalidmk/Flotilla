@@ -3,6 +3,7 @@ and an end-to-end check with a fake Qwen and GRAFT's fake gateway on toy histori
 environment is missing; set GRAFT_REPO / GRAFT_PYTHON)."""
 import asyncio
 import json
+import re
 import os
 from pathlib import Path
 
@@ -84,9 +85,17 @@ def test_graft_config_is_a_named_preset(monkeypatch):
     with pytest.raises(ValueError):
         mr.graft_config({})
     monkeypatch.delenv("FLOTILLA_GRAFT_PRESET")
+    # every preset is one GRAFT candidate: a G ID each, no ID twice (a winning GRAFT change is added as a new preset
+    # with its G ID before any Memory route uses it; user, 2026-11-22)
+    assert set(mr.GRAFT_PRESET_IDS) == set(mr.GRAFT_PRESETS)
+    ids = list(mr.GRAFT_PRESET_IDS.values())
+    assert all(re.fullmatch(r"G\d+", g) for g in ids) and len(ids) == len(set(ids))
+    assert mr.GRAFT_PRESET_IDS["plain_c"] == "G08" and mr.GRAFT_PRESET_IDS["guide_b"] == "G35"
     for route in mr.MEMORY_ROUTES:  # every Memory config names its base route and the guide preset (GRAFT's default)
         mem = json.loads(mr.ROUTE_CONFIG[route].read_text())["extra"]["memory"]
         assert mem["base_route"] == mr.MEMORY_ROUTES[route] and mem["graft_preset"] == "guide_b"
+        # the method comes only from the preset: a route may override where GRAFT's LLM runs, nothing else
+        assert set(mem.get("graft") or {}) <= mr.MEMORY_RUNTIME_KEYS, (route, mem.get("graft"))
         base = json.loads(mr.ROUTE_CONFIG[mr.MEMORY_ROUTES[route]].read_text())
         conf = json.loads(mr.ROUTE_CONFIG[route].read_text())
         assert {k: conf[k] for k in base if k not in ("name", "notes")} == {k: base[k] for k in base if k not in ("name", "notes")}

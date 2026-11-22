@@ -79,10 +79,15 @@ GRAFT_DEFAULTS = {
 # GRAFT test 06 arm B (configs/runs/exp/tg/b_guide.yaml: the T-REx structure guide's linking pass and chain planning
 # on the same empty-start graph; no T-REx fact reaches the model): 45.7 vs 34.7 for plain C on Haiku, not yet run on
 # Qwen. Its planning parses each question with one extra Qwen call (logged as retrieval_llm_calls).
+# Named presets, each one GRAFT candidate (GRAFT registry). A GRAFT change that wins (a writer, a guide, a retrieval
+# rule) becomes a new preset with its G ID here before any Memory route uses it (user, 2026-11-22); route configs pick a
+# preset and override only runtime keys (MEMORY_RUNTIME_KEYS), never the method.
 GRAFT_PRESETS = {
     "plain_c": {},
     "guide_b": {"trex_guide": "results/checkpoints/trex_guide.json", "guide_linking": True, "guide_planning": True},
 }
+GRAFT_PRESET_IDS = {"plain_c": "G08", "guide_b": "G35"}
+MEMORY_RUNTIME_KEYS = {"llm_mode"}  # where GRAFT's LLM runs (local vLLM, fake); not part of the method
 DEFAULT_PRESET = "plain_c"  # code default for offline tests; the four route configs choose guide_b (GRAFT default since test 06)
 # GRAFT settings that change the graph (the rest only change retrieval)
 BUILD_KEYS = ("writer", "schema", "schema_path", "revisions", "start_graph", "start_graph_path", "writer_max_tokens",

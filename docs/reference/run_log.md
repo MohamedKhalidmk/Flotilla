@@ -186,6 +186,8 @@ One line per decision, with its reason. Times are America/Vancouver unless marke
 
 - **2026-11-22, G42 dropped (user's yes):** writer v2 with thinking on at a 16,384-token cap. 336 of 358 extraction calls stopped at the cap with an empty reply (the thinking used the budget; 14 parsed, 8 salvaged), so its graphs would be nearly empty. Fir 5133097-5133100 cancelled after 1 h 49 min; no graph finished. G41 (thinking off) is the only writer-v2 arm; G43 and G46 build on it. Not rerun at a bigger cap (user's choice).
 
+- **2026-11-22, GRAFT presets carry G IDs (user):** `GRAFT_PRESET_IDS` in `flotilla/memory_route.py` (plain_c = G08, guide_b = G35). A winning GRAFT change is added as a named preset with its G ID before any Memory route uses it; route configs may override only runtime keys (`llm_mode`). `test_graft_config_is_a_named_preset` checks both (a route config with a `writer_prompt` override fails it). No new preset yet: nothing has won.
+
 ### API spend (Anthropic)
 | When | What | Runs | Cost |
 |---|---|---|---|
