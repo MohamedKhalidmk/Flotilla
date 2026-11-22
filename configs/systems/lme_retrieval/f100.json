@@ -1,0 +1,40 @@
+{
+ "servers": {
+  "qwen_w4a16": {
+   "url": "set-by-serve",
+   "model": "qwen_w4a16",
+   "quant": "w4a16-ours",
+   "native_tools": true,
+   "request": {
+    "extra_body": {
+     "chat_template_kwargs": {
+      "enable_thinking": false
+     }
+    }
+   }
+  }
+ },
+ "solvers": [
+  "qwen_w4a16"
+ ],
+ "max_tokens": 32768,
+ "protocol_version": "protocol-v10",
+ "name": "lme_retrieval_f100",
+ "notes": "LongMemEval dev retrieval comparison (user, 2026-11-22): G47, fixed 100 facts. Memory route (base route Fast) on the G41 writer-v2 graphs (fixed writer, cache_g41_fix); writer settings match the build so the graphs are reused.",
+ "tools": false,
+ "n_samples": 1,
+ "temperature": 0.6,
+ "extra": {
+  "memory": {
+   "base_route": "fast",
+   "graft_preset": "guide_b",
+   "graft": {
+    "llm_mode": "local",
+    "writer_prompt": "chat_v2",
+    "log_writer_replies": true,
+    "max_facts": 100,
+    "max_tokens": 40000
+   }
+  }
+ }
+}

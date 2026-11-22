@@ -143,7 +143,9 @@ def retrieve(job: dict, cfg: dict, gateway_url: str) -> dict:
         agent._prepare_query_graphs([job["question"]])
     region = agent.retriever.retrieve(job["question"])
     store = agent.store
+    pool = [f for f in (region.pool or []) if f not in set(region.facts)]  # adaptive: the ranked rest, for asks (G40)
     return {"facts": [fact_record(store, f, f in region.outdated) for f in region.facts],
+            "pool": [fact_record(store, f, f in region.outdated) for f in pool],
             "linked_entities": [store.fact(e)["name"] if e in store.g else e for e in region.linked_entities],
             "fallback": region.fallback, "subgraph_nodes": region.subgraph_nodes, "sources": region.sources,
             "graph": store.stats(), "seconds": round(time.time() - t0, 3), **counter.tally()}

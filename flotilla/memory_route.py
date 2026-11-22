@@ -346,8 +346,21 @@ def memory_block(mem: dict) -> str:
     return "\n".join(lines) + "\nEND OF MEMORY"
 
 
-def memory_task(item: dict, mem: dict) -> str:
-    return f"{memory_block(mem)}\n\n{question_text(item)}\n\n{MEMORY_RULE}"
+# G40 (GRAFT docs/design/graft_adaptive_retrieval_design.md): the model may ask for the next batch of ranked facts.
+# Same rule text and limits as GRAFT's my_method/agent.py (ASK_RULE, wants_more, ask_batch/ask_max/ask_cap).
+ASK_RULE = ("If the memories above do not contain a fact you need to answer, reply with exactly NEED MORE MEMORIES and "
+            "nothing else. If no memory could hold the answer, say that the memory does not hold it.")
+
+
+def wants_more(text: str | None) -> bool:
+    """The model asked for more memories: the reply's last non-empty line is the ask phrase (punctuation ignored)."""
+    lines = [re.sub(r"[^a-z ]", "", l.lower()).strip() for l in (text or "").splitlines()]
+    lines = [l for l in lines if l]
+    return bool(lines) and lines[-1] == "need more memories"
+
+
+def memory_task(item: dict, mem: dict, ask: bool = False) -> str:
+    return f"{memory_block(mem)}\n\n{question_text(item)}\n\n{MEMORY_RULE}" + (f"\n{ASK_RULE}" if ask else "")
 
 
 def memory_trace(mem: dict) -> dict:
@@ -358,6 +371,7 @@ def memory_trace(mem: dict) -> dict:
             "fact_ids": [f["id"] for f in r.get("facts") or []], "linked_entities": r.get("linked_entities"),
             "fallback": r.get("fallback"), "subgraph_nodes": r.get("subgraph_nodes"), "graph": r.get("graph"),
             "retrieval_seconds": r.get("seconds"), "retrieval_llm_calls": r.get("llm_calls", 0),
+            "pool": len(r.get("pool") or []),
             # the build is logged apart from answering: labels count it once per history, not once per route
             "graft_build": {"cache_hit": bool(b.get("cache_hit")), "built_in_this_run": bool(mem.get("built_in_this_run")),
                             **{k: b.get(k) for k in ("llm_calls", "input_tokens", "output_tokens", "llm_seconds",
@@ -400,7 +414,37 @@ async def run_memory_route(route: str, item: dict, mem: dict | None, cfg, trace)
     run_item = with_memory(item, mem, trace)
     rt = {"router": "fixed-route", "route": route, "base_route": MEMORY_ROUTES[route], "task_type": "memory",
           "models": cfg.solvers}
-    return await system.answer(run_item, rt, cfg, trace)
+    g = graft_config(cfg.extra.get("memory"))
+    if not g.get("ask_more"):
+        return await system.answer(run_item, rt, cfg, trace)
+    return await _answer_asking(item, mem, run_item, rt, cfg, trace, g)
+
+
+async def _answer_asking(item, mem, run_item, rt, cfg, trace, g):
+    """G40 on a Memory route: answer with the shown facts plus ASK_RULE; while the reply asks for more, add the next
+    ask_batch pool facts and answer again (at most ask_max asks and ask_cap facts; stop when the pool is used up).
+    Every call's samples stay in the trace, so compute counts them all."""
+    from flotilla import system
+    batch, max_asks, cap = g.get("ask_batch", 50), g.get("ask_max", 3), g.get("ask_cap", 200)
+    r = dict(mem.get("retrieval") or {})
+    shown, pool, asks = list(r.get("facts") or []), list(r.get("pool") or []), []
+    while True:
+        m = {**mem, "retrieval": {**r, "facts": shown}}
+        run_item = {**run_item, "task": memory_task(item, m, ask=True)}
+        trace = await system.answer(run_item, rt, cfg, trace)
+        last = (trace.models[-1]["samples"][-1]["text"] if trace.models and trace.models[-1]["samples"] else "")
+        asked = wants_more(trace.final_answer) or wants_more(last)
+        if not asked or len(asks) >= max_asks or len(shown) >= cap:
+            break
+        seen = {f["id"] for f in shown}
+        more = [f for f in pool if f["id"] not in seen][:max(min(batch, cap - len(shown)), 0)]
+        if not more:  # the pool is used up
+            break
+        asks.append(len(more))
+        shown += more
+    trace.retrieval = {**(trace.retrieval or {}), "asks": len(asks), "added": asks, "facts_final": len(shown),
+                       "still_asking": asked, "pool": len(pool)}
+    return trace
 
 
 async def memory(item, mem, cfg, trace):

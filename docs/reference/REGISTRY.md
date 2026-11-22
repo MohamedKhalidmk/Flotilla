@@ -186,7 +186,7 @@ is the row above that names it. After approval each test's table gains a setup c
 
 ## 6. Conventions and open item
 
-- Next free IDs: F36, S163 (S shared with GRAFT).
+- Next free IDs: F36, S168 (S shared with GRAFT; S163-S167 are GRAFT's LongMemEval retrieval comparison).
 - F06 checked against the saved runs (2026-11-22): test 02's small test (`qwen_w4a16_alone`, Fir and Nibi), test 03's labels
   (Trillium `labels-qwen_w4a16_alone`) and the Deep+Tools route (`strategy-labels/deep_tools`) served the same build
   (`quant/qwen3.8-27b-w4a16`) with the same vLLM settings (qwen3_coder tool parser, qwen3 reasoning parser, seed 20261119,

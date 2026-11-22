@@ -1,6 +1,6 @@
 # Tests (Flotilla)
 
-89 tests in 12 files, in plain words. Generated from each test's docstring by `scripts/make_tests_doc.py`; to change a line, edit the docstring and rerun the script. `tests/test_tests_doc.py` fails if a test is missing here or a line is out of date. The Gaps section at the end is written by hand.
+90 tests in 12 files, in plain words. Generated from each test's docstring by `scripts/make_tests_doc.py`; to change a line, edit the docstring and rerun the script. `tests/test_tests_doc.py` fails if a test is missing here or a line is out of date. The Gaps section at the end is written by hand.
 
 ## [tests/test_formats.py](../../tests/test_formats.py)
 
@@ -66,6 +66,7 @@ Memory routes (flotilla/memory_route.py): availability, GRAFT documents, cache k
 | `test_haiku_judge_logs_every_call_with_ids_and_cost` | Checks that the Haiku judge sends LongMemEval's prompt with thinking off and max_tokens 10, and logs each call's IDs, hash and cost. | a judge call with no usage log row, or a paid call made when there is no answer. |
 | `test_merge_keeps_legacy_pool_rows_available` | Checks that merging old pool labels treats a route with a verdict as available, keeps the labels, and adds per-row GPU-seconds. | every run-03 pool row being labelled none because it lacks the available field. |
 | `test_writer_v2_and_thinking_change_the_graph_key` | Checks that the writer prompt and LLM thinking change the graph build key, while user_node and log_writer_replies do not. | a G41 or G42 run reusing a G35 graph built with another writer prompt or without thinking. |
+| `test_ask_for_more_adds_pool_facts_within_the_limits` | Checks that with ask_more on, a NEED MORE MEMORIES reply adds the next pool batch and asks again, up to the ask limit. | G40 on LongMemEval silently answering with only the first facts, or asking forever past the limits. |
 
 ## [tests/test_rl_router.py](../../tests/test_rl_router.py)
 

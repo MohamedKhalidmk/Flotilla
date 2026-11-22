@@ -393,3 +393,32 @@ def test_writer_v2_and_thinking_change_the_graph_key():
     k0 = mr.build_key(it, base, plain["label"], repo)
     assert k0 != mr.build_key(it, v2, plain["label"], repo) and k0 != mr.build_key(it, base, think["label"], repo)
     assert k0 == mr.build_key(it, {**base, "user_node": True, "log_writer_replies": True}, plain["label"], repo)
+
+
+def test_ask_for_more_adds_pool_facts_within_the_limits(monkeypatch):
+    """Checks that with ask_more on, a NEED MORE MEMORIES reply adds the next pool batch and asks again, up to the ask limit.
+    Guards against: G40 on LongMemEval silently answering with only the first facts, or asking forever past the limits."""
+    from types import SimpleNamespace as NS
+    from flotilla import system
+    facts = [{"id": f"f:{i}", "subject": "user", "relation": "r", "object": f"o{i}", "chunk_id": 0} for i in range(12)]
+    mem = {"chunk_map": [{"date": "2023/05/01"}], "retrieval": {"facts": facts[:2], "pool": facts[2:]}}
+    shown = []
+
+    async def answer(run_item, rt, cfg, trace):
+        shown.append(run_item["task"].count("[M"))
+        trace.final_answer = "NEED MORE MEMORIES" if len(shown) < 9 else "o7"
+        trace.models.append({"name": "q", "samples": [{"text": trace.final_answer}]})
+        return trace
+    monkeypatch.setattr(system, "answer", answer)
+    tr = NS(retrieval={}, models=[], final_answer=None)
+    item = {**KU, "item_id": "lme-1"}
+    cfg = NS(solvers=["q"], extra={"memory": {"base_route": "fast", "graft_preset": "guide_b",
+                                              "graft": {"ask_more": True, "ask_batch": 4, "ask_max": 3, "ask_cap": 200}}})
+    out = asyncio.run(mr.run_memory_route("memory", item, mem, cfg, tr))
+    assert shown == [2, 6, 10, 12] and out.retrieval["asks"] == 3 and out.retrieval["added"] == [4, 4, 2]
+    assert out.retrieval["still_asking"] and "NEED MORE MEMORIES" in mr.ASK_RULE
+    shown.clear()
+    cfg.extra["memory"]["graft"]["ask_cap"] = 5     # the cap stops the asking
+    out = asyncio.run(mr.run_memory_route("memory", item, mem, cfg, NS(retrieval={}, models=[], final_answer=None)))
+    assert shown == [2, 5] and out.retrieval["facts_final"] == 5
+    assert mr.wants_more("thinking...\nNEED MORE MEMORIES.") and not mr.wants_more("I need more memories to be sure, but: Paris")
