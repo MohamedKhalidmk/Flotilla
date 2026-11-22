@@ -1,6 +1,6 @@
 # Flotilla evaluation protocol
 
-Status: **FROZEN as protocol-v10 (2026-11-20; addendum 2026-11-21).** Each version is a git tag (`protocol-v1` to `protocol-v10`); any change is a new version with a dated changelog entry, and results say which version they ran under. No scored run used protocol-v1.
+Status: **FROZEN as protocol-v10 (2026-11-20; addenda 2026-11-21 and 2026-11-22).** Each version is a git tag (`protocol-v1` to `protocol-v10`); any change is a new version with a dated changelog entry, and results say which version they ran under. No scored run used protocol-v1.
 
 Flotilla is a compound system of quantized open models served with vLLM. This protocol fixes, before any scored run, what we measure, how, and how we decide between components, so that no choice is made after seeing test results.
 
@@ -139,6 +139,20 @@ Every role (router, each solver, cross-checker, verifier, judge) has a versioned
 
 When the verifier rejects the voted answer, the system retries once (`prompts/verifier.v2.md`). The retry message tells the model its previous answer was wrong and includes the previous answer, the failed checks with their details (e.g. the failing test or the parse error) and the verifier's reason. The retry's answer is returned whatever its verdict. Both attempts are logged in the trace under `verifier.attempts` (attempt number, final answer, verdict, every check with detail, and the retry message sent).
 
+## 11. Histories longer than the window (protocol-v10 addendum 2)
+
+Set by the user on 2026-11-22, before any run with a history past the window. A route that reads the whole history
+(the base routes, and GRAFT's full-reading baseline when it runs on Qwen) keeps **the most recent part that fits**:
+
+- Budget: the served `--max-model-len` minus the route's output cap, minus the system prompt, the question and the
+  question date (always kept), counted with Qwen's tokenizer and chat template.
+- History: whole sessions (LongMemEval) or whole chunks (FactConsolidation), newest first, until the next one would
+  not fit; the oldest are dropped. If the newest session alone does not fit, its newest tokens are kept.
+- Every trace records the history's tokens, the kept tokens, the sessions or chunks kept and dropped, and a
+  `truncated` flag.
+- Memory routes are not truncated: they read retrieved facts, not the history. Nothing is truncated when the whole
+  history fits (LongMemEval S, FactConsolidation up to 64k).
+
 ## Changelog
 - 2026-11-19: draft started.
 - 2026-11-19: frozen as protocol-v1. Decisions recorded: CanLegal Bench and SWE-bench excluded, MemoryAgentBench only for the graph test; small test 5% with at least 20 per benchmark; Phi kept only if Qwen + Phi beats Qwen alone on the small test; router A uses vela3-fast; EiG-Search cleared by Prof. Lu.
@@ -157,3 +171,4 @@ When the verifier rejects the voted answer, the system retries once (`prompts/ve
 - 2026-11-20: smoke-check clarification (before any small-test result was scored). An item whose forced last call ends normally (finish reason "stop") with no answer text also counts as allowed and is reported: gpt-oss-20b did this on a LiveCodeBench smoke item after three tool rounds (reasoning ending "Let's implement in python.", no final text, same on the retry). Such items score as wrong for every model; the loop is unchanged.
 - 2026-11-20: protocol-v10 (decided by the user's rule, set before the result). gpt-oss-20b is dropped and Flotilla runs Qwen3.8-27B (W4A16) alone: the trained router B (ModernBERT-base fine-tune on 4,284 loop-labelled pool questions) gains +0.4 points over Qwen alone on the 476 held-out pool questions (0.899 vs 0.895), under the 1-point bar; a bge-small + logistic-regression router gains -0.8. Command A+ was dropped earlier under rule 4.2 (Command A+ minus Qwen = -0.104, 95% CI [-0.143, -0.066]). Routers A and B are then not used; vision stays with Qwen3.8. Open: whether long inputs (RULER) get a fixed rule to gpt-oss, which the pool cannot test (no long-context questions).
 - 2026-11-21: protocol-v10 addendum (decided by the user before any LongMemEval answer was graded). LongMemEval route labels are graded by Claude Haiku 5.5 with LongMemEval's official LLM-judge prompts, not by Qwen: an independent judge, the same as the other Haiku-graded labels (an earlier run-log decision, reaffirmed). Each judge batch starts with the fixed Haiku check (GRAFT `configs/runs/exp/canary/haiku_replay38.yaml`, about $0.027) and logs request IDs; spend is estimated and approved first (about $0.25 per route for 500 questions). The status line now names protocol-v10, the last tagged version (it still said v8).
+- 2026-11-22: protocol-v10 addendum 2 (set by the user before any run past the window). Section 11: a route that reads the whole history keeps the most recent part that fits (whole sessions or chunks, newest first; system prompt, question and question date always kept); every trace records what was kept. First used by the long-history design (GRAFT `docs/design/graft_long_history_design.md`).

@@ -64,6 +64,7 @@ the Flotilla loop). Its test 01 run and its final-benchmark runs are different s
 | F32 | Strategy router: nearest neighbours on bge-small, run-04-lme | "router iv" | 04 | scored | dev 0.952: dropped by the keep rule |
 | F33 | Route Fast (F15) + verifier v2's LLM check where no exact check exists (Qwen checker, thinking off) | "Fast + LLM check", `qwen_strategy_fast_llmv` | 06 | running | baseline F15 |
 | F34 | Route Deep (F17) + the same LLM check | "Deep + LLM check", `qwen_strategy_deep_llmv` | 06 | running | baseline F17 |
+| F35 | Reasoning-graph route: Qwen answers in planned steps and writes question, steps, results and notes into an empty GRAFT graph (C v2's work layer, no documents) | "reasoning graph", `reason_graph` | none yet | never run | design: [reasoning_graph_route_design.md](../design/reasoning_graph_route_design.md); pilot against Deep and Fast |
 Not candidates: `qwen_alone.json` (the v5 placeholder with quant "TBD", replaced by F06's config, never run as
 such); the oracle ("some route right", a ceiling); the always-wrong audits.
 
@@ -101,6 +102,7 @@ such); the oracle ("some route right", a ceiling); the always-wrong audits.
 | F28 | RL policy over route steps, with a stop action | router | - | - | - | - | chains of F06, F15-F19 | test 04 run-03 (prior) |
 | F33 | Qwen3.8-27B W4A16 (ours) | Flotilla, verifier v2 with LLM check | off | - | 1 | - | - | - |
 | F34 | Qwen3.8-27B W4A16 (ours) | Flotilla, verifier v2 with LLM check | on | - | 1 | - | - | - |
+| F35 | Qwen3.8-27B W4A16 (ours) | plan, up to 6 steps, final, written into an empty GRAFT work graph | off | - | 1 | GRAFT work layer only | - | - |
 
 Flotilla loop = solver prompt v1, verifier v2 with one retry, up to 3 native tool rounds when tools are on, 32,768
 output tokens; one sample runs at temperature 0.
@@ -184,7 +186,7 @@ is the row above that names it. After approval each test's table gains a setup c
 
 ## 6. Conventions and open item
 
-- Next free IDs: F35, S163 (S shared with GRAFT).
+- Next free IDs: F36, S163 (S shared with GRAFT).
 - F06 checked against the saved runs (2026-11-22): test 02's small test (`qwen_w4a16_alone`, Fir and Nibi), test 03's labels
   (Trillium `labels-qwen_w4a16_alone`) and the Deep+Tools route (`strategy-labels/deep_tools`) served the same build
   (`quant/qwen3.8-27b-w4a16`) with the same vLLM settings (qwen3_coder tool parser, qwen3 reasoning parser, seed 20261119,
