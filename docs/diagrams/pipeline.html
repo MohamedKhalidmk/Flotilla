@@ -63,13 +63,13 @@ function scard(x,y,w,ht,title,line,{accent=NAVY,icon=null}={}){
 }
 // cards
 h+=card(30,255,140,70,'Question',null,{accent:'#8E887D'});
-h+=card(205,215,225,150,'Router',['the captain: Qwen','picks a route or','a combo per question'],{icon:head(245,281,.42,'captain')});
+h+=card(205,215,225,150,'Router',['the captain: a router','picks a route per','question; Qwen runs it'],{icon:head(245,281,.42,'captain')});
 const S=[['Fast','thinking off, one answer',NAVY],['Deep','full thinking',NAVY],
          ['Tools','sympy, Python, constraint checks',NAVY],['Vote','five samples, majority wins',NAVY],
-         ['Memory','GRAFT facts from a T-REx graph',YEL]];
+         ['Memory','GRAFT facts, T-REx guide',YEL]];
 const SX=480, SW=300, SH=62, SY0=118, SG=78;
 S.forEach(([t,l,c],i)=>{ const y=SY0+i*SG; h+=scard(SX,y,SW,SH,t,l,{accent:c,icon:head(SX+33,y+44,.25,'crew')}); });
-h+=card(850,215,170,150,'Verifier',['exact checks first,','then an LLM','if none exists']);
+h+=card(850,215,170,150,'Verifier',['exact checks:','maths, letters,','code tests,','instructions']);
 h+=card(1070,255,140,70,'Answer',null,{accent:'#2E7D4F'});
 // arrows
 h+=arrow('M170 290 L201 290');
@@ -80,8 +80,7 @@ h+=arrow('M935 215 C935 70 760 66 700 112', RED, true);
 h+=`<text x="958" y="132" font-size="13" font-weight="800" fill="${RED}">rejected:</text><text x="958" y="150" font-size="13" font-weight="800" fill="${RED}">one retry, told why</text>`;
 // title
 h+=`<text x="30" y="44" font-size="24" font-weight="800" fill="${INK}">How a question sails through</text>`;
-h+=`<text x="30" y="70" font-size="14" font-weight="600" fill="${INK2}">One model, five routes, combined when it helps. Every step is logged</text>`;
-h+=`<text x="30" y="88" font-size="14" font-weight="600" fill="${INK2}">per question (tokens, GPU time, which route answered and why).</text>`;
+h+=`<text x="30" y="70" font-size="14" font-weight="600" fill="${INK2}">The captain picks the route. The crew answers.</text>`;
 document.getElementById('art').innerHTML=h;
 </script>
 </body></html>
