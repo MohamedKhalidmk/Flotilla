@@ -11,9 +11,13 @@ import random
 from collections import defaultdict
 from pathlib import Path
 
-from flotilla.router_b import split
-
 SEED = 20261120
+
+
+def to_item(r: dict, bench: str) -> dict:
+    """A pool row as a label item (the router labels grade it from the pool, so the item carries no gold)."""
+    return {"item_id": r["id"], "bench": bench, "scorer": "router_label", "task_type": r["task_type"],
+            "task": r["task"], "source": r["source"], "gold": None}
 
 
 def main() -> None:
@@ -24,6 +28,7 @@ def main() -> None:
     ap.add_argument("--shards", type=int, default=6)
     ap.add_argument("--out-dir", required=True)
     a = ap.parse_args()
+    from flotilla.router_b import split  # torch; only needed here
     rows = [json.loads(l) for l in open(a.pool)]
     held_out, _ = split([{"id": r["id"]} for r in rows])
     held = {r["id"] for r in held_out}
@@ -39,8 +44,7 @@ def main() -> None:
         for t in sorted(picked):
             if picked[t]:
                 order.append(picked[t].pop())
-    item = lambda r, bench: {"item_id": r["id"], "bench": bench, "scorer": "router_label", "task_type": r["task_type"],
-                             "task": r["task"], "source": r["source"], "gold": None}
+    item = to_item
     out = Path(a.out_dir)
     out.mkdir(parents=True, exist_ok=True)
     with open(out / "pilot.jsonl", "w") as f:

@@ -75,6 +75,13 @@ def offline_requests() -> None:
     requests.get = get
 
 
+def ruler_item(bench: str, name: str, k: int, inst, n_tokens: int) -> dict:
+    """One lm-eval RULER request as a Flotilla item: the prompt as lm-eval builds it, every reference output as gold."""
+    return {"item_id": f"{bench}/{name}/{k}", "bench": bench, "task_type": "long_context", "task": inst.args[0],
+            "gold": list(inst.doc["outputs"]), "ruler_task": name, "scorer": "ruler_substring",
+            "n_tokens_qwen": n_tokens, "lm_eval_doc_id": inst.doc_id}
+
+
 def build(lengths):
     """Return {task_name: [Instance]} built as lm_eval.simple_evaluate builds them."""
     import numpy as np
@@ -133,11 +140,7 @@ def main() -> None:
             assert len(kept) == N_PER_TASK, (name, L, len(kept))
             for k, inst in enumerate(kept):
                 assert inst.doc.get("index", k) == k, (name, L, k, inst.doc.get("index"))
-                prompt = inst.args[0]
-                items.append({"item_id": f"{bench}/{name}/{k}", "bench": bench, "task_type": "long_context",
-                              "task": prompt, "gold": list(inst.doc["outputs"]), "ruler_task": name,
-                              "scorer": "ruler_substring", "n_tokens_qwen": len(tok(prompt).input_ids),
-                              "lm_eval_doc_id": inst.doc_id})
+                items.append(ruler_item(bench, name, k, inst, len(tok(inst.args[0]).input_ids)))
         ids = [it["item_id"] for it in items]
         assert len(ids) == len(set(ids)) == 13 * N_PER_TASK, len(ids)
         dev = set(random.Random(f"{SEED}-{bench}").sample(ids, N_DEV))   # same draw rule as flotilla.splits
