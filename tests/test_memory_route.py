@@ -295,3 +295,40 @@ def test_haiku_judge_logs_every_call_with_ids_and_cost(tmp_path):
     assert row["cost_usd"] == pytest.approx((300 * 0.10 + 2 * 0.50) / 1e6) and len(row["request_hash"]) == 16
     none = asyncio.run(mr.judge_answer_haiku(KU, None, j))
     assert none["correct"] is False and len(sent) == 1        # no answer: no call, no cost
+
+
+def test_merge_keeps_legacy_pool_rows_available(tmp_path):
+    """run-03's pool rows predate the "available" field: the merge must treat a route with a verdict as available, so
+    pool rows keep their labels and get per-row GPU-seconds (the first run-04-lme merge labelled all 1,450 "none")."""
+    from types import SimpleNamespace as NS
+    from flotilla import strategy_labels as sl
+    pdir = tmp_path / "run-03"
+    pdir.mkdir()
+    legacy = {"id": "p1", "source": "gsm8k", "task_type": "math", "label": "fast",
+              "fast": {"correct": True, "wall_seconds": 10.0, "tokens_out": 5},
+              "vote": {"correct": True, "wall_seconds": 40.0, "tokens_out": 50}}
+    wrong = {"id": "p2", "source": "gsm8k", "task_type": "math", "label": "none",
+             "fast": {"correct": False, "wall_seconds": 10.0}, "vote": {"correct": False, "wall_seconds": 40.0}}
+    (pdir / "per_question.jsonl").write_text(json.dumps(legacy) + "\n" + json.dumps(wrong) + "\n")
+    per = {"fast": {"questions_available": 2, "mean_wall_seconds": 10.0, "gpu_seconds_job": 20.0, "accuracy": 0.5},
+           "vote": {"questions_available": 2, "mean_wall_seconds": 40.0, "gpu_seconds_job": 160.0, "accuracy": 0.5}}
+    (pdir / "summary.json").write_text(json.dumps({"questions": 2, "labels": {"fast": 1, "none": 1}, "per_strategy": per}))
+    (pdir / "split.json").write_text(json.dumps({"seed": 1, "train": ["p1"], "dev": ["p2"], "held_out": []}))
+    msplit = tmp_path / "msplit.json"
+    msplit.write_text(json.dumps({"train": ["m1"], "dev": [], "held_out": []}))
+    lme = [{"id": "m1", "task_type": "memory", "label": "memory",
+            "fast": {"available": True, "correct": False, "wall_seconds": 10.0},
+            "memory": {"available": True, "correct": True, "wall_seconds": 5.0}}]
+    lsum = {"questions": 1, "labels": {"memory": 1}, "per_strategy": {
+        "fast": {"questions_available": 1, "mean_wall_seconds": 10.0, "gpu_seconds_job": 10.0},
+        "memory": {"questions_available": 1, "mean_wall_seconds": 5.0, "gpu_seconds_job": 5.0}}}
+    out = tmp_path / "run-04"
+    out.mkdir()
+    a = NS(pool_labels=str(pdir), memory_split=str(msplit), build_runs=[], graft_cache=None)
+    s = sl.merge_pool_labels(a, out, lme, lsum, {})
+    rows = {json.loads(l)["id"]: json.loads(l) for l in open(out / "per_question.jsonl")}
+    assert rows["p1"]["label"] == "fast" and rows["p2"]["label"] == "none" and rows["m1"]["label"] == "memory"
+    assert rows["p1"]["fast"]["available"] and rows["p1"]["fast"]["gpu_seconds"] == 10.0
+    assert rows["p1"]["memory"] == {"available": False}
+    assert s["labels"] == {"fast": 1, "none": 1, "memory": 1} and s["best_any_strategy"] == round(2 / 3, 4)
+    assert s["per_strategy"]["fast"]["questions"] == 3 and s["per_strategy"]["memory"]["questions"] == 1

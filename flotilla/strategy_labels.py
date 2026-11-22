@@ -247,6 +247,9 @@ def merge_pool_labels(a, out: Path, lme_rows: list[dict], lme_summary: dict, run
     build, build_info = build_gpu_seconds(a, ids)
     for r in prows:
         for s, v in list(r.items()):
+            # pool labels written before routes carried "available" (run-03): a route with a verdict was run on the row
+            if isinstance(v, dict) and "correct" in v and "available" not in v:
+                v["available"] = True
             if isinstance(v, dict) and v.get("available") and prate.get(s) is not None:
                 v["gpu_seconds"] = round(prate[s] * (v.get("wall_seconds") or 0), 3)
         for s in mem_routes:
