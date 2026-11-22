@@ -35,3 +35,11 @@ science_mc | 237 | 237 (100.0%) | 8.56 | 8.56 | 382 | 1091 | 555 | 0 | 93 (4.6%)
 ALL | 1950 | 1890 (96.9%) | 9.15 | 9.44 | 4586 | 8796 | 4444 | 11 | 1365 (7.7%) | 596 | 94.3% vs 95.6% (n=1890) | +24/-47 | 76.7% vs 78.3% (n=60)
 sign test, fixes against breaks on questions with a tool call: p = 0.0086
 errors by tool: {'err:python_exec': 776, 'err:sympy': 578, 'err:final_answer': 11}
+
+## The 25 memory questions Vote+Tools broke (Vote right, Vote+Tools wrong, a tool called)
+
+- constraint_check reads its constraints from the whole task text, which on a memory question is the chat history. 38 of its 74 calls returned no constraints; the other 36 reported constraints taken from old sessions (add a P.S., at least 500 words, 2 or 5 paragraphs, keyword lists such as "afro-cuban dance classes near me"), almost all failed. Over all 500 memory questions, 166 of the 419 that called it on Vote+Tools got such a failure.
+- Qwen often obeys: it padded answers to 500 words (lme-8a2466db), added a P.S. (lme-0a34ad58), rewrote into two paragraphs (lme-95228167), or repeated the same failing check up to the round cap (lme-22d2cb42, 7 calls per sample). None of these rewritten samples decided a break here.
+- 9 breaks are preference questions where all five samples differ, so the vote takes sample 0; there it was a generic list, while Vote's sample 0 was personalised. The checks did not choose the winner.
+- 8 breaks are wrong facts (three abstention questions answered anyway, an outdated time, a wrong count, two python_exec date or count calls on the wrong facts, a wrong order).
+- 8 are judge strictness or noise: lme-3c1045c8 "2.5 years" equals the gold and Vote's identical answer was judged right; "Rhythm Central on Main St" (gold: the music shop on Main St), "February (Valentine's Day), 2023" (gold: February 14th), "The Sugar Factory" (gold adds "at Icon Park"), plus four shorter or partial answers.
