@@ -190,6 +190,8 @@ One line per decision, with its reason. Times are America/Vancouver unless marke
 
 - **2026-11-22, TESTS.md (user):** `docs/reference/TESTS.md` in both repos lists every test in plain words (what it checks, what it guards against), generated from the test docstrings by `scripts/make_tests_doc.py`; `tests/test_tests_doc.py` fails on a missing or stale line. Every test now has the two-line docstring (Flotilla 89 tests, GRAFT 53; only docstrings changed, checked with ast). Hand-written Gaps section in each. The label merge now stops and names every LongMemEval question with no answer, every answer with no verdict, and every pair with two verdicts (`strategy_labels.verdict_problems`, `tests/test_label_merge.py`); run-04-lme passes it (5,000 verdicts, 500 x 10, none missing or doubled). Flotilla suite on Fir: 87 passed, 2 skipped (after removing `._*` files that macOS tar had left on the clusters).
 
+- **2026-11-22, G41 rebuild timed out, resubmitted (routine):** Fir 5133091-5133096 reached their 3-hour limit with 39 of 76 dev histories built (batches of 5 took 3,450 to 4,080 s; one history errored and is retried). The other 37 (the Crash Course item among them) run as 8 Fir jobs of 4 to 5 histories, 2 hours each (one batch, about 4,000 s, plus 50%), on the same cache: 5184926-5184933.
+
 ### API spend (Anthropic)
 | When | What | Runs | Cost |
 |---|---|---|---|
