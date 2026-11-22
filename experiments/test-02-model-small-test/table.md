@@ -1,4 +1,4 @@
-Small test (5% dev sets, same items for every model). RULER = mean sub-task score, others accuracy. gpt-oss mean is over its 9 text benchmarks (no image input).
+Small test (5% dev sets, same items for every model). RULER = mean sub-task score, others accuracy. gpt-oss mean is over its 9 text benchmarks (no image input). Columns: qwen = F06 (setup S115), gptoss = F07 (S116), cmda = F08 (S117). Scored before the grader fixes, audited in run-02 (user, 2026-11-21).
 
 | benchmark | n | qwen | gptoss | cmda | only_qwen | only_gptoss | only_cmda | all | none | two_of_three | perfect_router_qwen_gptoss | perfect_router_all3 | router_gain_over_qwen |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|

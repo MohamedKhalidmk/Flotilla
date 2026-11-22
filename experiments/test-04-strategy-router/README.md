@@ -4,6 +4,24 @@
 |---|---|---|---|---|
 | 04 | 2026-11-20 | protocol-v10 | running (labels done, routers next) | [run-03](runs/run-03/run.json) |
 
+## Candidates and setups
+
+IDs from the [registry](../../docs/REGISTRY.md) (frozen 2026-11-21). A candidate is the method, a setup is the candidate plus model,
+answer cap, benchmark and scoring; old run folders keep their names.
+
+| Candidate | Setup | Row in this test |
+|---|---|---|
+| F06 | S129 | Deep+Tools |
+| F15 | S126 | Fast |
+| F16 | S127 | Tools |
+| F17 | S128 | Deep |
+| F18 | S130 | Vote |
+| F19 | S131 | Vote+Tools |
+| F20 |  | Memory |
+| F21 |  | Memory+Deep |
+| F22 |  | Vote+Memory |
+| F23 |  | Deep+Tools+Memory |
+
 ## Question
 
 With one model (Qwen3.8-27B, 4-bit), can a router that picks a **route** per question beat Qwen's best fixed route,

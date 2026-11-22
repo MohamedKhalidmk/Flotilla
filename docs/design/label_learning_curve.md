@@ -1,5 +1,7 @@
 # Do more labels help the routers? (test 04, planned 2026-11-21, not run)
 
+> IDs ([registry](../REGISTRY.md), 2026-11-21): the four routers trained on run-04-lme get new IDs from F29 (each fraction and draw is a setup, from S147); the routes they choose between are F06 and F15-F23.
+
 Idea from the planning chat, approved by the user as a plan only: run it once the four supervised routers have trained
 on all ten routes (`run-04-lme`), not before.
 

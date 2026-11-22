@@ -4,6 +4,20 @@
 |---|---|---|---|---|
 | 03 | 2026-11-20 | protocol-v9 → v10 | done | [run-02](runs/run-02/run.json) |
 
+## Candidates and setups
+
+IDs from the [registry](../../docs/REGISTRY.md) (frozen 2026-11-21). A candidate is the method, a setup is the candidate plus model,
+answer cap, benchmark and scoring; old run folders keep their names.
+
+| Candidate | Setup | Row in this test |
+|---|---|---|
+| F06 | S119 | Qwen |
+| F07 | S120 | gpt-oss |
+| F13 | S124 | Router B: ModernBERT-base fine-tune (final epoch, saved) |
+| F14 | S125 | Baseline: bge-small + logistic regression |
+|  | S121 | Qwen |
+|  | S122 | Phi |
+
 ## Question
 
 Does a trained router between Qwen and gpt-oss beat Qwen alone by about 1 point or more?

@@ -4,6 +4,18 @@
 |---|---|---|---|---|
 | 02 | 2026-11-20 | protocol-v9 | done | [run-01](runs/run-01/run.json) |
 
+## Candidates and setups
+
+IDs from the [registry](../../docs/REGISTRY.md) (frozen 2026-11-21). A candidate is the method, a setup is the candidate plus model,
+answer cap, benchmark and scoring; old run folders keep their names.
+
+| Candidate | Setup | Row in this test |
+|---|---|---|
+| F03 | S106 (25 dev items) | Phi-4-reasoning-plus FP8 (ours), cap 30,000 |
+| gpt-oss-20b (outside) | S111 | gpt-oss-20b, effort low, cap 32,768 |
+| gpt-oss-20b (outside) | S112 | gpt-oss-20b, effort medium, cap 32,768 |
+| gpt-oss-20b (outside) | S113 | gpt-oss-20b, effort high, cap 32,768 |
+
 ## Question
 
 Which solver models earn a place: Qwen3.8-27B (4-bit), gpt-oss-20b, Command A+?
