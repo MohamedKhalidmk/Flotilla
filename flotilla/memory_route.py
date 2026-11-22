@@ -87,7 +87,14 @@ GRAFT_PRESETS = {
     "plain_c": {},
     "guide_b": {"trex_guide": "results/checkpoints/trex_guide.json", "guide_linking": True, "guide_planning": True},
 }
-GRAFT_PRESET_IDS = {"plain_c": "G08", "guide_b": "G35"}
+# G49-G51 (GRAFT docs/design/graft_passage_index_design.md): turn-sized passages of the history instead of facts, the
+# same passage budget for every arm; G49 keeps the guided ranking, G50 is HippoRAG 2-style, G51 is BM25.
+PASSAGES = {"budget_tokens": 4096, "passage_tokens": 256, "summary_facts": 30}
+GRAFT_PRESETS["guide_passages"] = {**GRAFT_PRESETS["guide_b"], "passages": {**PASSAGES, "arm": "guided"}}
+GRAFT_PRESETS["hippo_passages"] = {"passages": {**PASSAGES, "arm": "hipporag"}}
+GRAFT_PRESETS["bm25_passages"] = {"passages": {**PASSAGES, "arm": "bm25"}}
+GRAFT_PRESET_IDS = {"plain_c": "G08", "guide_b": "G35", "guide_passages": "G49", "hippo_passages": "G50",
+                    "bm25_passages": "G51"}
 MEMORY_RUNTIME_KEYS = {"llm_mode"}  # where GRAFT's LLM runs (local vLLM, fake); not part of the method
 DEFAULT_PRESET = "plain_c"  # code default for offline tests; the four route configs choose guide_b (GRAFT default since test 06)
 # GRAFT settings that change the graph (the rest only change retrieval)
@@ -407,7 +414,10 @@ def wants_more(text: str | None) -> bool:
 
 
 def memory_task(item: dict, mem: dict, ask: bool = False) -> str:
-    return f"{memory_block(mem)}\n\n{question_text(item)}\n\n{MEMORY_RULE}" + (f"\n{ASK_RULE}" if ask else "")
+    """The Memory route's task: the memory block (GRAFT's facts, or a passage arm's block for G49-G51), the question,
+    the answer rule."""
+    block = (mem.get("retrieval") or {}).get("passage_block") or memory_block(mem)
+    return f"{block}\n\n{question_text(item)}\n\n{MEMORY_RULE}" + (f"\n{ASK_RULE}" if ask else "")
 
 
 def memory_trace(mem: dict) -> dict:
@@ -419,6 +429,8 @@ def memory_trace(mem: dict) -> dict:
             "fallback": r.get("fallback"), "subgraph_nodes": r.get("subgraph_nodes"), "graph": r.get("graph"),
             "retrieval_seconds": r.get("seconds"), "retrieval_llm_calls": r.get("llm_calls", 0),
             "pool": len(r.get("pool") or []),
+            **({k: r.get(k) for k in ("passage_arm", "passage_budget", "passages", "passage_tokens", "passage_summary",
+                                      "passage_links", "passages_total")} if r.get("passage_block") else {}),
             # the build is logged apart from answering: labels count it once per history, not once per route
             "graft_build": {"cache_hit": bool(b.get("cache_hit")), "built_in_this_run": bool(mem.get("built_in_this_run")),
                             **{k: b.get(k) for k in ("llm_calls", "input_tokens", "output_tokens", "llm_seconds",

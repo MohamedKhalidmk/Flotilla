@@ -522,3 +522,19 @@ def test_sonnet_tiebreak_replaces_only_split_groups(tmp_path):
     assert sent[0]["thinking"] == {"type": "between_tools"} and sent[0]["model"] == "claude-sonnet-5-5"
     row = json.loads((tmp_path / "u.jsonl").read_text())
     assert row["cost_usd"] == pytest.approx((300 * 2.0 + 1 * 10.0) / 1e6)
+
+
+def test_passage_presets_and_the_passage_block_reach_qwen():
+    """Checks that the passage presets carry their G IDs and one shared passage budget, that G49 keeps the guide, and that a retrieval with a passage block makes the Memory task show the passages instead of the facts, with the passage counts in the trace.
+    Guards against: arms compared on different budgets, or Qwen still seeing the fact list on a passage arm."""
+    assert [mr.GRAFT_PRESET_IDS[p] for p in ("guide_passages", "hippo_passages", "bm25_passages")] == ["G49", "G50", "G51"]
+    budgets = {mr.GRAFT_PRESETS[p]["passages"]["budget_tokens"] for p in ("guide_passages", "hippo_passages", "bm25_passages")}
+    assert budgets == {4096} and mr.GRAFT_PRESETS["guide_passages"]["guide_planning"]
+    assert "guide_planning" not in mr.GRAFT_PRESETS["hippo_passages"]
+    mem = {"retrieval": {"facts": [{"id": "f:1", "subject": "user", "relation": "moved to", "object": "Toronto"}],
+                         "passage_block": "PASSAGES (...):\n[P1] 2023/06/01 | session s2\nuser: I moved to Toronto.\nEND OF MEMORY",
+                         "passage_arm": "guided", "passage_tokens": 9, "passages": [{"pid": "p:1:0"}]}}
+    task = mr.memory_task({"question": "Where do I live?", "question_date": "2023/07/01"}, mem)
+    assert task.startswith("PASSAGES") and "MEMORY (facts" not in task and "Where do I live?" in task
+    tr = mr.memory_trace(mem)
+    assert tr["passage_arm"] == "guided" and tr["passage_tokens"] == 9
