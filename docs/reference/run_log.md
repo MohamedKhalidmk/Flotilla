@@ -275,3 +275,5 @@ One line per decision, with its reason. Times are America/Vancouver unless marke
 | | **Total so far** | | **$8.24** |
 
 2026-11-23: G41 first (user). Fir's 16 G41 copies (5195902-5195920) cancelled: no reservation or constraint holds them; they sat at about rank 842 of 1,116 pending H100 jobs with fair share 0.17, and the ReqNodeNotAvail reason only names a drained node (fc10515). The G41 rebuild runs on the 16 Nibi slice jobs (28585914-28585931). GRAFT test 10 run-02 (28630848-28630865) is held and released together once all 16 have started, so it stays same-day.
+
+2026-11-23 (user: speed it up, target 24 Nov): G41 rebuild resubmitted as 76 one-history jobs, 3 h limit, on 3g.40gb slices on Nibi (28666435 on) and Fir (twins; ids in lme/devv2/one_g41/*_ids.txt), first copy to start wins. The 5 h limit had kept the 16 Nibi jobs out of gpubase_bygpu_b1 (3 h maximum); the 16 Nibi shard jobs 28585914-28585931 were cancelled. Toy gate (Fir 5226371, Nibi 28477059) and F36 replay (Fir 5208816) moved from whole H100s to slices: Fir 5412183 / Nibi 28666540 and Fir 5412184. Slice settings checked against the 2026-11-21 entry (163840 context fits a 3g.40gb slice).
