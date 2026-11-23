@@ -269,4 +269,5 @@ One line per decision, with its reason. Times are America/Vancouver unless marke
 | 2026-11-22 | Haiku temperature probes (3 calls, all rejected or a few tokens) | 0 jobs | <$0.001 |
 | 2026-11-22 | LongMemEval judge, 2 more verdicts per answer (majority of 3) $0.256, Haiku check $0.027 | 2 jobs | $0.283 |
 | 2026-11-22 | Sonnet tiebreak (56 calls) and Haiku reasoning-error sub-types (1,120 calls) $0.263, Haiku check $0.027 | 2 jobs | $0.290 |
-| | **Total so far** | | **$8.14** |
+| 2026-11-22 | Test 06 judge: majority of 3 on 999 answers (12 runs + 6 first-answer sets) $0.075, Haiku check $0.027 | 2 jobs | $0.102 |
+| | **Total so far** | | **$8.24** |

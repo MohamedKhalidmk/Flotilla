@@ -2,7 +2,7 @@
 
 | Test | Date | Protocol | Status | Current run |
 |---|---|---|---|---|
-| 06 | 2026-11-22 | protocol-v10 | running (answers on Fir and Nibi; Haiku judge next) | [run-01](runs/run-01/run.json) |
+| 06 | 2026-11-22 | protocol-v10 | scored: both LLM-check arms fail the keep rule (drop waits on the user) | [run-01](runs/run-01/run.json) |
 
 ## Candidates and setups
 
@@ -49,3 +49,5 @@ the repeat spread, without turning more right answers wrong than it fixes. Other
 ## Revisions
 
 - 2026-11-22: run-01 submitted.
+- 2026-11-22: run-01 scored ([table](runs/run-01/table.md)): Fast 81.1% against 76.3% with the check, Deep 92.5% against
+  84.2%; the retries turn 18 and 21 right answers wrong while fixing 6 and 2. Both fail the keep rule.
