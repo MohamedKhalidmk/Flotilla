@@ -273,3 +273,5 @@ One line per decision, with its reason. Times are America/Vancouver unless marke
 | 2026-11-22 | Sonnet tiebreak (56 calls) and Haiku reasoning-error sub-types (1,120 calls) $0.263, Haiku check $0.027 | 2 jobs | $0.290 |
 | 2026-11-22 | Test 06 judge: majority of 3 on 999 answers (12 runs + 6 first-answer sets) $0.075, Haiku check $0.027 | 2 jobs | $0.102 |
 | | **Total so far** | | **$8.24** |
+
+2026-11-23: G41 first (user). Fir's 16 G41 copies (5195902-5195920) cancelled: no reservation or constraint holds them; they sat at about rank 842 of 1,116 pending H100 jobs with fair share 0.17, and the ReqNodeNotAvail reason only names a drained node (fc10515). The G41 rebuild runs on the 16 Nibi slice jobs (28585914-28585931). GRAFT test 10 run-02 (28630848-28630865) is held and released together once all 16 have started, so it stays same-day.
