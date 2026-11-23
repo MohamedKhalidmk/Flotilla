@@ -25,6 +25,10 @@ mkdir -p "$FLOTILLA_RUNS" "$C"/{vllm,triton,inductor,nv,mpl,humming}
 if [[ -n "${SLURM_TMPDIR:-}" && -d "$SLURM_TMPDIR" ]]; then
   export TORCHINDUCTOR_CACHE_DIR="$SLURM_TMPDIR/inductor" TRITON_CACHE_DIR="$SLURM_TMPDIR/triton" \
          HUMMING_CACHE_DIR="$SLURM_TMPDIR/humming"  # two jobs compiling into one shared humming cache crashed (Fir)
+  # vLLM, FlashInfer and CUDA JIT caches too (as GRAFT's run_qwen_graft.sbatch): 33 G41 jobs starting together on Fir
+  # slices with these on shared scratch all stalled after the model load until the 1 h startup timeout (2026-11-23).
+  export VLLM_CACHE_ROOT="$SLURM_TMPDIR/vllm" FLASHINFER_WORKSPACE_BASE="$SLURM_TMPDIR" CUDA_CACHE_PATH="$SLURM_TMPDIR/nv"
+  mkdir -p "$SLURM_TMPDIR"/{vllm,nv}
 fi
 # humming also writes a tmp folder under $HOME (read-only on Trillium compute nodes)
 export HUMMING_TMP_DIR="${SLURM_TMPDIR:-$C}/humming-tmp"
