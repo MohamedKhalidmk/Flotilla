@@ -216,7 +216,14 @@ reason, evidence, who, date) and are applied by `python -m flotilla.memory_route
 keeps the judge's verdict as `judge_correct` and stops if an override matches no verdict. Labels built with overrides go
 to a new folder; the folder without them is kept.
 
+Label set for the single full relabel (user, 2026-11-22): Haiku 5.5, majority of 3 verdicts per answer; Claude Sonnet
+5.5 decides every split group (`memory_route tiebreak`); then the hand overrides below, applied last by
+`memory_route apply-overrides` so they also reach verdicts that were unanimous and never went to the tiebreak. Run-04's
+version of this set is `run-04-lme-maj3-sonnet-hand`; `run-04-lme-maj3`, `-maj3-hand` and `-maj3-sonnet` are kept.
+
 | Item | Answer overridden | Verdict | Evidence |
 |---|---|---|---|
 | lme-3c1045c8 (multi-session, 2023/05/30) "How much older am I than the average age of employees in my department?" | `2.5 years` (Fast, Deep, Deep+Tools, Vote, Vote+Tools) | right (Haiku: no, 13 of 15 times on the identical prompt) | session answer_c8cc60d6_2 (2023/05/24): the department average is 29.5; session answer_c8cc60d6_1 (2023/05/25): the user is 32; 32 - 29.5 = 2.5, the gold. Tools' `2.5` (no unit) is not covered and keeps Haiku's verdict. |
+| lme-5d3d2817 (single-session-user, 2023/05/30) "What was my previous occupation?" | `marketing specialist` (Fast, Tools) and `Marketing specialist` (Deep+Tools+Memory) | wrong (Haiku: yes 2 of 3 on Fast and Tools, no 3 of 3 on the capitalised copy; Sonnet: no) | gold "Marketing specialist at a small startup"; session answer_235eb6fb: "my previous role as a marketing specialist at a small startup". The answer leaves out "at a small startup", and the official prompt says a response with only a subset of the required information is wrong. Answers with "at a small startup" are not covered. |
+| lme-80ec1f4f_abs (multi-session, abstention, 2023/03/03) "How many different museums or galleries did I visit in December?" | `0` (Fast, Tools, Deep, Deep+Tools, Vote, Vote+Tools) | wrong (Haiku on the identical "0": 3 of 3 yes on Deep+Tools, 2 of 3 on Tools, 1 of 3 elsewhere; Sonnet: no) | The abstention prompt asks whether the response identifies the question as unanswerable; a bare count does not. The history's visits are in February (Natural History Museum on 2/8, The Art Cube opening on 15 February), none in December. The Memory routes' "the memory does not hold it" answers are not covered and stay right. |
 

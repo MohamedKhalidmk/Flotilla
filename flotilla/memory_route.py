@@ -891,6 +891,19 @@ def _combine(a) -> None:
     print(f"{len(rows)} verdicts in, {len(out)} combined, {sum(v.get('votes_yes') not in (0, v.get('votes'), None) for v in out)} split")
 
 
+def _apply_overrides_cli(a) -> None:
+    """Hand overrides on verdicts that are already final (combined, or after the tiebreak): the tiebreak replaces split
+    groups, so overrides go last and also cover answers whose verdicts were unanimous."""
+    verdicts = [json.loads(line) for line in open(a.verdicts)]
+    out, unused = apply_overrides(verdicts, [json.loads(line) for line in open(a.overrides) if line.strip()])
+    if unused:
+        raise SystemExit(f"overrides that match no verdict: {unused}")
+    Path(a.out).parent.mkdir(parents=True, exist_ok=True)
+    Path(a.out).write_text("".join(json.dumps(v, ensure_ascii=False) + "\n" for v in out))
+    changed = sum(v.get("override") is not None and v["judge_correct"] != v["correct"] for v in out)
+    print(f"{len(out)} verdicts, {sum(v.get('override') is not None for v in out)} overridden, {changed} changed -> {a.out}")
+
+
 def split_groups(verdicts: list[dict]) -> list[dict]:
     """Combined verdicts whose judge calls disagreed (some yes, some no)."""
     return [v for v in verdicts if v.get("votes") and v.get("votes_yes") not in (0, v["votes"])]
@@ -1002,6 +1015,10 @@ def main() -> None:
     c.add_argument("--n", type=int, default=3)
     c.add_argument("--out", required=True)
     c.add_argument("--overrides", help="hand overrides (JSONL: item_id, answer, correct, reason, evidence, by, date)")
+    o = sub.add_parser("apply-overrides", help="hand overrides (PROTOCOL 12) on final verdicts, e.g. after the tiebreak")
+    o.add_argument("--verdicts", required=True)
+    o.add_argument("--overrides", required=True)
+    o.add_argument("--out", required=True)
     t = sub.add_parser("tiebreak", help="one Sonnet verdict per split group (PAID); writes the replaced verdicts")
     t.add_argument("--items", required=True)
     t.add_argument("--verdicts", required=True, help="combined verdicts (combine-verdicts output)")
@@ -1016,6 +1033,8 @@ def main() -> None:
         _combine(a)
     elif a.cmd == "tiebreak":
         asyncio.run(_tiebreak(a))
+    elif a.cmd == "apply-overrides":
+        _apply_overrides_cli(a)
     else:
         asyncio.run(_judge(a))
 

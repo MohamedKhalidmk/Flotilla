@@ -2,7 +2,7 @@
 
 | Test | Date | Protocol | Status | Current run |
 |---|---|---|---|---|
-| 06 | 2026-11-22 | protocol-v10 | scored: both LLM-check arms fail the keep rule (drop waits on the user) | [run-01](runs/run-01/run.json) |
+| 06 | 2026-11-22 | protocol-v10 | done: F33 and F34 dropped (user, 2026-11-22) | [run-01](runs/run-01/run.json) |
 
 ## Candidates and setups
 
@@ -45,6 +45,10 @@ enough to pay for its compute, without turning right answers wrong?
 Keep rule (user, set 2026-11-22, before any result): keep the LLM check only if it beats its baseline by more than
 the repeat spread, without turning more right answers wrong than it fixes. Otherwise drop it and log why. Labels
 (test 04) are not touched until the user decides.
+
+Result (run-01): both fail. Decision (user, 2026-11-22): F33 and F34 dropped; the LLM check stays off. Reason: each
+scores below its baseline by more than the repeat spread (Fast 76.3% against 81.1%, Deep 84.2% against 92.5%) and its
+retries turn 3-10 times more right answers wrong than they fix (18 against 6, 21 against 2), at about twice the GPU time.
 
 ## Revisions
 

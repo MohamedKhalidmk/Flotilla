@@ -243,6 +243,8 @@ One line per decision, with its reason. Times are America/Vancouver unless marke
 
 - **2026-11-22, passage index built (user: code now, fakes and toy histories only):** GRAFT my_method/passages.py (turn-sized passages up to 256 tokens, fact-to-passage link through the source sentence, guided / HippoRAG 2-style / BM25 arms under one 4,096-token budget, outdated marks), Flotilla presets G49-G51 and the bridge. Fake end-to-end run on 7 toy histories: all presets ran (Fir 5233979); the fake writer writes no facts from chat text, so the guided arm is covered by unit tests only. No real data used.
 
+- **2026-11-22, F33 and F34 dropped (user):** test 06 run-01 (Nibi, LongMemEval dev, 3 repeats, Haiku majority of 3): Fast + LLM check 76.3% against Fast 81.1% (spread 3.9), Deep + LLM check 84.2% against Deep 92.5% (spread 2.6); the check rejected 17-21% of answers and the retries turned 18 and 21 right answers wrong while fixing 6 and 2, at about twice the GPU-seconds. Both fail the keep rule; the LLM check stays off.
+
 ### API spend (Anthropic)
 | When | What | Runs | Cost |
 |---|---|---|---|

@@ -482,6 +482,29 @@ def test_hand_override_changes_only_the_named_answer():
     assert unused == ["lme-3c1045c8: 'three years'"]
 
 
+def test_overrides_apply_after_the_tiebreak_and_reach_unanimous_verdicts(tmp_path, monkeypatch):
+    """Checks that apply-overrides works on final verdicts (after the Sonnet tiebreak): it changes a unanimous Haiku yes that the tiebreak never saw, keeps tiebreak fields, and stops when an override matches nothing.
+    Guards against: an override like lme-80ec1f4f_abs's bare "0" on deep_tools (Haiku yes 3 of 3) never reaching the labels because only split groups were revisited."""
+    import sys
+    vs = [{"item_id": "lme-80ec1f4f_abs", "route": "deep_tools", "answer": "0", "correct": True, "votes_yes": 3, "votes": 3},
+          {"item_id": "lme-80ec1f4f_abs", "route": "tools", "answer": "0", "correct": False, "haiku_majority": True,
+           "tiebreak": {"model": "claude-sonnet-5-5", "reply": "No"}},
+          {"item_id": "lme-80ec1f4f_abs", "route": "memory", "answer": "The memory does not hold it.", "correct": True}]
+    o = {"item_id": "lme-80ec1f4f_abs", "answer": "0", "correct": False, "reason": "a bare count does not abstain",
+         "evidence": "abstention rubric", "by": "user", "date": "2026-11-22"}
+    (tmp_path / "v.jsonl").write_text("".join(json.dumps(v) + "\n" for v in vs))
+    (tmp_path / "o.jsonl").write_text(json.dumps(o) + "\n")
+    monkeypatch.setattr(sys, "argv", ["mr", "apply-overrides", "--verdicts", str(tmp_path / "v.jsonl"), "--overrides",
+                                      str(tmp_path / "o.jsonl"), "--out", str(tmp_path / "out" / "v.jsonl")])
+    mr.main()
+    out = [json.loads(l) for l in open(tmp_path / "out" / "v.jsonl")]
+    assert [v["correct"] for v in out] == [False, False, True]
+    assert out[0]["judge_correct"] is True and out[1]["tiebreak"]["reply"] == "No" and "override" not in out[2]
+    (tmp_path / "o.jsonl").write_text(json.dumps({**o, "answer": "zero"}) + "\n")
+    with pytest.raises(SystemExit):
+        mr.main()
+
+
 def test_gold_in_facts_is_fact_level():
     """Checks that fact-level evidence needs the normalised gold inside the shown facts' text, and does not apply to preference or abstention questions.
     Guards against: counting a question as having its evidence shown because some unrelated fact from the right session was shown."""
