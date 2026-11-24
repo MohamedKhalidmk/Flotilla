@@ -23,7 +23,8 @@ SUB = {m: s for s, ms in LAYOUT.items() for m in ms}
 NAMES = "|".join(sorted(SUB, key=len, reverse=True))
 # Records of what was actually run keep the old paths (see docs/reference/package_layout.md).
 HISTORY = [r"^docs/reference/run_log\.md$", r"^docs/session/PROJECT_HISTORY\.md$", r"^docs/session/CHAT_HISTORY",
-           r"^experiments/.*/runs/", r"\.jsonl(\.gz)?$", r"^reports/", r"^results/"]
+           r"^experiments/.*/runs/", r"\.jsonl(\.gz)?$", r"^reports/", r"^results/",
+           r"^docs/reference/package_layout\.md$", r"^scripts/reorg_package\.py$"]
 TEXT = {".py", ".md", ".sh", ".sbatch", ".json", ".txt", ".toml", ".cfg", ".yaml", ".yml", ""}
 
 def sh(*a):
@@ -51,13 +52,25 @@ def split_from_import(m):
     lines[-1] += tail
     return "\n".join(lines)
 
+def _dotted(m):
+    """flotilla.x to flotilla.<sub>.x; leaves names that are already new (flotilla.data.splits, from flotilla.data import splits)."""
+    name, rest = m.group(1), m.string[m.end():m.end() + 80]
+    if name in LAYOUT:  # 'data' is both a module and a subpackage
+        if rest.startswith("."):
+            return m.group(0)
+        imp = re.match(r" import ([\w, ]+)", rest)
+        if imp and all(n.split()[0] in LAYOUT[name] for n in imp.group(1).split(",") if n.strip()):
+            return m.group(0)
+    return f"flotilla.{SUB[name]}.{name}"
+
+
 def rewrite(text):
     # dotted first, on the original text: flotilla.x (imports, -m, patch targets, prose)
-    text = re.sub(rf"(?<![\w/.$])flotilla\.({NAMES})(?![\w])", lambda m: f"flotilla.{SUB[m.group(1)]}.{m.group(1)}", text)
+    text = re.sub(rf"(?<![\w/.$])flotilla\.({NAMES})(?![\w])", _dotted, text)
     # paths: flotilla/x.py and flotilla/x.attr (not scratch folders such as $SCRATCH/flotilla/data/)
     text = re.sub(rf"(?<![\w.$-])(?<!scratch/)(?<!SCRATCH/)flotilla/({NAMES})(?=\.py\b|\.[a-z_]+\b)",
                   lambda m: f"flotilla/{SUB[m.group(1)]}/{m.group(1)}", text)
-    text = re.sub(r"(?<![\w.$-])flotilla/vendor/", "flotilla/core/vendor/", text)
+    text = re.sub(r"(?<![\w.$-])flotilla/core/vendor/", "flotilla/core/vendor/", text)
     # from flotilla import a, b as c   (whole line, possibly several subpackages)
     text = re.sub(r"(?m)^([ \t]*)from flotilla import ([A-Za-z_][\w ,]*?)([ \t]*(?:#.*)?)$", split_from_import, text)
     # inline: ...; from flotilla import x as y; ...   (in -c strings)
