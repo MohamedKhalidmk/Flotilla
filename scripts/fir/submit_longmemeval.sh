@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # test-04 route labels on LongMemEval (Fir or Nibi, def-sylu_gpu, one H100 per job). Qwen at --max-model-len 163840
-# (configs/servers_longmemeval*.json); run items from flotilla.longmemeval run-items in $LME/runitems.
+# (configs/servers_longmemeval*.json); run items from flotilla.memory.longmemeval run-items in $LME/runitems.
 #   bash scripts/fir/submit_longmemeval.sh base    <route> <time> <shard>...  # fast tools deep deep_tools vote vote_tools
 #   bash scripts/fir/submit_longmemeval.sh prepare <time> <shard>... [-- extra prepare args]  # GRAFT graphs, one job per shard
 #   bash scripts/fir/submit_longmemeval.sh memory  <route> <time> <shard>...  # memory memory_deep vote_memory deep_tools_memory
@@ -24,7 +24,7 @@ case $MODE in
   base)
     R=$1; TIME=$2; shift 2
     for K in "$@"; do S=$(printf "lme_%02d" "$((10#$K))")
-      "${SB[@]}" --time=$TIME --job-name="lme-$R-$S${SUFFIX:-}" "$JOB" python -m flotilla.serve \
+      "${SB[@]}" --time=$TIME --job-name="lme-$R-$S${SUFFIX:-}" "$JOB" python -m flotilla.core.serve \
         --system "$CODE/configs/systems/qwen_strategy_$R.json" --servers "$CODE/configs/servers_longmemeval.json" \
         --items-dir "$LME/runitems/base" --out "$LME/runs/$R/$S${SUFFIX:-}" --benches "$S" --concurrency ${CONC:-$([[ $R == vote* ]] && echo 2 || echo 6)}
     done ;;
@@ -32,15 +32,15 @@ case $MODE in
     TIME=$1; shift; SH=(); while [[ $# -gt 0 && $1 != -- ]]; do SH+=("$1"); shift; done; [[ ${1:-} == -- ]] && shift
     for K in "${SH[@]}"; do S=$(printf "lmem_%02d" "$((10#$K))")
       "${SB[@]}" --time=$TIME --job-name="lme-prep-$S${SUFFIX:-}" --export=ALL,GRAFT=1,GRAFT_COMMIT=${GRAFT_COMMIT:-unknown} \
-        "$JOB" python -m flotilla.serve --system "$CODE/configs/systems/qwen_strategy_memory.json" \
+        "$JOB" python -m flotilla.core.serve --system "$CODE/configs/systems/qwen_strategy_memory.json" \
         --servers "$CODE/configs/servers_longmemeval_memory.json" --out "$LME/runs/prepare/$S${SUFFIX:-}" \
-        --exec "python -m flotilla.memory_route prepare --items $LME/runitems/memory/$S.jsonl --url {url} --model {model} --cache $LME/graft_cache $*"
+        --exec "python -m flotilla.memory.memory_route prepare --items $LME/runitems/memory/$S.jsonl --url {url} --model {model} --cache $LME/graft_cache $*"
     done ;;
   memory)
     R=$1; TIME=$2; shift 2
     for K in "$@"; do S=$(printf "lmem_%02d" "$((10#$K))")
       "${SB[@]}" --time=$TIME --job-name="lme-$R-$S${SUFFIX:-}" --export=ALL,GRAFT=1,GRAFT_COMMIT=${GRAFT_COMMIT:-unknown} \
-        "$JOB" python -m flotilla.serve \
+        "$JOB" python -m flotilla.core.serve \
         --system "$CODE/configs/systems/qwen_strategy_$R.json" --servers "$CODE/configs/servers_longmemeval_memory.json" \
         --items-dir "$LME/runitems/memory" --out "$LME/runs/$R/$S${SUFFIX:-}" --benches "$S" --concurrency 32
     done ;;

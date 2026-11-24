@@ -3,7 +3,7 @@ the verifier, and the hand diagnosis (grader bug, verifier bug, wrong gold, or m
 
     python experiments/test-04-strategy-router/always_wrong.py run-01   # pilot, 50 questions
     python experiments/test-04-strategy-router/always_wrong.py run-02   # full labels, 1,450 questions
-Reads runs/<run>/audit/failures.jsonl (flotilla/failure_audit.py) and runs/<run>/audit/diagnosis.json (hand diagnosis);
+Reads runs/<run>/audit/failures.jsonl (flotilla/research/failure_audit.py) and runs/<run>/audit/diagnosis.json (hand diagnosis);
 a multiple-choice question with no written diagnosis whose gold letter was a route's first answer, rejected by the
 verifier, is described from the data. Writes runs/<run>/audit/always_wrong.md and .html."""
 import json

@@ -9,7 +9,7 @@ routes:
   vote_tools: configs/systems/qwen_strategy_vote_tools.json
   memory_routes: [memory, memory_deep, vote_memory, deep_tools_memory]  # after the GRAFT full T-REx run
 loop: {solver: prompts/solver.v1.md, verifier: prompts/verifier.v2.md, retries: 1, max_tokens: 32768}
-items: flotilla/strategy_items.py, 1,500 pool questions (50 pilot + 1,450), seed 20261120; LongMemEval for Memory
-labels: flotilla/strategy_labels.py (cheapest correct route; correctness, tokens, time per question)
+items: flotilla/routers/strategy_items.py, 1,500 pool questions (50 pilot + 1,450), seed 20261120; LongMemEval for Memory
+labels: flotilla/routers/strategy_labels.py (cheapest correct route; correctness, tokens, time per question)
 split: 70/15/15 train/dev/held-out, stratified by source and task type, seed 20261120
 rule: "keep a router if within 1 point of the best fixed route at lower compute, or more than 1 point better"

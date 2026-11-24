@@ -1,4 +1,4 @@
-from flotilla import toy_gate
+from flotilla.research import toy_gate
 
 
 def test_toy_gate_stops_on_missing_answer_or_unforced_first_call():

@@ -2,7 +2,7 @@
 
 Sources: original (docs/reference/REFERENCES.md)
 
-Used by `flotilla/error_subtypes.py` on Claude Haiku 5.5 (thinking off, max_tokens 200), once per trace whose error
+Used by `flotilla/research/error_subtypes.py` on Claude Haiku 5.5 (thinking off, max_tokens 200), once per trace whose error
 stage is reasoning_error. `{question}`, `{gold}` and `{answer}` are the question, its gold answer (or grading rubric)
 and the route's final answer; `{facts}` is the list of facts a Memory route showed, or a note that the route read the
 whole history (base routes on memory questions) or had no memory (other questions). The reply is one JSON object.

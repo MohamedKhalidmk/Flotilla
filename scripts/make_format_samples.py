@@ -3,7 +3,7 @@
     source scripts/trillium/modules.sh; PYTHONPATH=. envs/flotilla/bin/python scripts/make_format_samples.py \
         --out tests/data/formats --smalltest $SCRATCH/flotilla/smalltest
 
-For each converter in flotilla.splits (benchmarks) and flotilla.router_data (router pool) it loads the real dataset the
+For each converter in flotilla.data.splits (benchmarks) and flotilla.legacy.router_data (router pool) it loads the real dataset the
 same way the converter does, keeps a few raw rows chosen by a fixed rule (every task type and the variants that matter:
 MMLU-Pro with 10 options and with fewer, MMMU multiple choice and open, OCRBench question types, LiveCodeBench stdin and
 function problems), and writes them as JSON. Images are shrunk to at most 96 px and stored as PNG base64; LiveCodeBench
@@ -65,7 +65,7 @@ def pick(key: str, ds) -> list[int]:
                 break
         return out
     if repo == "TIGER-Lab/MMLU-Pro":
-        from flotilla.router_data import STEM
+        from flotilla.legacy.router_data import STEM
         stem = [i for i, c in enumerate(light["category"]) if c.lower() in STEM]
         lens = {i: len(light[i]["options"]) for i in stem[:2000]}
         ten = [i for i in lens if lens[i] == 10][:2]
@@ -119,7 +119,7 @@ def recorder(mod, store: dict):
 
 
 def lcb_rows(root: Path, window: tuple[str, str] | None, before: str | None) -> list[dict]:
-    from flotilla.router_data import _lcb_private
+    from flotilla.legacy.router_data import _lcb_private
     rows = []
     for f in sorted(root.glob("test*.jsonl")):
         for line in open(f):
@@ -146,7 +146,8 @@ def main() -> None:
     out = Path(a.out)
     out.mkdir(parents=True, exist_ok=True)
     from huggingface_hub import snapshot_download
-    from flotilla import router_data, splits
+    from flotilla.legacy import router_data
+    from flotilla.data import splits
 
     raw = {}
     splits.load_dataset = recorder(splits, raw)

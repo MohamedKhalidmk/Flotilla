@@ -23,7 +23,7 @@ questions are worth their GPU time; if it has flattened, they are not.
 
 ## Code needed (small)
 
-`flotilla/strategy_router.py`: a `--train-frac F --frac-seed S` option that keeps a nested, stratified fraction of the
+`flotilla/routers/strategy_router.py`: a `--train-frac F --frac-seed S` option that keeps a nested, stratified fraction of the
 train ids before training, recorded in the run's config; a unit test that the subsets are nested, stratified and
 seed-stable. `scripts/fir/submit_strategy_router.sh`: pass the two options through and name the out dir by fraction and
 seed.

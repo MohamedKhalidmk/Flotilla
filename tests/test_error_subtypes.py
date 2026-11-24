@@ -1,4 +1,4 @@
-from flotilla import error_subtypes as es
+from flotilla.research import error_subtypes as es
 
 
 def test_subtype_reply_parsing_never_guesses():

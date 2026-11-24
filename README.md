@@ -127,7 +127,7 @@ Index and rules for adding a test: [`experiments/INDEX.md`](experiments/INDEX.md
 
 | Path | What it holds |
 |---|---|
-| `flotilla/` | The system: routes, vote, verifier, tools, scoring, labelling, routers |
+| `flotilla/` | The package, in six parts: `core/` (the loop, tools, verifier rules, traces, scoring, serving), `routers/` (route labels, supervised and RL routers), `memory/` (Memory routes, LongMemEval, the GRAFT bridge), `data/` (datasets, splits, leakage), `research/` (audits and analyses), `legacy/` (router A and router B). Map: `docs/reference/package_layout.md` |
 | `configs/` | Model servers, system configs per route, data splits |
 | `prompts/` | Every prompt, versioned (a change is a new file, never an edit); unused ones in `legacy/` |
 | `experiments/` | Numbered tests: README, config, runs, table, figure; `legacy/` for results no decision rests on |

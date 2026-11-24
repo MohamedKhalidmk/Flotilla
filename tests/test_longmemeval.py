@@ -2,7 +2,7 @@ import json
 from collections import Counter
 from pathlib import Path
 
-from flotilla import longmemeval as lme
+from flotilla.memory import longmemeval as lme
 
 SAMPLE = Path(__file__).parent / "data" / "longmemeval_sample.jsonl"
 KEYS = {"item_id", "source", "task", "question_type", "question", "answer", "question_date", "sessions",

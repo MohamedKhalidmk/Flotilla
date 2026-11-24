@@ -46,7 +46,7 @@ nothing carries over between questions.
 
 Code: a new plan prompt and an empty-graph mode in GRAFT's `my_method/working_memory.py` (the question-layer parse
 is for questions about stored facts; maths needs Qwen's own plan), called from Flotilla through
-`flotilla/graft_bridge.py` as route `reason_graph`, with Qwen on the job's own vLLM server.
+`flotilla/memory/graft_bridge.py` as route `reason_graph`, with Qwen on the job's own vLLM server.
 
 ## Pilot (free, Qwen)
 

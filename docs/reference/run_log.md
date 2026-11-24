@@ -289,3 +289,7 @@ Correction, same day: the first one-history, toy-gate and F36 resubmissions were
 ## 2026-11-24 09:25 Mountain: wrong-gold review and language bar PR
 
 Built reports/gold_review/ (build.py, index.md, 20 question files) from every audit that marked wrong gold: test 02 hand checks, test 03 gpt-oss failure audit, test 04 run-02 and run-03 hand diagnoses. No verdicts written and no labels changed; each file waits for the user's call. GitHub's language bar reads main, which lacks .gitattributes, so the one-file commit went to branch language-bar as PR 2 to main for the user to merge. The flotilla/ package reorganization is queued (row 46) until every cluster job is done.
+
+## 2026-11-24: flotilla/ package split into subpackages (branch reorganize-package)
+
+The user asked for the package to be split into core, routers, memory, data and research, with router A and router B in legacy. Done on branch reorganize-package off restructure, in a separate checkout; the suite passes there (126 passed, 1 skipped, same as restructure). Every module moved unchanged apart from imports and three file-relative paths. Code, tests, scripts, configs, prompts and current docs use the new names; this log, PROJECT_HISTORY and the files under experiments/*/runs/, reports/ and results/ keep the old names as run. Map: docs/reference/package_layout.md. Not merged, and nothing copied to Fir, Nibi or Trillium: that waits for every running and queued job to finish and the user's yes.

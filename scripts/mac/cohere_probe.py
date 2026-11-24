@@ -3,7 +3,7 @@ the text lands. The key is read from the environment and never printed."""
 import json, os, sys
 sys.path.insert(0, "/Users/mk/flotilla")
 from openai import OpenAI
-from flotilla.system import solver_messages, parse_final
+from flotilla.core.system import solver_messages, parse_final
 item = json.loads(open("/Users/mk/flotilla-data/smalltest/gsm8k.jsonl").readline())
 c = OpenAI(base_url="https://api.cohere.ai/compatibility/v1", api_key=os.environ["COHERE_API_KEY"], max_retries=0, timeout=600)
 M = "command-a-plus-05-2026"

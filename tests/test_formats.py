@@ -29,7 +29,9 @@ for mod, attrs in (("datasets", {"load_dataset": None}), ("huggingface_hub", {"s
     except ImportError:  # the Mac has neither; the converters only need the names at import time
         sys.modules[mod] = types.SimpleNamespace(**attrs)
 
-from flotilla import export_ruler, router_data, splits, strategy_items  # noqa: E402
+from flotilla.data import export_ruler, splits
+from flotilla.legacy import router_data
+from flotilla.routers import strategy_items  # noqa: E402
 
 TASK_TYPES = {"math", "science_mc", "instruction", "code", "vision", "long_context"}
 SCORERS = {"math_verify", "mc_letter", "ifeval", "mmmu", "ocrbench", "ruler_substring", "lcb"}
@@ -105,7 +107,7 @@ def check_core(it: dict, id_key: str = "item_id", graded_here: bool = True):
             assert base64.b64decode(b)[:8] == b"\x89PNG\r\n\x1a\n"
 
 
-# ---------------------------------------------------------------- benchmarks (flotilla.splits)
+# ---------------------------------------------------------------- benchmarks (flotilla.data.splits)
 
 def bench(name: str) -> list[dict]:
     items = list(splits.BENCHES[name]())
@@ -185,7 +187,7 @@ def test_lcb_keeps_every_test(loader):
             assert it["public_tests"] is None and r["starter_code"] in it["task"]
 
 
-# ---------------------------------------------------------------- RULER (flotilla.export_ruler)
+# ---------------------------------------------------------------- RULER (flotilla.data.export_ruler)
 
 def test_ruler_items_and_round_trip():
     """Checks that exported RULER 32k and 64k items have a list of gold strings and the ruler_substring scorer, and rebuild exactly from the lm-eval instance.
@@ -201,7 +203,7 @@ def test_ruler_items_and_round_trip():
             {kk: v for kk, v in it.items() if kk != "trimmed_for_tests"}
 
 
-# ---------------------------------------------------------------- router pool (flotilla.router_data) and label items
+# ---------------------------------------------------------------- router pool (flotilla.legacy.router_data) and label items
 
 def pool(name: str) -> list[dict]:
     rows = list(router_data.SOURCES[name]())

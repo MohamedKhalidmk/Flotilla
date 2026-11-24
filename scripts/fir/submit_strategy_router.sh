@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
-# test-04 supervised routers (flotilla/strategy_router.py) on Fir: one GPU job for the two ModernBERT routers
+# test-04 supervised routers (flotilla/routers/strategy_router.py) on Fir: one GPU job for the two ModernBERT routers
 # (def-sylu_gpu), one CPU job for bge-small + logistic regression and kNN (def-sylu_cpu), then a GPU job that evaluates
 # all four on dev and writes the table (afterok both). Held-out is never evaluated here: that is one later run of
-#   ... python -m flotilla.strategy_router evaluate --labels L --items I --out OUT --held-out
+#   ... python -m flotilla.routers.strategy_router evaluate --labels L --items I --out OUT --held-out
 #   bash scripts/fir/submit_strategy_router.sh dry-run|train <out dir under $SCRATCH/flotilla/runs/strategy-router>
 # Inputs: LABELS (graded folder: per_question.jsonl, split.json, summary.json) and ITEMS (question shards, glob kept
 # quoted so Python expands it). Models come from the shared offline HF cache ($SCRATCH/flotilla/hf: ModernBERT-base,
@@ -24,13 +24,13 @@ ARGS=(--labels "$LABELS" --items "${ITEM_GLOBS[@]}" --out "$OUT")
 read -ra TRAIN_ARGS <<< "${TRAIN_ARGS:-}"  # training only, e.g. TRAIN_ARGS="--train-frac 0.5 --frac-seed 20261121" (learning curve)
 JOB="$CODE/scripts/trillium/job.sbatch"
 G=$(sbatch --parsable --account=def-sylu_gpu --gpus-per-node=${ROUTER_GPU:-h100:1} --cpus-per-task=8 --mem=64G --time="$GPU_TIME" \
-  --job-name="sr-$MODE-mb" --chdir="$SCRATCH/flotilla/logs" "$JOB" python -m flotilla.strategy_router "$MODE" "${ARGS[@]}" ${TRAIN_ARGS[@]+"${TRAIN_ARGS[@]}"} \
+  --job-name="sr-$MODE-mb" --chdir="$SCRATCH/flotilla/logs" "$JOB" python -m flotilla.routers.strategy_router "$MODE" "${ARGS[@]}" ${TRAIN_ARGS[@]+"${TRAIN_ARGS[@]}"} \
   --routers label success)
 C=$(sbatch --parsable --account=def-sylu_cpu --cpus-per-task=8 --mem=32G --time="$CPU_TIME" \
-  --job-name="sr-$MODE-emb" --chdir="$SCRATCH/flotilla/logs" "$JOB" python -m flotilla.strategy_router "$MODE" "${ARGS[@]}" ${TRAIN_ARGS[@]+"${TRAIN_ARGS[@]}"} \
+  --job-name="sr-$MODE-emb" --chdir="$SCRATCH/flotilla/logs" "$JOB" python -m flotilla.routers.strategy_router "$MODE" "${ARGS[@]}" ${TRAIN_ARGS[@]+"${TRAIN_ARGS[@]}"} \
   --routers bge_lr knn --device cpu)
 # evaluate on a GPU: ModernBERT inference over 217 dev questions took over 10 min on 8 CPUs (dry run job 4864962)
 E=$(sbatch --parsable --account=def-sylu_gpu --gpus-per-node=${ROUTER_GPU:-h100:1} --cpus-per-task=8 --mem=64G --time="$EVAL_TIME" \
   --dependency="afterok:$G:$C" --job-name="sr-$MODE-eval" --chdir="$SCRATCH/flotilla/logs" "$JOB" \
-  python -m flotilla.strategy_router evaluate "${ARGS[@]}" ${TRAIN_ARGS[@]+"${TRAIN_ARGS[@]}"})
+  python -m flotilla.routers.strategy_router evaluate "${ARGS[@]}" ${TRAIN_ARGS[@]+"${TRAIN_ARGS[@]}"})
 echo "gpu $G  cpu $C  eval $E  -> $OUT"

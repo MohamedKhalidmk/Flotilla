@@ -16,6 +16,6 @@ else RES="--gpus-per-node=${GPU:-h100:1} --cpus-per-task=12 --mem=100G"; fi
 sbatch --parsable --account=def-sylu_gpu $RES --chdir="$D/logs" \
   --time=$TIME ${DEP:+--dependency=afterok:$DEP} --job-name="lmeret-$V-r$R" \
   --export=ALL,GRAFT=1,GRAFT_COMMIT=${GRAFT_COMMIT:-unknown},FLOTILLA_GRAFT_CACHE=$D/cache_g41_fix \
-  "$CODE/scripts/fir/lme_job.sbatch" python -m flotilla.serve --system "$CODE/configs/systems/lme_retrieval/$V.json" \
+  "$CODE/scripts/fir/lme_job.sbatch" python -m flotilla.core.serve --system "$CODE/configs/systems/lme_retrieval/$V.json" \
   --servers "$CODE/configs/servers_longmemeval_memory.json" --items-dir "$D/items" --benches lmedev \
   --out "$D/ret/$V/r$R" --concurrency 32

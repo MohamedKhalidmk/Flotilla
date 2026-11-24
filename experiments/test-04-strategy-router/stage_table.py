@@ -1,13 +1,13 @@
 """Error-stage counts per route and task type for run-04-lme-maj3 (PROTOCOL.md 7.1).
 
     python stage_table.py STAGES.jsonl [STAGES.jsonl ...] > runs/run-04/maj3/error_stages.md
-Input: rows from `python -m flotilla.scoring stages` (pool part and LongMemEval part). Labels are not changed.
+Input: rows from `python -m flotilla.core.scoring stages` (pool part and LongMemEval part). Labels are not changed.
 """
 import json
 import sys
 from collections import Counter, defaultdict
 
-from flotilla.scoring import LIVE_STAGES, STAGE_RULES
+from flotilla.core.scoring import LIVE_STAGES, STAGE_RULES
 
 ROUTES = ["fast", "tools", "deep", "deep_tools", "vote", "vote_tools", "memory", "memory_deep", "deep_tools_memory",
           "vote_memory"]

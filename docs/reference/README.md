@@ -8,6 +8,7 @@ The documents everything else points to.
 | [REGISTRY.md](REGISTRY.md) | Flotilla's candidates (F01...) and setups (S102...), frozen IDs |
 | [run_log.md](run_log.md) | Every decision with its reason, and every dollar |
 | [PROMPTS.md](PROMPTS.md) | The versioned prompts behind every role |
+| [package_layout.md](package_layout.md) | The six subpackages of flotilla/ and where every old module moved (2026-11-24) |
 | [TESTS.md](TESTS.md) | Every test in plain words (what it checks, what it guards against), generated from the docstrings, and the gaps |
 
 GRAFT's registry (G01..., S01-S101): [GRAFT docs/reference/REGISTRY.md](https://github.com/MohamedKhalidmk/GRAFT/blob/graft-linking-hybrid/docs/reference/REGISTRY.md).

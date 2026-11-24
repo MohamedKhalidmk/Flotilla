@@ -3,7 +3,7 @@ import base64, io, json, os, sys
 sys.path.insert(0, "/Users/mk/flotilla")
 from openai import OpenAI
 from PIL import Image
-from flotilla.system import solver_messages, parse_final
+from flotilla.core.system import solver_messages, parse_final
 it = [json.loads(l) for l in open("/Users/mk/flotilla-data/smalltest/ocrbench.jsonl")][0]
 c = OpenAI(base_url="https://api.cohere.ai/compatibility/v1", api_key=os.environ["COHERE_API_KEY"], max_retries=0, timeout=600)
 M = "command-a-plus-05-2026"

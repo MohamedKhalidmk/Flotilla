@@ -27,7 +27,7 @@ enough to pay for its compute, without turning right answers wrong?
   held-out untouched). Whole history in the prompt, as test 04's base routes (`configs/servers_longmemeval.json`).
 - **Arms:** Fast and Deep, each with and without the LLM check (`llm_verify` in `configs/systems/qwen_strategy_*_llmv.json`).
   Everything else as test 04: solver prompt v1, verifier v2, temperature 0 for one sample.
-- **The check** (`flotilla/system.py`, `llm_check`): runs only when the exact checks pass and the task type has none.
+- **The check** (`flotilla/core/system.py`, `llm_check`): runs only when the exact checks pass and the task type has none.
   Qwen W4A16 on the solver's own server, thinking off, temperature 0, at most 1,024 tokens, with verifier v2's
   prompt (`prompts/verifier.v2.md`, "LLM check"): the full task text (history and question) and the answer. A reject
   gets the existing one retry (told it was wrong and why); the retry's answer is final and is not checked again. A

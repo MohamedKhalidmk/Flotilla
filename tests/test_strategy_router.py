@@ -1,4 +1,4 @@
-"""flotilla/strategy_router.py on small synthetic labels: route order and masks from the labels, "none" items, ties,
+"""flotilla/routers/strategy_router.py on small synthetic labels: route order and masks from the labels, "none" items, ties,
 threshold rule, held-out never parsed, and an end-to-end train + evaluate of the two cheap routers (fake embeddings)."""
 import json
 import types
@@ -6,7 +6,7 @@ import types
 import numpy as np
 import pytest
 
-from flotilla import strategy_router as sr
+from flotilla.routers import strategy_router as sr
 
 # memory is the cheapest route but exists only on items with a memory: an unmasked router would pick it everywhere
 SUMMARY = {"questions": 40, "per_strategy": {
@@ -225,7 +225,7 @@ def test_load_reads_row_costs_and_task_text(tmp_path):
 def test_item_text_longmemeval_reads_the_question(tmp_path):
     """Checks that item_text gives a LongMemEval item's history mark and question without the session text, and a pool item's task unchanged.
     Guards against: the router embedding the whole chat history, or the word memory, instead of the question."""
-    from flotilla.strategy_router import HISTORY_MARK, item_text, read_texts
+    from flotilla.routers.strategy_router import HISTORY_MARK, item_text, read_texts
     lme = {"item_id": "lme-1", "task": "memory", "question": "What degree did I graduate with?", "question_date": "2023/05/30",
            "sessions": [[{"role": "user", "content": "zz-session-text"}]]}
     pool = {"id": "p-1", "task": "What is 2 + 2?"}
@@ -240,7 +240,7 @@ def test_item_text_longmemeval_reads_the_question(tmp_path):
 def test_train_subset_nested_stratified_and_seeded():
     """Checks that train_subset keeps source proportions, nests smaller fractions inside larger ones, keeps ID order, and changes only with the seed.
     Guards against: learning-curve subsets that are not nested, so a bigger subset drops questions a smaller one had."""
-    from flotilla.strategy_router import train_subset
+    from flotilla.routers.strategy_router import train_subset
     rows = {f"m{i}": {"source": "math", "task_type": "math"} for i in range(40)}
     rows.update({f"l{i}": {"source": "longmemeval", "task_type": "memory"} for i in range(20)})
     ids = sorted(rows)
@@ -260,7 +260,7 @@ def test_lr_router_pickles_when_run_with_dash_m():
     import subprocess, sys
     from pathlib import Path
     root = Path(__file__).resolve().parent.parent
-    r = subprocess.run([sys.executable, "-m", "flotilla.strategy_router", "pickle-check"], cwd=root,
+    r = subprocess.run([sys.executable, "-m", "flotilla.routers.strategy_router", "pickle-check"], cwd=root,
                        capture_output=True, text=True, env={**__import__("os").environ, "PYTHONPATH": str(root)})
     assert r.returncode == 0, r.stderr[-2000:]
-    assert "pickle ok flotilla.strategy_router" in r.stdout
+    assert "pickle ok flotilla.routers.strategy_router" in r.stdout

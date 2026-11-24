@@ -2,7 +2,7 @@
 
 Sources: ifeval, lm-eval (docs/reference/REFERENCES.md)
 
-Used by `flotilla/ifeval_rules.py` (`list_rules`) once per question, with thinking off and temperature 0. `{question}`
+Used by `flotilla/core/ifeval_rules.py` (`list_rules`) once per question, with thinking off and temperature 0. `{question}`
 is the question alone (`system.question_only`: never a chat history). The IDs and argument names are those of IFEval's
 official checkers (`lm_eval.tasks.ifeval.instructions_registry`); the reply is validated against them.
 
