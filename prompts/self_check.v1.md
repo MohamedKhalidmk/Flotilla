@@ -2,7 +2,7 @@
 
 Sources: critic (docs/reference/REFERENCES.md)
 
-Used by `flotilla/system.py` (`self_check`): after the first answer, up to 3 rounds of a check (Qwen must call
+Used by `flotilla/core/system.py` (`self_check`): after the first answer, up to 3 rounds of a check (Qwen must call
 python_exec; thinking off, temperature 0) and, when the check does not pass, a revision. `{question}` is the task
 (only its question line when it holds a chat history), `{answer}` the current answer, `{program}` and `{output}` the
 check program and everything it printed or raised.

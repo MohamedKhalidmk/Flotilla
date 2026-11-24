@@ -20,7 +20,7 @@ echo "== probe: one GSM8K call, shows where the answer text lands"
 $P scripts/mac/cohere_probe.py || { echo "PROBE FAILED. Stopping."; unset COHERE_API_KEY; exit 1; }
 
 echo "== smoke check: 2 OCRBench items (image input, thinking on)"
-$P -m flotilla.smalltest --config configs/systems/cmda_alone.json --items-dir $ITEMS --benches ocrbench \
+$P -m flotilla.core.smalltest --config configs/systems/cmda_alone.json --items-dir $ITEMS --benches ocrbench \
   --out $SMOKE --max-calls 3 --concurrency 1 --rpm 18
 if [ ! -s $SMOKE/trace.jsonl ] || ! grep -q '"final_answer": "' $SMOKE/trace.jsonl; then
   echo "SMOKE CHECK FAILED: see $SMOKE/trace.jsonl. Stopping before the full run."
@@ -30,7 +30,7 @@ fi
 echo "smoke check passed"
 
 run() {
-  $P -m flotilla.smalltest --config configs/systems/cmda_alone.json --items-dir $ITEMS --out $OUT \
+  $P -m flotilla.core.smalltest --config configs/systems/cmda_alone.json --items-dir $ITEMS --out $OUT \
     --max-calls 894 --rpm 18 --concurrency 8 2>&1 | tee -a $OUT/run.log
 }
 

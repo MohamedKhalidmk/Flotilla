@@ -16,6 +16,6 @@ mkdir -p "$F/logs" "$F/pilot/$R"
 if [[ ${PILOT_GPU:-h100} == slice ]]; then RES="--account=def-sylu_gpu --gpus-per-node=nvidia_h100_80gb_hbm3_3g.40gb:1 --cpus-per-task=6 --mem=60G"
 else RES="$(bash "$CODE/scripts/nibi/sbatch_opts.sh" 1) --gpus-per-node=h100:1 --cpus-per-task=12 --mem=200G"; fi
 sbatch --parsable $RES ${PILOT_SBATCH_EXTRA:-} \
-  --time=$TIME --job-name="pilot-$R-$PART" --chdir="$F/logs" "$CODE/scripts/trillium/job.sbatch" python -m flotilla.serve \
+  --time=$TIME --job-name="pilot-$R-$PART" --chdir="$F/logs" "$CODE/scripts/trillium/job.sbatch" python -m flotilla.core.serve \
   --system "$CODE/configs/systems/qwen_strategy_$R.json" --servers "$SERVERS" --items-dir "$F/items" \
   --out "$F/pilot/$R/$PART" --benches "$BENCH" --concurrency $CONC

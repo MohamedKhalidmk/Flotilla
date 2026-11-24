@@ -1,9 +1,9 @@
-"""The LongMemEval label merge's verdict checks (flotilla/strategy_labels.py)."""
+"""The LongMemEval label merge's verdict checks (flotilla/routers/strategy_labels.py)."""
 import json
 
 import pytest
 
-from flotilla import strategy_labels as sl
+from flotilla.routers import strategy_labels as sl
 
 
 def test_every_longmemeval_question_needs_exactly_one_verdict_per_route():

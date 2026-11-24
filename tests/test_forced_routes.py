@@ -4,8 +4,8 @@ from types import SimpleNamespace as NS
 
 import pytest
 
-from flotilla import system
-from flotilla.trace import Trace
+from flotilla.core import system
+from flotilla.core.trace import Trace
 
 
 def _reply(r):
@@ -126,8 +126,8 @@ def test_check_verdict_reads_the_last_check_line():
 def test_ground_truth_grading_uses_open_instruct_rules():
     """Checks that instruction answers are graded by the question's RLVR-IFeval ground-truth rule (open-instruct's function), that string options are split before the choice check, and that a JSON-format rule is met by the loop.
     Guards against: the old regex grader that found a rule in only 106 of 236 questions, or a choice check that passes any answer."""
-    from flotilla.ifeval_rules import grade_ground_truth, split_options
-    from flotilla.vendor.open_instruct_if_functions import IF_FUNCTIONS_MAP
+    from flotilla.core.ifeval_rules import grade_ground_truth, split_options
+    from flotilla.core.vendor.open_instruct_if_functions import IF_FUNCTIONS_MAP
     rlvr = ["validate_sections", "verify_keyword_frequency", "validate_quotation", "validate_highlighted_sections",
             "verify_postscript", "validate_uppercase", "validate_placeholders", "validate_no_commas",
             "validate_json_format", "validate_lowercase", "verify_bullet_points", "verify_letter_frequency",
@@ -147,7 +147,7 @@ def test_ground_truth_grading_uses_open_instruct_rules():
 def test_label_grader_prefers_ground_truth():
     """Checks that the label grader uses an instruction item's ground_truth when it has one and the old regex otherwise.
     Guards against: the relabel still grading instructions with the regex, or old labels changing meaning."""
-    from flotilla.label_loop import grade
+    from flotilla.routers.label_loop import grade
     gt = json.dumps({"func_name": "validate_lowercase"})
     assert grade({"task_type": "instruction", "task": "anything", "ground_truth": gt}, "all lower case")
     assert not grade({"task_type": "instruction", "task": "anything", "ground_truth": gt}, "Not Lower")
@@ -158,7 +158,7 @@ def test_rule_list_parsing_drops_unknown_ids_and_bad_arguments():
     """Checks that constraint_check v2 keeps listed rules whose ID and arguments build an official checker, drops unknown IDs and bad arguments, and checks a draft with the official checkers.
     Guards against: a hallucinated rule ID or argument crashing the check or being counted as met."""
     pytest.importorskip("lm_eval")
-    from flotilla.ifeval_rules import check_rules, parse_rules
+    from flotilla.core.ifeval_rules import check_rules, parse_rules
     reply = ('```json\n{"rules": [{"instruction_id": "change_case:english_lowercase", "kwargs": {}}, '
              '{"instruction_id": "made:up", "kwargs": {}}, '
              '{"instruction_id": "detectable_format:number_bullet_lists", "kwargs": {"num_bullets": 3}}]}\n```')

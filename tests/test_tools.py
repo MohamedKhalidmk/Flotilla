@@ -1,4 +1,4 @@
-from flotilla import tools
+from flotilla.core import tools
 
 
 def test_sympy_check_equivalent_forms():
@@ -43,7 +43,7 @@ def test_constraint_check_json_and_ending():
 def test_forbidden_keywords_are_not_required():
     """Checks that keywords the task forbids fail the answer when present and are not required when absent.
     Guards against: a correct answer rejected for not containing words it was told to leave out."""
-    from flotilla.tools import constraint_check
+    from flotilla.core.tools import constraint_check
     task = "Do not include keywords laborage, narcomatous, lampful in the response. What is the sentiment?"
     assert constraint_check(task, "negative")["ok"]
     assert not constraint_check(task, "negative, a lampful of it")["ok"]
@@ -52,7 +52,7 @@ def test_forbidden_keywords_are_not_required():
 def test_postscript_uses_the_asked_phrase_after_the_main_text():
     """Checks that the postscript rule looks for the phrase the task asks for, such as Addendum or PS, after some main text.
     Guards against: a postscript starting with Addendum being rejected, or a postscript with no main text before it being accepted."""
-    from flotilla.tools import constraint_check
+    from flotilla.core.tools import constraint_check
     task = "At the end of your response, please explicitly add a postscript starting with Addendum:\nQuestion?"
     assert constraint_check(task, "BLEU and ROUGE. Addendum: also BERTScore.")["ok"]
     assert not constraint_check(task, "Addendum: BLEU and ROUGE.")["ok"]
@@ -63,7 +63,7 @@ def test_postscript_uses_the_asked_phrase_after_the_main_text():
 def test_markdown_divider_paragraphs():
     """Checks that paragraphs split by the markdown divider * * * are counted against the asked number.
     Guards against: a two-paragraph answer with a * * * divider being counted as one paragraph."""
-    from flotilla.tools import constraint_check
+    from flotilla.core.tools import constraint_check
     task = "Your response should contain 2 paragraphs. You separate paragraphs using the markdown divider: * * *"
     assert constraint_check(task, "First part.\n\n* * *\n\nSecond part.")["ok"]
     assert not constraint_check(task, "Only one part.")["ok"]
@@ -72,7 +72,7 @@ def test_markdown_divider_paragraphs():
 def test_capital_word_limit_is_a_count():
     """Checks that the all-capitals word limit counts capitalised words against the asked maximum.
     Guards against: an answer with one capitalised word rejected under an at most 2 times limit."""
-    from flotilla.tools import constraint_check
+    from flotilla.core.tools import constraint_check
     task = "In your response, words with all capital letters should appear at most 2 times. Explain."
     assert constraint_check(task, "This is NOT shouting.")["ok"]
     assert not constraint_check(task, "THIS IS ALL SHOUTING")["ok"]
@@ -81,7 +81,7 @@ def test_capital_word_limit_is_a_count():
 def test_whole_output_json_is_met_by_the_loop():
     """Checks that the whole-output JSON rule passes only when the loop wraps the answer, and that a JSON array request does not block bullets.
     Guards against: a correct answer rejected as not JSON when the Flotilla loop already wraps its output in JSON."""
-    from flotilla.tools import constraint_check
+    from flotilla.core.tools import constraint_check
     task = "Entire output should be wrapped in JSON format. Where is a basketball court likely to be outdoors?"
     assert constraint_check(task, "park", loop_wrapped=True)["ok"]
     assert not constraint_check(task, "park")["ok"]
@@ -92,7 +92,7 @@ def test_whole_output_json_is_met_by_the_loop():
 def test_float_outputs_within_tolerance():
     """Checks that same_tokens matches floats that differ only in the last digits and still tells apart different numbers and integers.
     Guards against: a correct code output failing a test over float rounding in the 15th digit."""
-    from flotilla.tools import same_tokens
+    from flotilla.core.tools import same_tokens
     assert same_tokens(["215.913355350494385"], ["215.913355350494384765625"])
     assert same_tokens(["0.749999999999999"], ["0.7500000000000000"])
     assert not same_tokens(["0.74"], ["0.75"])
@@ -102,7 +102,7 @@ def test_float_outputs_within_tolerance():
 def test_math_format_matches():
     """Checks that the maths grader accepts answers equal to the gold without dollar signs or LaTeX text, and the right letter in a lettered question.
     Guards against: answering C, where option C is 0.20, being graded wrong against a gold of 0.20."""
-    from flotilla.label_loop import grade
+    from flotilla.routers.label_loop import grade
     assert grade({"task_type": "math", "task": "price?", "gold": "\\$3.50"}, "3.50")
     assert grade({"task_type": "math", "task": "list", "gold": "\\text{Softball, Kickball, Picnic}"}, "Softball, Kickball, Picnic")
     mc = "Which is closest?\n\nA. 0.10\n\nB. 0.15\n\nC. 0.20\n\nD. 0.25\n\n(Type the letter that corresponds to your answer.)"
@@ -115,7 +115,7 @@ def test_math_format_matches():
 def test_math_unicode_units_and_thousands():
     """Checks that the maths grader accepts Unicode infinity, union and root signs, thousands separators, and a unit or short phrase around the number.
     Guards against: 852 BC graded wrong against a gold of 852, or 650 graded right against 670."""
-    from flotilla.label_loop import grade
+    from flotilla.routers.label_loop import grade
     g = lambda gold, ans: grade({"task_type": "math", "task": "q", "gold": gold}, ans)
     assert g("(-\\infty,-2)\\cup(-2, 2)\\cup(2,\\infty)", "(-∞, -2) ∪ (-2, 2) ∪ (2, ∞)")
     assert g("(-\\sqrt{2}, 0, \\sqrt{2})", "(-√2, 0, √2)")

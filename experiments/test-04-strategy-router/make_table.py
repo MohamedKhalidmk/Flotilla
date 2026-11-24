@@ -1,5 +1,5 @@
 """test-04 table: one row per route the captain (Qwen) can choose, from the newest graded run under runs/
-(graded*/summary.json and per_question.jsonl, written by flotilla/strategy_labels.py). Routes with no graded run
+(graded*/summary.json and per_question.jsonl, written by flotilla/routers/strategy_labels.py). Routes with no graded run
 yet stay as planned rows with empty cells; nothing is typed by hand."""
 import json
 import sys
@@ -41,7 +41,7 @@ if graded:
                  "questions": n, "accuracy": summ.get("best_any_strategy"), "output_tokens_per_question": None,
                  "gpu_seconds_per_question": None, "cheapest_correct": None, "run": f"{run}/{graded[-1].parent.name}",
                  "status": "labels"})
-note = (f"Full labels: {n} pool questions, every route on every question, graded against gold (flotilla/strategy_labels.py). "
+note = (f"Full labels: {n} pool questions, every route on every question, graded against gold (flotilla/routers/strategy_labels.py). "
         f"Cheapest correct = the label a router learns. No route right: {summ['labels'].get('none', 0)}; "
         f"some route right: {summ.get('best_any_strategy')}. GPU-seconds = whole job / questions (server load included)."
         if graded else "Not run yet.")

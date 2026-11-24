@@ -1,4 +1,4 @@
-"""Memory routes (flotilla/memory_route.py): availability, GRAFT documents, cache keys, the memory block, the judge,
+"""Memory routes (flotilla/memory/memory_route.py): availability, GRAFT documents, cache keys, the memory block, the judge,
 and an end-to-end check with a fake Qwen and GRAFT's fake gateway on toy histories (skipped when GRAFT or its
 environment is missing; set GRAFT_REPO / GRAFT_PYTHON)."""
 import asyncio
@@ -9,9 +9,9 @@ from pathlib import Path
 
 import pytest
 
-from flotilla import memory_route as mr
-from flotilla import system
-from flotilla.trace import Trace
+from flotilla.memory import memory_route as mr
+from flotilla.core import system
+from flotilla.core.trace import Trace
 
 @pytest.fixture(autouse=True)
 def _offline_preset(monkeypatch, request):
@@ -157,7 +157,7 @@ def test_judge_answer_with_fake_qwen(monkeypatch):
 def test_grade_refuses_memory_items():
     """Checks that the label grader raises an error when given a memory item.
     Guards against: memory answers silently counted wrong by the label grader instead of being sent to LongMemEval's judge."""
-    from flotilla.label_loop import grade
+    from flotilla.routers.label_loop import grade
     with pytest.raises(ValueError):
         grade({"task_type": "memory"}, "x")
 
@@ -168,7 +168,7 @@ def test_strategy_labels_with_memory_routes(tmp_path, monkeypatch):
 
     Pool items have no Memory traces (unavailable, not wrong); LME items are graded by judge verdicts;
     the GRAFT build is counted once per history."""
-    from flotilla import strategy_labels
+    from flotilla.routers import strategy_labels
     pool = tmp_path / "pool.jsonl"
     pool.write_text(json.dumps({"id": "p1", "source": "gsm8k", "task_type": "science_mc", "gold": "B", "task": "q"}) + "\n")
     lme = tmp_path / "lme.jsonl"
@@ -261,7 +261,7 @@ def test_smalltest_run_with_a_memory_config(tmp_path, monkeypatch):
     The path real label runs take (serve -> smalltest.run): pool items skipped, LME items answered with memory,
     build logged in graft_prepare.json apart from the traces."""
     import argparse
-    from flotilla import smalltest
+    from flotilla.core import smalltest
     fake = mr.FakeQwen()
     monkeypatch.setattr(system, "client_for", lambda srv: fake)
     monkeypatch.setenv("FLOTILLA_GRAFT_LLM", "fake")
@@ -285,7 +285,7 @@ def test_smalltest_run_with_a_memory_config(tmp_path, monkeypatch):
 def test_cheapest_label_uses_the_rows_own_costs():
     """Checks that cheapest_label picks the right route with the lowest GPU-seconds on that row, uses route order on ties, and gives none if all fail.
     Guards against: a LongMemEval row labelled fast when memory was right and cheaper on that row."""
-    from flotilla.strategy_labels import cheapest_label
+    from flotilla.routers.strategy_labels import cheapest_label
     lme = {"fast": {"available": True, "correct": True, "gpu_seconds": 300.0},
            "deep": {"available": True, "correct": True, "gpu_seconds": 900.0},
            "memory": {"available": True, "correct": True, "gpu_seconds": 40.0},
@@ -344,7 +344,7 @@ def test_merge_keeps_legacy_pool_rows_available(tmp_path):
     run-03's pool rows predate the "available" field: the merge must treat a route with a verdict as available, so
     pool rows keep their labels and get per-row GPU-seconds (the first run-04-lme merge labelled all 1,450 "none")."""
     from types import SimpleNamespace as NS
-    from flotilla import strategy_labels as sl
+    from flotilla.routers import strategy_labels as sl
     pdir = tmp_path / "run-03"
     pdir.mkdir()
     legacy = {"id": "p1", "source": "gsm8k", "task_type": "math", "label": "fast",
@@ -399,7 +399,7 @@ def test_ask_for_more_adds_pool_facts_within_the_limits(monkeypatch):
     """Checks that with ask_more on, a NEED MORE MEMORIES reply adds the next pool batch and asks again, up to the ask limit.
     Guards against: G40 on LongMemEval silently answering with only the first facts, or asking forever past the limits."""
     from types import SimpleNamespace as NS
-    from flotilla import system
+    from flotilla.core import system
     facts = [{"id": f"f:{i}", "subject": "user", "relation": "r", "object": f"o{i}", "chunk_id": 0} for i in range(12)]
     mem = {"chunk_map": [{"date": "2023/05/01"}], "retrieval": {"facts": facts[:2], "pool": facts[2:]}}
     shown = []

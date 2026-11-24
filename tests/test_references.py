@@ -45,5 +45,5 @@ def test_reference_entries_point_at_real_files():
     text = (ROOT / "docs/reference/REFERENCES.md").read_text()
     paths = {p for p in re.findall(r"`((?:flotilla|prompts|scripts|tests|docs|configs|notes)/[^`*]+)`", text)}
     assert not sorted(p for p in paths if not (ROOT / p).exists())
-    for f in ("flotilla/memory_route.py", "flotilla/longmemeval.py", "flotilla/scoring.py", "prompts/vote_usc.v1.md"):
+    for f in ("flotilla/memory/memory_route.py", "flotilla/memory/longmemeval.py", "flotilla/core/scoring.py", "prompts/vote_usc.v1.md"):
         assert named_sources(ROOT / f), f

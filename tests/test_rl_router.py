@@ -1,4 +1,4 @@
-"""flotilla/rl_router.py with fake models only: masks, stop, the supervised start, reward with the time penalty, chain
+"""flotilla/routers/rl_router.py with fake models only: masks, stop, the supervised start, reward with the time penalty, chain
 logging through the real Flotilla loop (memory_route.FakeQwen subclass), resume, held-out refusal, and the
 beyond-oracle count with wrong-gold exclusion."""
 import asyncio
@@ -7,8 +7,8 @@ import json
 import numpy as np
 import pytest
 
-from flotilla import rl_router as rl
-from flotilla import system
+from flotilla.routers import rl_router as rl
+from flotilla.core import system
 
 ROUTES6 = ["fast", "tools", "deep", "deep_tools", "vote", "vote_tools"]
 COST = {"fast": 2.0, "tools": 4.0, "deep": 8.0, "deep_tools": 12.0, "vote": 16.0, "vote_tools": 20.0}

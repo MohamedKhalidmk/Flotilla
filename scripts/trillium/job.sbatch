@@ -2,7 +2,7 @@
 # Generic Trillium GPU job: runs one Flotilla command offline. Submit from trig-login01 with the job's
 # working directory on scratch (/project is read-only on Trillium compute nodes):
 #   sbatch --gpus-per-node=h100:1 --time=3:00:00 --job-name=q-w4 --chdir=$SCRATCH/flotilla/logs \
-#          $PROJECT/flotilla/scripts/trillium/job.sbatch envs/quant/bin/python -m flotilla.quantize ...
+#          $PROJECT/flotilla/scripts/trillium/job.sbatch envs/quant/bin/python -m flotilla.core.quantize ...
 # First argument: a program in the serving env ("python"), or a path relative to the code dir such as
 # envs/quant/bin/python (Trillium submits with --export=NONE, so env vars can't select the env).
 # Whole-node GPU jobs must not use -p; the scheduler routes them. Records GPU memory every 30 s.

@@ -54,7 +54,7 @@ OUT=$SCRATCH/flotilla/test04-labels/$NAME
 [[ -e $OUT ]] && { echo "$OUT exists: never overwrite a label set"; exit 4; }
 echo "${#ARGS[@]} run folders (10 routes x 20 shards)"
 sbatch --parsable --account=def-sylu_cpu --cpus-per-task=32 --mem=64G --time=${TIME:-1:00:00} --job-name="lme-merge-$NAME" \
-  --chdir="$SCRATCH/flotilla/logs" "$CODE/scripts/trillium/job.sbatch" python -m flotilla.strategy_labels \
+  --chdir="$SCRATCH/flotilla/logs" "$CODE/scripts/trillium/job.sbatch" python -m flotilla.routers.strategy_labels \
   --pool-labels "$SCRATCH/flotilla/test04-labels/run-03" --memory-items "$DATA/memory_items.jsonl" --verdicts "$V" \
   --memory-split "$DATA/split.json" --runs "${ARGS[@]}" --build-runs "$LME"/runs/prepare/lmem_* \
   --graft-cache "$LME/graft_cache" --out "$OUT" --workers 32

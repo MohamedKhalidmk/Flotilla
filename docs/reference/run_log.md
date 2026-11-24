@@ -290,6 +290,14 @@ Correction, same day: the first one-history, toy-gate and F36 resubmissions were
 
 Built reports/gold_review/ (build.py, index.md, 20 question files) from every audit that marked wrong gold: test 02 hand checks, test 03 gpt-oss failure audit, test 04 run-02 and run-03 hand diagnoses. No verdicts written and no labels changed; each file waits for the user's call. GitHub's language bar reads main, which lacks .gitattributes, so the one-file commit went to branch language-bar as PR 2 to main for the user to merge. The flotilla/ package reorganization is queued (row 46) until every cluster job is done.
 
+## 2026-11-24: flotilla/ package split into subpackages (branch reorganize-package)
+
+The user asked for the package to be split into core, routers, memory, data and research, with router A and router B in legacy. Done on branch reorganize-package off restructure, in a separate checkout; the suite passes there (126 passed, 1 skipped, same as restructure). Every module moved unchanged apart from imports and three file-relative paths. Code, tests, scripts, configs, prompts and current docs use the new names; this log, PROJECT_HISTORY and the files under experiments/*/runs/, reports/ and results/ keep the old names as run. Map: docs/reference/package_layout.md. Not merged, and nothing copied to Fir, Nibi or Trillium: that waits for every running and queued job to finish and the user's yes.
+
 ## 2026-11-24 10:00 Mountain: package split on its own branch
 
 Branch reorganize-package (fc0aaa8) splits flotilla/ into core, routers, memory, data, research and legacy; suite 126 passed, 1 skipped in the separate checkout /Users/mk/flotilla-reorg, same as restructure. Not merged and not copied to any cluster (row 46). Any code commit on restructure before the merge needs the same move applied, which the branch's rewrite script does.
+
+## 2026-11-24 Mountain: package split merged into restructure
+
+On the user's yes, after the separate checkout passed the full suite (126 passed, 1 skipped) and every python -m flotilla.* command the scripts and configs use printed its usage (10 directly; flotilla.core.quantize and flotilla.research.eval_math500 with vllm and llmcompressor stubbed, since only the clusters have them), reorganize-package was merged into restructure. Nothing copied to Fir, Nibi or Trillium; that waits for every job to finish and the user's yes.

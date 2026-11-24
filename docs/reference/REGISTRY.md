@@ -40,7 +40,7 @@ the Flotilla loop). Its test 01 run and its final-benchmark runs are different s
 | F09 | Command A+ through Cohere's hosted API in the loop | `cmda_alone`, `runs/cmda-smalltest` | 02 | cancelled | screen runs discarded (tool calls rejected with 422, then the trial key's 1,000 calls a month ran out); replaced by F08 (v8) |
 | F10 | Phi-4-reasoning-plus FP8 (F03) in the loop | "Phi", "Phi in the loop" | none | never run | Phi was never run in the loop: v9's Phi figure (21 of 25, 24,354 tokens, 18 at the cap) is F03's test 01 run on the 25 dev items (traces confirm) |
 | F11 | Qwen + Phi, both solving in the loop | `qwen_phi` | none | never run | the v5 configuration; superseded when Phi was dropped (v9) |
-| F12 | Router A: `vela3-fast` task-type classifier + fixed decision table over models | "router A", `flotilla/router_a.py` | protocol 4.5 | scored (routing accuracy) | 0.744 on 500 pool items ([legacy record](../../experiments/legacy/README.md)); not used once Flotilla became one model (v10) |
+| F12 | Router A: `vela3-fast` task-type classifier + fixed decision table over models | "router A", `flotilla/legacy/router_a.py` | protocol 4.5 | scored (routing accuracy) | 0.744 on 500 pool items ([legacy record](../../experiments/legacy/README.md)); not used once Flotilla became one model (v10) |
 | F13 | Router B: ModernBERT-base fine-tune choosing F06 or F07 | "router B", `router_b_modernbert` | 03 | scored | +0.4 over F06 on 476 held-out questions, under the 1-point bar; not used |
 | F14 | Router B lite: bge-small + logistic regression choosing F06 or F07 | "router B lite", `router_b_lite` | 03 | scored | -0.8 over F06; not used |
 | F15 | Route Fast: F01 in the loop, thinking off, no tools | **Fast**, `qwen_strategy_fast` | 04 | scored | pool 0.903; LongMemEval labels done |
@@ -56,7 +56,7 @@ the Flotilla loop). Its test 01 run and its final-benchmark runs are different s
 | F25 | Strategy router: ModernBERT success predictor + dev-tuned threshold, run-03 labels | "router ii", `success` | 04 | free check only | as F24 |
 | F26 | Strategy router: bge-small + logistic regression, run-03 labels | "router iii", `bge_lr` | 04 | free check only | as F24 |
 | F27 | Strategy router: nearest neighbours on bge-small, run-03 labels | "router iv", `knn` | 04 | free check only | as F24 |
-| F28 | Live RL router over route steps, run-03 labels | "router 5", "RL router", `flotilla/rl_router.py` | 04 | free check only | fake-model check (`rl-check`); the real one starts from the best run-04-lme router, a new ID |
+| F28 | Live RL router over route steps, run-03 labels | "router 5", "RL router", `flotilla/routers/rl_router.py` | 04 | free check only | fake-model check (`rl-check`); the real one starts from the best run-04-lme router, a new ID |
 
 | F29 | Strategy router: ModernBERT label classifier, trained on run-04-lme | "router i" on run-04-lme | 04 | scored | dev 0.904 (Vote 0.966): dropped by the keep rule |
 | F30 | Strategy router: ModernBERT success predictor + dev threshold, run-04-lme | "router ii" | 04 | scored | dev 0.959 at 72% of Vote's GPU-seconds: kept (within 1 point, less compute) |
@@ -177,7 +177,7 @@ output tokens; one sample runs at temperature 0.
 | S160 | F33 | as S159 | as S159 | as S159; checker Qwen, thinking off, 1,024 tokens | `lme_llmv/runs/fast_llmv/lme_dev_r0..2` | running (test 06) |
 | S161 | F17 | as S159 | as S159 | as S159 | `lme_llmv/runs/deep/lme_dev_r0..2` | running (test 06) |
 | S162 | F34 | as S159 | as S159 | as S160 | `lme_llmv/runs/deep_llmv/lme_dev_r0..2` | running (test 06) |
-| S168 | F36 | the 9 LongMemEval questions where Vote was right, Vote+Tools wrong, and no two of Vote+Tools' answers matched (run-04-lme) | official judge prompt, Claude Haiku 5.5, on the pick and on each of the 5 samples | replay: run-04's saved Vote+Tools samples, only the tie call is new (`flotilla/usc_replay.py`) | `lme_usc/replay9` | queued |
+| S168 | F36 | the 9 LongMemEval questions where Vote was right, Vote+Tools wrong, and no two of Vote+Tools' answers matched (run-04-lme) | official judge prompt, Claude Haiku 5.5, on the pick and on each of the 5 samples | replay: run-04's saved Vote+Tools samples, only the tie call is new (`flotilla/research/usc_replay.py`) | `lme_usc/replay9` | queued |
 | S169 | F37-F40 | 3-5 hand-made known-answer questions per route (design's toy table) | exact answers; forced call made; rule listing parsed | toy check on the real Qwen, one full trace per route dumped | `experiments/test-10-forced-tools/toy` | running (Fir 5226371 / Nibi 28477059) |
 | S170 | F37-F40 and Fast, Tools, Deep, Deep+Tools | 193 dev questions (math 70, memory 40, instruction 36, science 35, code 12), seeded | router-label graders; instruction by regex and by ground truth; memory by Haiku majority of 3 | one repeat, all routes the same day | `runs/forced-tools-pilot` | design |
 The final-benchmark setups of F01 (plain Qwen), the full system and the best single route get S IDs when they are
@@ -203,7 +203,7 @@ is the row above that names it. After approval each test's table gains a setup c
 - F06 checked against the saved runs (2026-11-22): test 02's small test (`qwen_w4a16_alone`, Fir and Nibi), test 03's labels
   (Trillium `labels-qwen_w4a16_alone`) and the Deep+Tools route (`strategy-labels/deep_tools`) served the same build
   (`quant/qwen3.8-27b-w4a16`) with the same vLLM settings (qwen3_coder tool parser, qwen3 reasoning parser, seed 20261119,
-  131,072 context) and native tools. Temperature is the same too: one sample always runs at 0.0 (`flotilla/system.py`, since
+  131,072 context) and native tools. Temperature is the same too: one sample always runs at 0.0 (`flotilla/core/system.py`, since
   09d3c93 of 2026-11-19, before test 02); Deep+Tools' `temperature: 0.6` applies only to several samples, and `qwen_w4a16_alone`
   leaves it at the default, also 0.6, also unused. Test 02's RULER and vision groups ran without the tool parser, but those
   groups offer no tools in either configuration. Only the protocol label differs (v9 vs v10). F06 stays one candidate.

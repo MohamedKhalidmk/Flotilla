@@ -27,7 +27,7 @@ Does 4-bit lose accuracy against 8-bit and 16-bit for the solver models?
 
 ## Setup
 
-MATH-500, all 500 questions, 0-shot, greedy, scored with math-verify ([`flotilla/eval_math500.py`](../../flotilla/eval_math500.py)).
+MATH-500, all 500 questions, 0-shot, greedy, scored with math-verify ([`flotilla/research/eval_math500.py`](../../flotilla/research/eval_math500.py)).
 Qwen3.8-27B in BF16, FP8 (ours), W4A16 (ours) and RedHat's INT4; Phi-4-reasoning-plus in BF16, FP8 (ours and NVIDIA)
 and W4A16 (ours and AMD). Config: [config.yaml](config.yaml).
 

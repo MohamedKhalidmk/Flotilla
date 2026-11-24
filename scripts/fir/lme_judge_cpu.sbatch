@@ -20,7 +20,7 @@ CAP="${COST_CAP_USD:-1}"
 START=$(date +%s)
 mkdir -p "$OUT"
 echo "[judge] $(date -Is) start on $(hostname): $# run folders, cap \$$CAP"
-setsid "$PY" -m flotilla.memory_route judge --backend haiku --items "$ITEMS" --runs "$@" --out "$OUT/verdicts.jsonl" \
+setsid "$PY" -m flotilla.memory.memory_route judge --backend haiku --items "$ITEMS" --runs "$@" --out "$OUT/verdicts.jsonl" \
   --concurrency "${JUDGE_CONCURRENCY:-8}" --repeats "${JUDGE_REPEATS:-1}" &
 JPID=$!
 spent() {

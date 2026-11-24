@@ -11,6 +11,6 @@ LME=${LME:-$SCRATCH/flotilla/lme_llmv}
 mkdir -p "$LME/logs" "$LME/runs/$ARM"
 sbatch --parsable --account=def-sylu_gpu --gpus-per-node=${GPU:-h100:1} --cpus-per-task=${CPUS:-12} --mem=${MEM:-200G} \
   --chdir="$LME/logs" ${EXTRA_SBATCH:-} --time=$TIME --begin=$BEGIN --job-name="llmv-$ARM-r$REP${SUFFIX:-}" \
-  "$CODE/scripts/fir/lme_job.sbatch" python -m flotilla.serve \
+  "$CODE/scripts/fir/lme_job.sbatch" python -m flotilla.core.serve \
   --system "$CODE/configs/systems/qwen_strategy_$ARM.json" --servers "$CODE/configs/servers_longmemeval.json" \
   --items-dir "$LME/runitems/base" --out "$LME/runs/$ARM/lme_dev_r$REP${SUFFIX:-}" --benches lme_dev --concurrency ${CONC:-6}

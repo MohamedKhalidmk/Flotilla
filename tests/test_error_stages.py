@@ -1,4 +1,4 @@
-from flotilla.scoring import LIVE_STAGES, STAGE_RULES, error_stage
+from flotilla.core.scoring import LIVE_STAGES, STAGE_RULES, error_stage
 
 
 def _t(answers, final, *, models=None, vote=None, attempts=None, tools=None, retrieval=None, call_log=None, texts=None):
@@ -93,7 +93,7 @@ def test_reasoning_error_and_ungraded_samples():
 def test_flags_and_stage_lists():
     """Checks the tool_error and retrieval_fallback flags, and that every stage the tagger returns is in the rule list, with only gold-free stages marked live.
     Guards against: a stage name drifting from trace.py's ERROR_STAGES, or a gold-dependent stage offered to flotilla-deploy."""
-    from flotilla.trace import ERROR_STAGES
+    from flotilla.core.trace import ERROR_STAGES
     t = _t(["5"], "5", tools=[{"name": "python_exec", "ok": False}], retrieval={"source": "graft", "fallback": True})
     assert {"tool_error", "retrieval_fallback"} <= set(error_stage(t, False, grade)["flags"])
     assert set(STAGE_RULES) <= set(ERROR_STAGES)

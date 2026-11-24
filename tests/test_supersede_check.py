@@ -1,8 +1,8 @@
-"""flotilla.supersede_check on hand-made graphs (the real-model check runs on the cluster; see the module docstring)."""
+"""flotilla.memory.supersede_check on hand-made graphs (the real-model check runs on the cluster; see the module docstring)."""
 import json
 from pathlib import Path
 
-from flotilla.supersede_check import check
+from flotilla.memory.supersede_check import check
 
 TOY = Path(__file__).parent / "data" / "supersede_toy.jsonl"
 

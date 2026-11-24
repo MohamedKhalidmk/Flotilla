@@ -1,4 +1,4 @@
-from flotilla import system
+from flotilla.core import system
 
 
 def test_parse_final_takes_last_json_block():
@@ -54,7 +54,7 @@ def test_solver_messages_include_task_type_addition():
 def test_valid_option_counts_options_in_the_question():
     """Checks that n_options counts the lettered lines in the question up to J, uses the options list when given, and falls back to four.
     Guards against: a verifier that accepts option K when the question only has A to J."""
-    from flotilla.system import n_options, verify
+    from flotilla.core.system import n_options, verify
     task = "Which?\n\nA. one\nB. two\nC. three\nD. four\nE. five\nF. six\nG. seven\nH. eight\nI. nine\nJ. ten"
     assert n_options(task, None) == 10
     assert verify(task, "science_mc", "I")["verdict"] == "accept"
@@ -81,7 +81,7 @@ def _fake_create(replies):
 
 def _run(item, cfg, replies, monkeypatch):
     import asyncio
-    from flotilla.trace import Trace
+    from flotilla.core.trace import Trace
     create, calls = _fake_create(replies)
     monkeypatch.setattr(system, "_create", create)
     monkeypatch.setattr(system, "client_for", lambda srv: None)
@@ -146,8 +146,8 @@ def test_llm_check_unparseable_reply_accepts(monkeypatch):
 def test_constraint_check_on_memory_reads_only_the_question():
     """Checks that constraint_check on a LongMemEval history or a GRAFT memory block finds no constraints from old sessions, while an instruction task keeps its own.
     Guards against: "add a P.S." or "at least 500 words" from an old chat session failing a memory answer (run-04 Vote+Tools)."""
-    from flotilla.longmemeval import history_prompt
-    from flotilla.memory_route import MEMORY_HEADER, MEMORY_RULE
+    from flotilla.memory.longmemeval import history_prompt
+    from flotilla.memory.memory_route import MEMORY_HEADER, MEMORY_RULE
     item = {"question": "Where did I get my guitar serviced?", "question_date": "2023/06/01 (Thu) 10:00",
             "sessions": [{"session_id": "s1", "date": "2023/05/01 (Mon) 09:00", "turns": [
                 {"role": "user", "content": "Write a blog post of at least 500 words and end it with a P.S."},
@@ -165,7 +165,7 @@ def test_constraint_check_on_memory_reads_only_the_question():
 def test_usc_tie_rule_picks_the_named_response(monkeypatch):
     """Checks that with tie_rule usc and five different free-text answers, one Qwen call (thinking off, temperature 0, question only) picks the named response, and that an unparseable reply keeps the first answer.
     Guards against: the free-text vote taking sample 0 when no two answers match (9 run-04 Vote+Tools losses), or the tie call seeing the whole chat history."""
-    from flotilla.longmemeval import history_prompt
+    from flotilla.memory.longmemeval import history_prompt
     item = {"item_id": "1", "task_type": "memory", "task": history_prompt({"question": "Tips for Tokyo?",
             "question_date": "2023/06/01 (Thu) 10:00", "sessions": [{"session_id": "s1", "date": "2023/05/01 (Mon) 09:00",
             "turns": [{"role": "user", "content": "I have a Suica card."}]}]})}

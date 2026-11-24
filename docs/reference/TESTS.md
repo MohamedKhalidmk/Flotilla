@@ -56,7 +56,7 @@ Format tests for every dataset Flotilla converts (LongMemEval has its own, tests
 
 ## [tests/test_label_merge.py](../../tests/test_label_merge.py)
 
-The LongMemEval label merge's verdict checks (flotilla/strategy_labels.py).
+The LongMemEval label merge's verdict checks (flotilla/routers/strategy_labels.py).
 
 | Test | What it checks | Guards against |
 |---|---|---|
@@ -83,7 +83,7 @@ leakage --extra-targets: sets besides the test sets (the chat guide's source vs 
 
 ## [tests/test_memory_route.py](../../tests/test_memory_route.py)
 
-Memory routes (flotilla/memory_route.py): availability, GRAFT documents, cache keys, the memory block, the judge,
+Memory routes (flotilla/memory/memory_route.py): availability, GRAFT documents, cache keys, the memory block, the judge,
 
 | Test | What it checks | Guards against |
 |---|---|---|
@@ -122,7 +122,7 @@ Memory routes (flotilla/memory_route.py): availability, GRAFT documents, cache k
 
 ## [tests/test_rl_router.py](../../tests/test_rl_router.py)
 
-flotilla/rl_router.py with fake models only: masks, stop, the supervised start, reward with the time penalty, chain
+flotilla/routers/rl_router.py with fake models only: masks, stop, the supervised start, reward with the time penalty, chain
 
 | Test | What it checks | Guards against |
 |---|---|---|
@@ -152,7 +152,7 @@ The session documents (docs/session/) must match scripts/SHA256SUMS, which scrip
 
 ## [tests/test_strategy_router.py](../../tests/test_strategy_router.py)
 
-flotilla/strategy_router.py on small synthetic labels: route order and masks from the labels, "none" items, ties,
+flotilla/routers/strategy_router.py on small synthetic labels: route order and masks from the labels, "none" items, ties,
 
 | Test | What it checks | Guards against |
 |---|---|---|
@@ -172,7 +172,7 @@ flotilla/strategy_router.py on small synthetic labels: route order and masks fro
 
 ## [tests/test_supersede_check.py](../../tests/test_supersede_check.py)
 
-flotilla.supersede_check on hand-made graphs (the real-model check runs on the cluster; see the module docstring).
+flotilla.memory.supersede_check on hand-made graphs (the real-model check runs on the cluster; see the module docstring).
 
 | Test | What it checks | Guards against |
 |---|---|---|
@@ -238,7 +238,7 @@ Things nothing tests yet (written by hand; the generator keeps this section).
 
 - **Every LongMemEval question has exactly one judge verdict per route.** The label merge now stops and names every
   question with no answer, every answer with no verdict, and every pair with two verdicts
-  (`flotilla/strategy_labels.py`, tested in `tests/test_label_merge.py` on toy data). No test reads the real label
+  (`flotilla/routers/strategy_labels.py`, tested in `tests/test_label_merge.py` on toy data). No test reads the real label
   files: run-04-lme was checked once by hand on 2026-11-22 (5,000 verdicts, 500 questions x 10 routes, none missing,
   none twice).
 - **The LLM check (F33, F34) on a real server.** Its tests use a fake model client; the first real use is test 06.

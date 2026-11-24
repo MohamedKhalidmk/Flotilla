@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
-# test-04 router 5, live RL over route steps (flotilla/rl_router.py), on Fir.
+# test-04 router 5, live RL over route steps (flotilla/routers/rl_router.py), on Fir.
 #   bash scripts/fir/submit_rl_router.sh dry-run  <name>   # CPU job: fake Qwen on 20 train questions + the GPU-hour estimate
 #   bash scripts/fir/submit_rl_router.sh train    <name>   # priors (GPU, short) -> CHAIN training jobs (resume) -> dev eval
 #   bash scripts/fir/submit_rl_router.sh evaluate <name>   # dev evaluation of <name>'s policy.npz
 # Held-out is never run here: once, at the end, by hand:
-#   ... python -m flotilla.rl_router evaluate --labels L --items I --out OUT --serve S --pool P --exclude X --held-out
+#   ... python -m flotilla.routers.rl_router evaluate --labels L --items I --out OUT --serve S --pool P --exclude X --held-out
 # Output: $SCRATCH/flotilla/runs/rl-router/<name>/ (chains_*.jsonl, traces_*.jsonl, policy*.npz, table_*.md,
 # beyond_oracle_*.md, compute.jsonl, server logs).
 #
@@ -44,9 +44,9 @@ secs() { IFS=: read -r h m s <<<"${1#*-}"; d=0; [[ $1 == *-* ]] && d=${1%%-*}; e
 if [[ $MODE == dry-run ]]; then
   # fake Qwen through the real loop (no GPU), and the estimate of the real run from the labels
   CPU_OPTS=(--account=def-sylu_cpu --cpus-per-task=4 --mem=16G --time=0:30:00 --chdir="$SCRATCH/flotilla/logs")
-  D=$(sbatch --parsable "${CPU_OPTS[@]}" --job-name="rl-dry" "$JOB" python -m flotilla.rl_router dry-run "${COMMON[@]}" \
+  D=$(sbatch --parsable "${CPU_OPTS[@]}" --job-name="rl-dry" "$JOB" python -m flotilla.routers.rl_router dry-run "${COMMON[@]}" \
     --audit "$AUDIT" ${PRIOR:+--prior "$PRIOR"})
-  S=$(sbatch --parsable "${CPU_OPTS[@]}" --job-name="rl-estimate" "$JOB" python -m flotilla.rl_router estimate \
+  S=$(sbatch --parsable "${CPU_OPTS[@]}" --job-name="rl-estimate" "$JOB" python -m flotilla.routers.rl_router estimate \
     --labels "$LABELS" --items "$ITEMS" --out "$OUT/estimate" --alpha "$ALPHA" --epochs "$EPOCHS" ${PRIOR:+--prior "$PRIOR"})
   echo "dry-run $D  estimate $S  -> $OUT"
   exit 0
@@ -60,29 +60,29 @@ GPU_OPTS=(--account=def-sylu_gpu --gpus-per-node="h100:$GPUS" --cpus-per-task=$(
 if [[ $MODE == train ]]; then
   # 1. priors from the best supervised router on dev (train + dev questions only) and the wrong-gold list
   P=$(sbatch --parsable --account=def-sylu_gpu --gpus-per-node=h100:1 --cpus-per-task=8 --mem=64G --time=0:30:00 \
-    --job-name="rl-priors" --chdir="$SCRATCH/flotilla/logs" "$JOB" python -m flotilla.rl_router priors "${COMMON[@]:0:4}" \
+    --job-name="rl-priors" --chdir="$SCRATCH/flotilla/logs" "$JOB" python -m flotilla.routers.rl_router priors "${COMMON[@]:0:4}" \
     --router-dir "$ROUTER_DIR" ${ROUTER:+--router "$ROUTER"} --out "$OUT/priors.jsonl")
-  "$CODE/envs/flotilla/bin/python" -c "import sys; sys.path.insert(0, '$CODE'); from flotilla import rl_router as r; \
+  "$CODE/envs/flotilla/bin/python" -c "import sys; sys.path.insert(0, '$CODE'); from flotilla.routers import rl_router as r; \
     r.write_exclusions('$OUT/excluded_wrong_gold.txt', r.build_exclusions('$AUDIT'), '$AUDIT/diagnosis.json')"
   # 2. CHAIN training jobs; each resumes from the chain log (afterany: a job that hit its time limit still continues)
   STOP=$(( $(secs "$TIME") - 5400 ))
   DEP="afterok:$P"; T=""
   for k in $(seq 1 "$CHAIN"); do
     T=$(sbatch --parsable "${GPU_OPTS[@]}" --time="$TIME" --dependency="$DEP" --job-name="rl-train-$k" \
-      --chdir="$SCRATCH/flotilla/logs" "$JOB" python -m flotilla.rl_router train "${COMMON[@]}" "${LIVE[@]}" \
+      --chdir="$SCRATCH/flotilla/logs" "$JOB" python -m flotilla.routers.rl_router train "${COMMON[@]}" "${LIVE[@]}" \
       --prior "file:$OUT/priors.jsonl" --alpha "$ALPHA" --epochs "$EPOCHS" --max-steps "$MAX_STEPS" \
       --max-gpu-s "$MAX_GPU_S" --stop-after "$STOP")
     DEP="afterany:$T"
   done
   # 3. dev evaluation, greedy, with the beyond-oracle count
   E=$(sbatch --parsable "${GPU_OPTS[@]}" --time="$EVAL_TIME" --dependency="afterok:$T" --job-name="rl-eval" \
-    --chdir="$SCRATCH/flotilla/logs" "$JOB" python -m flotilla.rl_router evaluate "${COMMON[@]}" "${LIVE[@]}" \
+    --chdir="$SCRATCH/flotilla/logs" "$JOB" python -m flotilla.routers.rl_router evaluate "${COMMON[@]}" "${LIVE[@]}" \
     --exclude "$OUT/excluded_wrong_gold.txt")
   echo "priors $P  train ...$T (chain $CHAIN)  eval $E  -> $OUT"
 else
   [[ -f $OUT/excluded_wrong_gold.txt ]] || "$CODE/envs/flotilla/bin/python" -c "import sys; sys.path.insert(0, '$CODE'); \
-    from flotilla import rl_router as r; r.write_exclusions('$OUT/excluded_wrong_gold.txt', r.build_exclusions('$AUDIT'), '$AUDIT/diagnosis.json')"
+    from flotilla.routers import rl_router as r; r.write_exclusions('$OUT/excluded_wrong_gold.txt', r.build_exclusions('$AUDIT'), '$AUDIT/diagnosis.json')"
   E=$(sbatch --parsable "${GPU_OPTS[@]}" --time="$EVAL_TIME" --job-name="rl-eval" --chdir="$SCRATCH/flotilla/logs" \
-    "$JOB" python -m flotilla.rl_router evaluate "${COMMON[@]}" "${LIVE[@]}" --exclude "$OUT/excluded_wrong_gold.txt")
+    "$JOB" python -m flotilla.routers.rl_router evaluate "${COMMON[@]}" "${LIVE[@]}" --exclude "$OUT/excluded_wrong_gold.txt")
   echo "eval $E -> $OUT"
 fi

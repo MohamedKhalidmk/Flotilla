@@ -1,4 +1,4 @@
-Full labels: 1450 pool questions, every route on every question, graded against gold (flotilla/strategy_labels.py). Cheapest correct = the label a router learns. No route right: 17; some route right: 0.9883. GPU-seconds = whole job / questions (server load included).
+Full labels: 1450 pool questions, every route on every question, graded against gold (flotilla/routers/strategy_labels.py). Cheapest correct = the label a router learns. No route right: 17; some route right: 0.9883. GPU-seconds = whole job / questions (server load included).
 
 | candidate | setup | route | what_it_does | questions | accuracy | output_tokens_per_question | gpu_seconds_per_question | cheapest_correct | run | status |
 |---|---|---|---|---|---|---|---|---|---|---|

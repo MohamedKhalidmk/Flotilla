@@ -2,7 +2,7 @@
 
 Sources: retool (docs/reference/REFERENCES.md)
 
-Used by `flotilla/system.py` when `forced_tool` is set; the first call also sets tool_choice to that tool by name.
+Used by `flotilla/core/system.py` when `forced_tool` is set; the first call also sets tool_choice to that tool by name.
 One section per tool; the section title is the tool's name.
 
 ## python_exec

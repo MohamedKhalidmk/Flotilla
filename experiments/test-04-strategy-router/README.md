@@ -48,9 +48,9 @@ tested and dropped (test 05), so GRAFT builds each item's graph from its own his
 
 **Labels.** 1,500 questions from the leakage-checked router pool, never the 5% small test, the full benchmarks, router
 B's 476 held-out questions or GRAFT's 100 FactConsolidation questions; drawn by
-[`flotilla/strategy_items.py`](../../flotilla/strategy_items.py) (seed 20261120: 910 math, 249 science MC,
+[`flotilla/routers/strategy_items.py`](../../flotilla/routers/strategy_items.py) (seed 20261120: 910 math, 249 science MC,
 249 instruction, 92 code). LongMemEval adds long inputs for the Memory routes. Every route answers every question;
-correctness, tokens, calls and time are kept per question ([`flotilla/strategy_labels.py`](../../flotilla/strategy_labels.py)).
+correctness, tokens, calls and time are kept per question ([`flotilla/routers/strategy_labels.py`](../../flotilla/routers/strategy_labels.py)).
 
 **Split.** 70% train, 15% dev, 15% held-out, stratified by source and task type. Routers iterate on train and dev only.
 Then one evaluation on held-out and one on the 5% small test, both reported even if the router loses.
@@ -71,7 +71,7 @@ away, which is where the compute saving comes from.
 
 Router choices (user, 2026-11-21): the keep rule compares against Vote, the most accurate fixed route; dev tuning keeps
 a 0.5-point margin inside the rule, so a router that only just passes on dev has room for the drop to held-out
-(`flotilla/strategy_router.py --tune rule`, the default). Memory routes use GRAFT with the T-REx structure guide
+(`flotilla/routers/strategy_router.py --tune rule`, the default). Memory routes use GRAFT with the T-REx structure guide
 (GRAFT test 06: 45.7 vs 34.7 for plain mode C on Haiku), preset `guide_b` in the four Memory configs.
 
 ## Result
