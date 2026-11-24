@@ -1,0 +1,4 @@
+# GitHub's language bar counts code only: generated reports, audit pages and HTML docs are documentation.
+reports/** linguist-documentation
+experiments/**/audit/*.html linguist-documentation
+docs/**/*.html linguist-documentation
