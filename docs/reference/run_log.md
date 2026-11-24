@@ -289,3 +289,7 @@ Correction, same day: the first one-history, toy-gate and F36 resubmissions were
 ## 2026-11-24 09:25 Mountain: wrong-gold review and language bar PR
 
 Built reports/gold_review/ (build.py, index.md, 20 question files) from every audit that marked wrong gold: test 02 hand checks, test 03 gpt-oss failure audit, test 04 run-02 and run-03 hand diagnoses. No verdicts written and no labels changed; each file waits for the user's call. GitHub's language bar reads main, which lacks .gitattributes, so the one-file commit went to branch language-bar as PR 2 to main for the user to merge. The flotilla/ package reorganization is queued (row 46) until every cluster job is done.
+
+## 2026-11-24 10:00 Mountain: package split on its own branch
+
+Branch reorganize-package (fc0aaa8) splits flotilla/ into core, routers, memory, data, research and legacy; suite 126 passed, 1 skipped in the separate checkout /Users/mk/flotilla-reorg, same as restructure. Not merged and not copied to any cluster (row 46). Any code commit on restructure before the merge needs the same move applied, which the branch's rewrite script does.
