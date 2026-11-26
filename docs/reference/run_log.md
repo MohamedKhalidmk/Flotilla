@@ -301,3 +301,7 @@ Branch reorganize-package (fc0aaa8) splits flotilla/ into core, routers, memory,
 ## 2026-11-24 Mountain: package split merged into restructure
 
 On the user's yes, after the separate checkout passed the full suite (126 passed, 1 skipped) and every python -m flotilla.* command the scripts and configs use printed its usage (10 directly; flotilla.core.quantize and flotilla.research.eval_math500 with vllm and llmcompressor stubbed, since only the clusters have them), reorganize-package was merged into restructure. Nothing copied to Fir, Nibi or Trillium; that waits for every job to finish and the user's yes.
+
+## 2026-11-26 Mountain: test 10 done, pilot pool scored, retrieval r0 in
+
+Fir reopened at 07:20. Test 10 run-02 finished on Fir (5706487-5706504): G52 56.7, G35 51.3, G53 47.7, G49 46.7, G50 24.0, G51 18.3 right of 100 (mean of 3); G49 is not kept under the rule set before results. G35 ran on 25 Nov and the other arms on 26 Nov. The pilot's 153 pool answers per route were scored with label_loop.grade (instructions and code on Fir from stdin, nothing copied): forced_code 135, deep_tools 134, deep 131, forced_rules 130, self_check 124, tools 124, forced_sympy 122, fast 116. The five r0 retrieval runs finished (free substring check f50 33, f100 36, f200 38, g39 30, g40 30 of 76); r1 and r2 wait on priority. Pre-build: 93 of 424 histories done. Nibi still refuses SSH, so its 18 held test 10 copies are not cancelled yet.

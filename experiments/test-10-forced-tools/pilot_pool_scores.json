@@ -1,0 +1,98 @@
+[
+ {
+  "route": "forced_code",
+  "total": 135,
+  "aime": "17/17",
+  "gsm8k": "23/24",
+  "math": "22/29",
+  "mmlu_pro": "32/35",
+  "lcb": "12/12",
+  "ifeval": "29/36",
+  "empty": 1,
+  "memory": "37/40"
+ },
+ {
+  "route": "deep_tools",
+  "total": 134,
+  "aime": "17/17",
+  "gsm8k": "23/24",
+  "math": "22/29",
+  "mmlu_pro": "30/35",
+  "lcb": "11/12",
+  "ifeval": "31/36",
+  "empty": 0,
+  "memory": "36/40"
+ },
+ {
+  "route": "deep",
+  "total": 131,
+  "aime": "17/17",
+  "gsm8k": "21/24",
+  "math": "21/29",
+  "mmlu_pro": "30/35",
+  "lcb": "10/12",
+  "ifeval": "32/36",
+  "empty": 2,
+  "memory": "36/40"
+ },
+ {
+  "route": "forced_rules",
+  "total": 130,
+  "aime": "17/17",
+  "gsm8k": "23/24",
+  "math": "20/29",
+  "mmlu_pro": "34/35",
+  "lcb": "11/12",
+  "ifeval": "25/36",
+  "empty": 0,
+  "memory": "35/40"
+ },
+ {
+  "route": "self_check",
+  "total": 124,
+  "aime": "14/17",
+  "gsm8k": "23/24",
+  "math": "21/29",
+  "mmlu_pro": "33/35",
+  "lcb": "11/12",
+  "ifeval": "22/36",
+  "empty": 1,
+  "memory": "28/40"
+ },
+ {
+  "route": "tools",
+  "total": 124,
+  "aime": "16/17",
+  "gsm8k": "23/24",
+  "math": "19/29",
+  "mmlu_pro": "31/35",
+  "lcb": "11/12",
+  "ifeval": "24/36",
+  "empty": 0,
+  "memory": "35/40"
+ },
+ {
+  "route": "forced_sympy",
+  "total": 122,
+  "aime": "14/17",
+  "gsm8k": "23/24",
+  "math": "20/29",
+  "mmlu_pro": "32/35",
+  "lcb": "12/12",
+  "ifeval": "21/36",
+  "empty": 2,
+  "memory": "34/40"
+ },
+ {
+  "route": "fast",
+  "total": 116,
+  "aime": "16/17",
+  "gsm8k": "23/24",
+  "math": "20/29",
+  "mmlu_pro": "30/35",
+  "lcb": "10/12",
+  "ifeval": "17/36",
+  "empty": 2,
+  "memory": "35/40"
+ }
+]
