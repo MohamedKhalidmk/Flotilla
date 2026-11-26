@@ -34,7 +34,7 @@ from concurrent.futures import ProcessPoolExecutor
 from collections import Counter, defaultdict
 from pathlib import Path
 
-from flotilla.routers.label_loop import grade
+from flotilla.routers.label_loop import assert_grader_sane, grade
 
 # cheapest first; combos sit after their parts (pilot GPU-seconds decide the final order before training).
 # Memory routes come after every base route, each in its base route's cost order: they add a GRAFT build per history
@@ -140,6 +140,7 @@ def main() -> None:
     ap.add_argument("--verdicts", help="judge verdicts for LongMemEval answers (flotilla.memory.memory_route judge)")
     ap.add_argument("--workers", type=int, default=min(32, os.cpu_count() or 1), help="parallel graders (code tests run in subprocesses)")
     a = ap.parse_args()
+    assert_grader_sane()   # known right and wrong answers first (user, 2026-11-26)
     runs = defaultdict(list)
     for kv in a.runs:
         k, v = kv.split("=", 1)

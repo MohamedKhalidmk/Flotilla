@@ -347,6 +347,8 @@ def main() -> None:
     ap.add_argument("--run", required=True)
     ap.add_argument("--items-dir", required=True)
     a = ap.parse_args()
+    from flotilla.routers.label_loop import assert_grader_sane
+    assert_grader_sane()   # known right and wrong answers first (user, 2026-11-26)
     run = Path(a.run)
     items = {}
     for f in Path(a.items_dir).glob("*.jsonl"):

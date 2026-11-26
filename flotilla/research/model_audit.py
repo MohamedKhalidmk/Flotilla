@@ -23,6 +23,7 @@ from collections import Counter
 from pathlib import Path
 
 from flotilla.routers.label_loop import grade as label_grade
+from flotilla.routers.label_loop import assert_grader_sane
 from flotilla.core.scoring import SCORERS
 
 
@@ -70,6 +71,7 @@ def main() -> None:
     ap.add_argument("--known-gold-errors", default=None, help="JSON {id: reason} of golds found wrong by hand")
     ap.add_argument("--out", required=True)
     a = ap.parse_args()
+    assert_grader_sane()   # known right and wrong answers first (user, 2026-11-26)
 
     tr, ref = traces(a.runs), traces(a.ref_runs)
     if a.source == "smalltest":

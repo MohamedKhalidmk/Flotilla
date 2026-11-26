@@ -675,6 +675,9 @@ class PoolGrader:
 
     def __init__(self, pool: dict, lme: dict, judge_srv: dict | None):
         self.pool, self.lme, self.judge, self.cache = pool, lme, judge_srv, {}
+        if pool:   # known right and wrong answers first (user, 2026-11-26)
+            from flotilla.routers.label_loop import assert_grader_sane
+            assert_grader_sane()
 
     async def grade(self, item: dict, answer: str | None) -> bool:
         if answer is None:

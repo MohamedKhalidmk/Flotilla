@@ -81,6 +81,47 @@ def grade(item: dict, answer: str | None) -> bool:
     return False
 
 
+
+# Known-right and known-wrong answers graded before any grading or regrade run (user, 2026-11-26). On 2026-11-26 a
+# regrade ran on a Fir login node without the job modules: sympy and math_verify failed to import, sympy_check returned
+# ok=False, and every math answer was silently graded wrong. Instruction cases need langdetect (the vendored checkers).
+SANITY_CASES = [
+    ({"task_type": "math", "task": "x", "gold": "\\frac{7}{24}"}, "7/24", True),
+    ({"task_type": "math", "task": "x", "gold": "40\\text{ min}"}, "40", True),
+    ({"task_type": "math", "task": "x", "gold": "35"}, "35", True),
+    ({"task_type": "math", "task": "x", "gold": "\\frac{7}{24}"}, "7/25", False),
+    ({"task_type": "math", "task": "x", "gold": "35"}, "36", False),
+    ({"task_type": "science_mc", "task": "x", "gold": "B"}, "B", True),
+    ({"task_type": "science_mc", "task": "x", "gold": "B"}, "C", False),
+    ({"task_type": "instruction", "task": "x", "ground_truth": {"func_name": "validate_lowercase"}}, "all lower case here", True),
+    ({"task_type": "instruction", "task": "x", "ground_truth": {"func_name": "validate_lowercase"}}, "Not Lower Case", False),
+    ({"task_type": "instruction", "task": "x", "ground_truth": {"func_name": "validate_forbidden_words",
+                                                                 "forbidden_words": ["lampful"]}}, "negative", True),
+    ({"task_type": "instruction", "task": "x", "ground_truth": {"func_name": "validate_forbidden_words",
+                                                                 "forbidden_words": ["lampful"]}}, "a lampful of oil", False),
+]
+
+
+def assert_grader_sane() -> int:
+    """Grades SANITY_CASES and raises RuntimeError naming every case that comes out wrong (and why, for math: the
+    sympy_check detail, e.g. a missing module). Call it before any grading or regrade run. Returns the number of cases."""
+    bad = []
+    for item, answer, want in SANITY_CASES:
+        try:
+            got = grade(item, answer)
+        except Exception as e:  # noqa: BLE001 - an import error here is exactly what the check is for
+            got = f"error: {type(e).__name__}: {e}"
+        if got is not want:
+            why = ""
+            if item["task_type"] == "math":
+                why = f" (sympy_check: {tools.sympy_check(answer, item['gold']).get('detail')})"
+            bad.append(f"{item['task_type']} answer {answer!r} gold {item.get('gold') or item.get('ground_truth')}: "
+                       f"expected {want}, got {got}{why}")
+    if bad:
+        raise RuntimeError("grader sanity check failed; stop and fix the environment before grading:\n  "
+                           + "\n  ".join(bad))
+    return len(SANITY_CASES)
+
 def make_items(pool: str, out_dir: str, shard_size: int) -> None:
     out = Path(out_dir)
     out.mkdir(parents=True, exist_ok=True)
@@ -143,6 +184,8 @@ def main() -> None:
     s.add_argument("--model", required=True)
     s.add_argument("--out", required=True)
     a = ap.parse_args()
+    if a.cmd == "score":
+        assert_grader_sane()   # known right and wrong answers first (user, 2026-11-26)
     if a.cmd == "make-items":
         make_items(a.pool, a.out_dir, a.shard_size)
     else:

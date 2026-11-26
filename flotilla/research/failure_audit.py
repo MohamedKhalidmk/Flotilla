@@ -20,6 +20,7 @@ from collections import Counter, defaultdict
 from pathlib import Path
 
 from flotilla.routers.label_loop import grade
+from flotilla.routers.label_loop import assert_grader_sane
 from flotilla.routers.strategy_labels import ORDER, load_traces
 
 
@@ -68,6 +69,7 @@ def main() -> None:
     ap.add_argument("--out", required=True)
     ap.add_argument("--graded", default=None, help="per_question.jsonl from strategy_labels: reuse its verdicts")
     a = ap.parse_args()
+    assert_grader_sane()   # known right and wrong answers first (user, 2026-11-26)
     runs = defaultdict(list)
     for kv in a.runs:
         k, v = kv.split("=", 1)

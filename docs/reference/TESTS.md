@@ -1,6 +1,6 @@
 # Tests (Flotilla)
 
-127 tests in 17 files, in plain words. Generated from each test's docstring by `scripts/make_tests_doc.py`; to change a line, edit the docstring and rerun the script. `tests/test_tests_doc.py` fails if a test is missing here or a line is out of date. The Gaps section at the end is written by hand.
+130 tests in 18 files, in plain words. Generated from each test's docstring by `scripts/make_tests_doc.py`; to change a line, edit the docstring and rerun the script. `tests/test_tests_doc.py` fails if a test is missing here or a line is out of date. The Gaps section at the end is written by hand.
 
 ## [tests/test_error_stages.py](../../tests/test_error_stages.py)
 
@@ -53,6 +53,16 @@ Format tests for every dataset Flotilla converts (LongMemEval has its own, tests
 | `test_ruler_items_and_round_trip` | Checks that exported RULER 32k and 64k items have a list of gold strings and the ruler_substring scorer, and rebuild exactly from the lm-eval instance. | a RULER item whose ID, gold list or token count no longer matches what export_ruler.ruler_item produces. |
 | `test_pool_sources_round_trip` | Checks that every router pool source (GSM8K, MATH, AIME, MMLU-Pro, IFEval-like, LiveCodeBench) keeps the raw row's ID, question, gold and tests. | MMLU-Pro rows cut to four options instead of up to ten, or a MATH gold not taken from the boxed answer. |
 | `test_strategy_label_items_round_trip` | Checks that strategy label items built from pool rows keep the pool ID, task, task type and source, with no gold and the router_label scorer. | a label item carrying its gold in the item file, or an ID that no longer matches the pool row it is graded against. |
+
+## [tests/test_grader_sanity.py](../../tests/test_grader_sanity.py)
+
+The grader sanity check (user, 2026-11-26): known right and wrong answers are graded before any grading run, and a
+
+| Test | What it checks | Guards against |
+|---|---|---|
+| `test_cases_cover_math_and_instruction_both_ways` | Checks that the sanity cases hold a known-right and a known-wrong answer for both math and instruction questions. | a check that only tests one direction, so a grader that marks everything wrong (or right) passes. |
+| `test_broken_math_checker_stops_the_run` | Checks that a math checker that cannot import sympy makes assert_grader_sane raise and name the cause. | the 2026-11-26 regrade where every math answer was silently graded wrong on a login node. |
+| `test_working_grader_passes` | Checks that a grader giving every expected verdict passes and the check reports how many cases it ran. | a sanity check that stops good runs, so people learn to skip it. |
 
 ## [tests/test_label_merge.py](../../tests/test_label_merge.py)
 
